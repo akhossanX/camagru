@@ -1,0 +1,82 @@
+
+body {
+    margin: 0;
+    font-family: 'Fira code';
+    background: white;
+}
+
+nav {
+    background: rgb(250, 128, 128);
+    margin-bottom: 100px;
+    color: white;
+    display: flex;
+    align-items: center;
+    height: 4.5rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+    height: 5rem;
+}
+
+nav.navbar a {
+    text-decoration: none;
+    color: inherit;
+}
+
+nav.navbar a.brand {
+    flex: 3;
+    padding: 5px 10px;
+}
+nav.navbar ul.nav-links {
+    margin: 0;
+    padding: 5px 10px;
+    flex: 1;
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
+}
+
+nav.navbar ul.nav-links.toggle-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: right;
+}
+
+nav.navbar ul li {
+    list-style: none;
+}
+
+nav.navbar ul.nav-links li.icon {
+    display: flex;
+    justify-content: flex-end;
+}
+
+nav.navbar ul.nav-links li.nav-link a {
+    display: none;
+}
+
+nav.navbar ul.nav-links.toggle-menu li.nav-link a {
+    display: block;
+}
+
+@media screen and (min-width: 600px) {
+
+    nav.navbar ul.nav-links li.nav-link a {
+        display: block;
+        white-space: nowrap;
+        padding-left: 10px;
+    }
+
+    nav.navbar ul.nav-links li.nav-link a:hover {
+        background: white;
+        color:  rgb(250, 128, 128);
+    }
+
+    nav.navbar ul.nav-links li i {
+        display: none;
+    }
+    nav.navbar ul.nav-links {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
