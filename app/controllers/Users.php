@@ -11,6 +11,7 @@
         }
 
         public function register() {
+            echo "am here";
             $this->view('users/register');
         }
 

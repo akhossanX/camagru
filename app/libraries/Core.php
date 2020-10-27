@@ -19,7 +19,7 @@
 				$url = array_values($url);
 			}
 			$flag = $this->getController($url);
-			require_once '../app/controllers/' . $this->currentController . '.php';
+			require_once 'app/controllers/' . $this->currentController . '.php';
 			$this->currentController = new $this->currentController();
 			if ($flag == true)
 				$flag = $this->getMethod($url);
@@ -47,7 +47,7 @@
 		{
 			if (isset($url) && isset($url[0])) {
 				if (file_exists(
-					'../app/controllers/'
+					'app/controllers/'
 					 . ucwords($url[0])
 					 . '.php'
 					)) {
