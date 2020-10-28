@@ -1,9 +1,11 @@
 <?php
     class Users extends Controller
     {
+        private $userModel;
+
         public function __construct()
         {
-            // $this->userModel = $this->model('User');
+            $this->userModel = $this->model('User');
         }
 
         public function index() {
@@ -11,8 +13,12 @@
         }
 
         public function register() {
-            echo "am here";
-            $this->view('users/register');
+            // $user = new User();
+            $this->userModel = $this->model('User');
+            $user->username = $_POST['username'];
+            $user->password = $_POST['password'];
+            $user->email = $_POST['email'];
+            $this->view('users/register', $data = ['user' => $user]);
         }
 
         public function login() {

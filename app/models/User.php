@@ -1,10 +1,13 @@
 <?php
 
-    // require_once APPROOT . '/libraries/Database.php';
 
     class User {
 
         private $db;
+        private $name;
+        private $email;
+        private $password;
+
 
         public function __construct () {
             $this->db = new Database();
@@ -15,6 +18,26 @@
             $this->db->query($query);
             $this->db->bind(':email', $email, null);
             return $this->db->single();
+        }
+        /*
+        **  Mapps user objects to user record in user table
+        **  We assume the password is already hashed
+        ** $user = new User();
+        ** $user.save
+        */
+
+        public function save($user)
+        {
+            $query = 'INSERT INTO user (
+                    username, email, password
+                    ) VALUES (
+                        :username, :email, :password
+                    )';
+            $this->db->query($query);
+            $this->db->bind(':username', $user->username, null);
+            $this->db->bind(':email', $user->email, null);
+            $this->db->bind(':password', $user->password, null);
+            $this->db->execute();
         }
 
         public function register($name, $email, $password) {

@@ -8,12 +8,12 @@
 	class Controller
 	{
 		// Load model
-		public function	model($model) {
-			// Require model file
-			require_once('app/models/' . $model . '.php');
-			// Instanciate model
-			return new $model();
-		}
+		// public function	model($model) {
+		// 	// Require model file
+		// 	require_once('app/models/' . $model . '.php');
+		// 	// Instanciate model
+		// 	return new $model();
+		// }
 		// Load view
 		public function	view($view, $data = []) {
 			// Check for the view file

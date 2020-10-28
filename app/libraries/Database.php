@@ -10,17 +10,17 @@
 
     class Database 
     {
-        private $dbname = DB_NAME;
-        private $host = DB_HOST;
-        private $user = DB_USER;
-        private $passwd = DB_PASSWD;
+        public $dbname = DB_NAME;
+        public $host = DB_HOST;
+        public $user = DB_USER;
+        public $passwd = DB_PASSWD;
 
         private $pdo;
         private $stmt;
         private $error;
 
         public function __construct() {
-            $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
+            $dsn = 'mysql:host=' . $this->host ;//. ';dbname=' . $this->dbname;
             $options = [
                 PDO::ATTR_PERSISTENT => true,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION

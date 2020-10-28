@@ -9,7 +9,7 @@ class Page {
         $this->db = new Database();
     }
     public function getGalleryImages() {
-        $sql = '';
-        $this->db->prepare($sql);
+        $sql = 'select * from image where ';
+        $this->db->query($sql);
     }
 }
