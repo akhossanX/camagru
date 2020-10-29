@@ -19,8 +19,9 @@
         private $stmt;
         private $error;
 
-        public function __construct() {
-            $dsn = 'mysql:host=' . $this->host ;//. ';dbname=' . $this->dbname;
+        public function __construct($flag = 1) {
+            $flag === 0 ? $dbname = '' : $dbname = ';dbname=' . $this->dbname;
+            $dsn = 'mysql:host=' . $this->host . $dbname;
             $options = [
                 PDO::ATTR_PERSISTENT => true,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION

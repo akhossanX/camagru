@@ -1,6 +1,6 @@
 <?php
 
-    class Pages extends Controller 
+    class Home extends Controller 
     {
         public function __construct()
         {
@@ -11,18 +11,18 @@
             $data = [
                 'title' => 'Welcome to Camagru',
             ];
-            $this->view('pages/index', $data);
+            $this->view('home/index', $data);
         }
 
         public function about() {
             $data = [
                 'title' => 'About Us'
             ];
-            $this->view('pages/about', $data);
+            $this->view('home/about', $data);
         }
 
         public function gallery() {
             $data = [];
-            $this->view('pages/gallery', $data);
+            $this->view('home/gallery', $data);
         }
     }

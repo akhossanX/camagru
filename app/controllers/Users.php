@@ -9,16 +9,31 @@
         }
 
         public function index() {
-            $this->view('pages/index', ['title' => 'Users default page']);
+            $this->view('home/index', ['title' => 'Users default page']);
         }
 
         public function register() {
-            // $user = new User();
-            $this->userModel = $this->model('User');
-            $user->username = $_POST['username'];
-            $user->password = $_POST['password'];
-            $user->email = $_POST['email'];
-            $this->view('users/register', $data = ['user' => $user]);
+            if (!empty($_POST['username']) && !empty($_POST['email'])
+                && !empty($_POST['password']) &&  !empty($_POST['confirm_password'])) {
+                $this->userModel = $this->model('User');
+                $this->userModel->setUserName($_POST['username']);
+                $this->userModel->setPassword($_POST['password']);
+                $this->userModel->setEmail($_POST['email']);
+                $this->userModel->save();
+                $this->view('users/confirm_account');
+            }
+            else
+            {
+                $this->view('users/register');
+            }
+        }
+        
+        /*
+        **  Verifies Whether the user account is already taken or not
+        */
+
+        public function verifyUserCredentials() {
+
         }
 
         public function login() {
