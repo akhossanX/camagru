@@ -14,10 +14,10 @@
         }
 
         
-        public function findUserByemail($email) {
+        public function findUserByemail() {
             $query = 'SELECT * FROM user WHERE email like :email';
             $this->db->query($query);
-            $this->db->bind(':email', $email, null);
+            $this->db->bind(':email', $this->email);
             return $this->db->single();
         }
         /*
@@ -38,16 +38,6 @@
             $this->db->bind(':username', $this->username, null);
             $this->db->bind(':email', $this->email, null);
             $this->db->bind(':password', hash('whirlpool', $this->password), null);
-            $this->db->execute();
-        }
-        
-        public function register() {
-            $this->password = hash('whirlpool', $this->password);
-            $sql = 'INSERT INTO user (username, email, password) VALUES (:username, :email, :password)';
-            $this->db->query($sql);
-            $this->db->bind(':username', $this->username, null);
-            $this->db->bind(':email', $this->email, null);
-            $this->db->bind(':password', $this->password, null);
             $this->db->execute();
         }
 

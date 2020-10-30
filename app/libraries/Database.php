@@ -43,7 +43,7 @@
             $this->stmt = $this->pdo->prepare($sql);
         }
         // Bind values
-        public function bind($param, $value, $type) {
+        public function bind($param, $value, $type = null) {
             if (is_null($type)) {
                 if (is_bool($value))
                     $type = PDO::PARAM_BOOL;

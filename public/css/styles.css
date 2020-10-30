@@ -5,6 +5,8 @@ body {
     background: white;
 }
 
+/***************************** NAVBAR ***************************************/
+
 nav {
     background: rgb(250, 128, 128);
     margin-bottom: 100px;
@@ -79,4 +81,21 @@ nav.navbar ul.nav-links.toggle-menu li.nav-link a {
         flex-direction: row;
         justify-content: space-between;
     }
+}
+
+/***************************** END OF NAVBAR ***************************************/
+
+input {
+    display: block;
+    width: 50%;
+    height: 30px;
+    margin: 10px auto;
+}
+
+span.form-error {
+    font-weight: lighter;
+    font-size: 14px;
+    color: red;
+    text-align: center;
+    display: block;
 }
