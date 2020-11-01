@@ -36,11 +36,28 @@
                     return $this->view('users/register', $this->data);
                 }
                 $this->userModel->save();
-                $this->view('users/confirm_account', $this->data);
+                $this->mailAccountActivationLink();
+                // $this->view('users/confirm_account', $this->data);
             }
             else {
                 return $this->view('/users/register', $this->data);
             }
+        }
+
+        private function mailAccountActivationLink() {
+            $user = $this->userModel->findUserByEmail();
+            $link = URLROOT . '/users/confirm_account/' . $user->id;
+            $toEmail = $user->email;
+			$subject = "User Registration Activation Mail";
+			$content = "Click this link to activate your account:\r\n <a href='" . $link . "'>Activate</a>";
+            $mailHeaders = "From: Admin\r\n";
+			if(mail($toEmail, $subject, $content, $mailHeaders)) {
+				$message = "You have registered and the activation mail is sent to your email";	
+				echo '<h1>' . $message . '</h1>';
+		    } else {
+                $message = "Problem in registration. Try Again!";
+				echo '<h1>' . $message . '</h1>';
+		    }
         }
         
         /*
@@ -49,7 +66,7 @@
         **  describing the errors
         */
 
-        public function verifyUserCredentials() {
+        private function verifyUserCredentials() {
             if (filter_var($this->userModel->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
                 $this->data['email_error'] = 'invalid email';
             }
@@ -61,7 +78,7 @@
                 $this->data['confirm_password_error'] = 'Passwords do not match !';
         }
 
-        public function checkPasswordStrength() {
+        private function checkPasswordStrength() {
 
             if (strlen($this->userModel->getPassword()) < 8)
                 $this->data['password_error'] = 'Password too short';

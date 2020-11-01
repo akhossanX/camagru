@@ -63,7 +63,9 @@
 		private function getMethod(&$url) {
 			if (isset($url) && isset($url[0])) {
 				if (method_exists($this->currentController, $url[0])) {
-					$this->currentMethod = $url[0];
+					$reflection = new ReflectionMethod($this->currentController, $url[0]);
+					if ($reflection->isPublic())
+						$this->currentMethod = $url[0];
 				}
 				unset($url[0]);
 				$url = array_values($url);
