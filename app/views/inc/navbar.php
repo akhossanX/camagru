@@ -5,6 +5,9 @@
     <ul class="nav-links" id="nav-links">
         <li class="nav-link icon" onclick="dropDown()"><i>&#9776;</i></li>
         <li class="nav-link">
+            <a href="<?php echo URLROOT . '/home/gallery'; ?>">Gallery</a>
+        </li>
+        <li class="nav-link">
             <a href="<?php echo URLROOT . '/users/register'; ?>">Sign Up</a>
         </li>
         <li class="nav-link">

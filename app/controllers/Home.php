@@ -2,9 +2,11 @@
 
     class Home extends Controller 
     {
+        private $image;
+        private $data = Array();
+
         public function __construct()
         {
-            $this->model = $this->model('page');
         }
 
         public function index() {
@@ -14,15 +16,9 @@
             $this->view('home/index', $data);
         }
 
-        public function about() {
-            $data = [
-                'title' => 'About Us'
-            ];
-            $this->view('home/about', $data);
-        }
-
         public function gallery() {
-            $data = [];
-            $this->view('home/gallery', $data);
+            $this->image = $this->model('Image');
+            $this->data['images'] = $this->image->getGalleryImages();
+            $this->view('home/gallery', $this->data);
         }
     }

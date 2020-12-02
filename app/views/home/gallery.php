@@ -1,4 +1,8 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php require_once APPROOT . '/views/inc/navbar.php'; ?>
-<h1><?php echo 'Gallery'; ?></h1>
+    <h1>Gallery</h1>
+
+        <?php foreach ($data['images'] as $image): ?>
+           <img src="data:image/png;base64,<?=$image->data ?>" style="width: 200px; heigth:200px"/>
+        <?php endforeach;?>
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>

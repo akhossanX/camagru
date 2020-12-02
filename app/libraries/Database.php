@@ -35,6 +35,7 @@
                 );
             } catch (PDOException $e) {
                 $this->error = $e->getMessage();
+                echo "Connexion to Database failed:" . PHP_EOL;
                 die($this->error);
             }
         }

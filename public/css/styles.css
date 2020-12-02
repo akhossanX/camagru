@@ -1,7 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 body {
-    margin: 0;
-    font-family: 'Fira code';
+    margin: 0 5px;
+    font-family: 'Montserrat', sans-serif;
     background: white;
 }
 
@@ -99,3 +100,26 @@ span.form-error {
     text-align: center;
     display: block;
 }
+
+/*************************** Alerts ***************************/
+
+.alert {
+    padding: 20px;
+    background-color: #90ee90;
+    color: white;
+  }
+  
+  .closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .closebtn:hover {
+    color: black;
+  }

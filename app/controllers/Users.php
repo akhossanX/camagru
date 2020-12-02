@@ -1,12 +1,11 @@
 <?php
     class Users extends Controller
     {
-        private $userModel;
-        private $data = Array();
+        private $user;
 
         public function __construct()
         {
-            $this->userModel = $this->model('User');
+            $this->user = $this->model('User');
         }
 
         public function index() {
@@ -14,50 +13,86 @@
         }
 
         public function register() {
-            $this->data = [
-                'user' => $this->userModel,
+            $data = [
+                'user' => $this->user,
+                'username' => '',
+                'email' => '',
                 'username_error' => '',
                 'email_error' => '',
                 'password_error' => '',
-                'confirm_password_error' => ''
+                'confirm_password_error' => '',
             ];
             // Something has been submitted from the registration form
             if (isset($_POST['submit'])) {
                 if (empty($_POST['username']))
-                    $this->data['username_error'] = 'username can\'t be empty';
-                $this->userModel->setUserName($_POST['username']);
-                $this->userModel->setPassword($_POST['password']);
-                $this->userModel->setEmail($_POST['email']);
-                $this->data['user'] = $this->userModel;
-                $this->verifyUserCredentials();
-                if ($this->data['email_error'] || $this->data['password_error'] 
-                    || $this->data['confirm_password_error'] || $this->data['username_error']
-                    ){
-                    return $this->view('users/register', $this->data);
+                    $data['username_error'] = 'username can\'t be empty';
+                $this->user->setUserName($_POST['username']);
+                $this->user->setPassword($_POST['password']);
+                $this->user->setEmail($_POST['email']);
+                $data['user'] = $this->user;
+                // $this->verifyUserCredentials();
+                if ($data['email_error'] || $data['password_error'] 
+                    || $data['confirm_password_error'] || $data['username_error']
+                    ) {
+                    return $this->view('users/register', $data);
                 }
-                $this->userModel->save();
-                $this->mailAccountActivationLink();
-                // $this->view('users/confirm_account', $this->data);
+                $this->user->save();
+                if ($this->mailAccountActivationLink() == true)
+                    $this->view('users/login', $data);
             }
             else {
-                return $this->view('/users/register', $this->data);
+                $this->view('/users/register', $data);
             }
         }
 
+        public function login() {
+            $data = [
+                'username' => '',
+                'email' => '',
+                'username_error' => '',
+                'email_error' => '',
+                'password_error' => '',
+            ];
+            if (isset($_POST['submit'])) {
+                $data['username'] = $_POST['username'];
+                $data['email'] = $_POST['email'];
+                // check for user credentials conformity
+            } else {
+                $data['username'] = '';
+                $data['email'] = '';
+                $data['email_error'] = '';
+                $data['username_error'] = '';
+                $data['password_error'] = '';
+            }
+            $this->view('users/login', $data);
+        }
+
+        /*
+        **  Confirms the user's account once the activation link
+        **  is clicked
+        */
+        public function activate($userHashId = "") {
+            $user = $this->user->findUserByHash($userHashId);
+            $this->data['active'] = false;
+            if ($user != null && $user->active == false) {
+                $this->user->updateRecord($user->id, 'active', true);
+                $this->data['active'] = true;
+            }
+            $this->view('users/activate', $this->data);
+        }
+
         private function mailAccountActivationLink() {
-            $user = $this->userModel->findUserByEmail();
-            $link = URLROOT . '/users/confirm_account/' . $user->id;
+            $user = $this->user->findUserByEmail();
+            $link = URLROOT . '/users/activate/' . $user->hash;
             $toEmail = $user->email;
 			$subject = "User Registration Activation Mail";
-			$content = "Click this link to activate your account:\r\n <a href='" . $link . "'>Activate</a>";
+			$txt = "Click this link to activate your account:\n <a href='" . $link . "'>Activate</a>\n";
             $mailHeaders = "From: Admin\r\n";
-			if(mail($toEmail, $subject, $content, $mailHeaders)) {
-				$message = "You have registered and the activation mail is sent to your email";	
-				echo '<h1>' . $message . '</h1>';
-		    } else {
-                $message = "Problem in registration. Try Again!";
-				echo '<h1>' . $message . '</h1>';
-		    }
+			$mailHeaders .= "MIME-Version: 1.0" . "\r\n";
+			$mailHeaders .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+			if(mail($toEmail, $subject, $txt, $mailHeaders))
+                return true;
+            return false;
         }
         
         /*
@@ -67,28 +102,24 @@
         */
 
         private function verifyUserCredentials() {
-            if (filter_var($this->userModel->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
+            if (filter_var($this->user->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
                 $this->data['email_error'] = 'invalid email';
             }
-            if ($this->userModel->findUserByEmail()) {
+            if ($this->user->findUserByEmail()) {
                 $this->data['email_error'] = 'email already registred';
             }
             $this->checkPasswordStrength();
-            if ($this->userModel->getPassword() != $_POST['confirm_password'])
+            if ($this->user->getPassword() != $_POST['confirm_password'])
                 $this->data['confirm_password_error'] = 'Passwords do not match !';
         }
 
         private function checkPasswordStrength() {
 
-            if (strlen($this->userModel->getPassword()) < 8)
+            if (strlen($this->user->getPassword()) < 8)
                 $this->data['password_error'] = 'Password too short';
-            if (!preg_match("#[0-9]+#", $this->userModel->getPassword()))
+            if (!preg_match("#[0-9]+#", $this->user->getPassword()))
                 $this->data['password_error'] = 'Password must include at least one number !';
-            if (!preg_match("#[a-zA-Z]+#", $this->userModel->getPassword()))
+            if (!preg_match("#[a-zA-Z]+#", $this->user->getPassword()))
                 $this->data['passwor_error'] = 'Password must include at least one letter !';
-        }
-
-        public function login() {
-            $this->view('users/login');
         }
     }
