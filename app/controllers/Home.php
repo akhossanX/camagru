@@ -3,10 +3,10 @@
     class Home extends Controller 
     {
         private $image;
-        private $data = Array();
 
         public function __construct()
         {
+            $this->image = $this->model('Image');
         }
 
         public function index() {
@@ -17,8 +17,10 @@
         }
 
         public function gallery() {
-            $this->image = $this->model('Image');
-            $this->data['images'] = $this->image->getGalleryImages();
-            $this->view('home/gallery', $this->data);
+            $data = [];
+            $images = $this->image->getGalleryImages();
+            $data['images'] = $images;
+            // var_dump($images);die();
+            $this->view('home/gallery', $data);
         }
     }

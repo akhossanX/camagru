@@ -1,9 +1,8 @@
 <?php
+    require_once 'BaseModel.php';
 
+    class User extends BaseModel {
 
-    class User {
-
-        private $db;
         private $username;
         private $email;
         private $password;
@@ -12,30 +11,44 @@
 
 
         public function __construct () {
-            $this->db = new Database();
+            parent::__construct();
             $this->secretkey = random_bytes(10);
         }
 
         public function findUserByHash($hash) {
             $query = 'SELECT * from user WHERE hash like :hash';
-            $this->db->query($query);
-            $this->db->bind(':hash', $hash);
-            return $this->db->single();
+            $this->query($query);
+            $this->bind(':hash', $hash);
+            return $this->single();
         }
         
-        public function findUserByemail() {
+        public function findUserByemail($email) {
             $query = 'SELECT * FROM user WHERE email like :email';
-            $this->db->query($query);
-            $this->db->bind(':email', $this->email);
-            return $this->db->single();
+            $this->query($query);
+            $this->bind(':email', $email);
+            return $this->single();
+        }
+
+        public function findUserByName($name) {
+            $query = 'SELECT * FROM user WHERE username like :name';
+            $this->query($query);
+            $this->bind(':name', $name);
+            return $this->single();
+        }
+
+        public function findUserById($userid) {
+            $query = 'SELECT * FROM user WHERE id like :userid';
+            $this->query($query);
+            $this->bind(':userid', $userid);
+            return $this->single();
         }
 
         public function updateRecord($targetId, $column, $value) {
             $query = 'UPDATE user SET ' . $column . '=:value WHERE id like :id';
-            $this->db->query($query);
-            $this->db->bind(':value', $value);
-            $this->db->bind(':id', $targetId);
-            $this->db->execute();
+            $this->query($query);
+            $this->bind(':value', $value);
+            $this->bind(':id', $targetId);
+            $this->execute();
         }
 
         /*
@@ -52,12 +65,12 @@
                     ) VALUES (
                         :username, :email, :password, :hash
                     )';
-            $this->db->query($query);
-            $this->db->bind(':username', $this->username, null);
-            $this->db->bind(':email', $this->email, null);
-            $this->db->bind(':password', hash('whirlpool', $this->password), null);
-            $this->db->bind(':hash', hash('whirlpool', $this->username . $this->secretkey), null);
-            $this->db->execute();
+            $this->query($query);
+            $this->bind(':username', $this->username, null);
+            $this->bind(':email', $this->email, null);
+            $this->bind(':password', hash('whirlpool', $this->password), null);
+            $this->bind(':hash', hash('whirlpool', $this->username . $this->secretkey), null);
+            $this->execute();
         }
 
         /*

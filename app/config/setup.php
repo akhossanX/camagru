@@ -4,8 +4,8 @@
     require_once 'app/config/config.php';
     define('DB_INIT', 0);
 
-    $db = new Database(DB_INIT);
-    $db->query(
+    $db = Database::connect(DB_INIT);
+    $query =
         "
         DROP DATABASE IF EXISTS camagru;
         CREATE DATABASE camagru;
@@ -17,7 +17,8 @@
             password VARCHAR(255) NOT NULL,
             hash VARCHAR(255) NOT NULL,
             active BOOLEAN NOT NULL DEFAULT FALSE,
-            CONSTRAINT userconst UNIQUE(email)
+            CONSTRAINT emailconst UNIQUE(email),
+            CONSTRAINT nameconst UNIQUE(username)
         );
         CREATE INDEX userindex ON user (id, email);
         CREATE TABLE image (
@@ -27,9 +28,8 @@
             user_id INT NOT NULL,
             FOREIGN KEY (user_id) REFERENCES user(id)
         );
-        "
-    );
-    if ($db->execute())
-         echo 'Database Scheme is successfully created !!';
+        ";
+    if ($db->prepare($query)->execute())
+         echo 'Database Scheme has been successfully created !!';
     unset($db); // close PDO connection
 ?>
