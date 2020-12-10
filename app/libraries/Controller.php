@@ -15,17 +15,31 @@
 			return new $model();
 		}
 		// Load view
-		public function	view($view, $data = []) {
+		public function	view($view) {
 			// Check for the view file
 			if (file_exists('app/views/' . $view . '.php')) {
-				require_once('app/views/' . $view . '.php');
+				require_once ('app/views/' . $view . '.php');
 			}
 			else {
-				$this->error_404();
+				return header("Location: " . URLROOT . '/users/error_404');
+			}
+		}
+
+		public static function	redirect($view) {
+			// Check for the view file
+			if (file_exists('app/views/' . $view . '.php')) {
+				return header("Location: " . URLROOT . '/' . $view);
+			}
+			else {
+				return header("Location: " . URLROOT . '/users/error_404');
 			}
 		}
 
 		public function error_404() {
 			die('<h2>Error 404: Page not found.</h2>');
+		}
+
+		public static function session_init() {
+			session_start();
 		}
 	}

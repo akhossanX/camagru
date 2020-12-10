@@ -9,44 +9,51 @@
         }
 
         public function index() {
-            $data = [];
-            $this->view('home/index', $data);
+            // $this->view('home/index', $data);
+            // session_init();
+            // $_SESSION[] = $data;
+            Controller::session_init();
+            if (isset($_SESSION['username']))
+                $this->view('users/index');
+            else
+                $this->view('home/index');
         }
         
         public function login() {
-            $data = [];
+            Controller::session_init();
             if (isset($_POST['submit'])) {
-                $data['username'] = $_POST['username'];
-                $data['password'] = $_POST['password'];
-                $data['username_error'] = '';
-                $data['password_error'] = '';
+                $_SESSION['username_error'] = '';
+                $_SESSION['password_error'] = '';
+                $_SESSION['username'] = $_POST['username'];
+            } else {
+                $_SESSION = ['username' => '', 'username_error' => '', 'password_error' => ''];
+            }
+            if (isset($_POST['submit'])) {
                 $this->user->setUserName($_POST['username']);
                 // check for user credentials conformity
-                $user = $this->user->findUserByName($data['username']);
+                $user = $this->user->findUserByName($_POST['username']);
                 if ($user) {
-                    $this->verifyPassword($user, $data);
+                    $this->verifyPassword($user, $_SESSION);
                 } else {
                     if (empty($_POST['username']))
-                        $data['username_error'] = 'Empty username';
+                        $_SESSION['username_error'] = 'Empty username';
                     else
-                        $data['username_error'] = 'No such user';
+                        $_SESSION['username_error'] = 'No such user';
                 }
-                if (empty($data['username_error']) && empty($data['password_error'])) {
-                    $this->view('users/index', $data);
-                    return true;
+                if (empty($_SESSION['username_error']) && empty($_SESSION['password_error'])) {
+                    if ($user->active == true) {
+                        $_SESSION['logged-in-user'] = $_POST['username'];
+                        return $this->redirect('users/index');
+                    }
+                    else
+                        $_SESSION['username_error'] = 'Please Activate your account before logging in.';
                 }
-            } else {
-                $data['username'] = '';
-                $data['email'] = '';
-                $data['email_error'] = '';
-                $data['username_error'] = '';
-                $data['password_error'] = '';
             }
-            $this->view('users/login', $data);
+            $this->view('users/login');
         }
         
         public function verifyPassword($user, &$data) {
-            if (hash('whirlpool', $data['password']) === $user->password) {
+            if (hash('whirlpool', $_POST['password']) === $user->password) {
                 $data['password_error'] = '';
                 return true;
             }
@@ -55,41 +62,87 @@
         }
 
         public function register() {
-            $data = [
-                'user' => $this->user,
-                'username' => '',
-                'email' => '',
-                'username_error' => '',
-                'email_error' => '',
-                'password_error' => '',
-                'confirm_password_error' => '',
-            ];
+            Controller::session_init();
+            if (isset($_POST['submit'])) {
+                $_SESSION['username'] = $_POST['username'];
+                $_SESSION['email'] = $_POST['email'];
+                $_SESSION['username_error'] = '';
+                $_SESSION['email_error'] = '';
+                $_SESSION['password_error'] = '';
+                $_SESSION['confirm_password_error'] = '';
+            }
             // Something has been submitted from the registration form
             if (isset($_POST['submit'])) {
                 if (empty($_POST['username']))
-                    $data['username_error'] = 'username can\'t be empty';
+                    $_SESSION['username_error'] = 'username can\'t be empty';
                 $this->user->setUserName($_POST['username']);
                 $this->user->setPassword($_POST['password']);
                 $this->user->setEmail($_POST['email']);
-                $this->verifyUserCredentials($data);
-                if ($data['email_error'] || $data['password_error'] 
-                    || $data['confirm_password_error'] || $data['username_error']
-                    ) {
-                    return $this->view('users/register', $data);
+                $this->verifyUserCredentials($_SESSION);
+                if (!empty($_SESSION['email_error']) || !empty($_SESSION['password_error']) || 
+                !empty($_SESSION['confirm_password_error']) || !empty($_SESSION['username_error'])
+                ) {
+                    return $this->view('users/register');
                 }
                 $this->user->save();
-                if ($this->mailAccountActivationLink() == true)
-                    $this->view('users/login', $data);
+                if ($this->mailAccountActivationLink() === true)
+                    return Controller::redirect('users/login');
             }
             else {
-                $this->view('/users/register', $data);
+                // var_dump($_SESSION);//
+                $this->view('users/register');
             }
+        }
+        /*
+        **  Verifies Whether the user account is already taken or not
+        **  in success it returns null, otherwise it return a data array
+        **  describing the errors
+        */
+        private function verifyUserCredentials(&$data) {
+            if (filter_var($this->user->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
+                $data['email_error'] = 'invalid email';
+            }
+            $user = false;
+            if (!empty($data['email']))
+            {
+                $user = $this->user->findUserByEmail($this->user->getEmail());
+            }
+            if (!empty($data['username']) && $user === false)
+            {
+                $user = $this->user->findUserByName($this->user->getUserName());
+                // var_dump($user);
+            }
+            empty($data['username']) ? $data['username_error'] = 'Empty username' : 0;
+            if ($user) {
+                if ($user->email === $data['email'])
+                    $data['email_error'] = 'email already registred';
+                if ($user->username === $data['username'])
+                    $data['username_error'] = 'username is already taken, please choose another one!';
+            }
+            if (preg_match('/^[a-zA-Z0-9]{8,20}$/', $this->user->getUserName()) == 0) {
+                $data['username_error'] = 'username must contain alphabets and numbers and must be 8 up to 20 characters.';
+            }
+            $this->checkPasswordStrength($data);
+            if ($this->user->getPassword() != $_POST['confirm_password'])
+                $data['confirm_password_error'] = 'Passwords do not match !';
+            // var_dump($data);die();
+        }
+
+        public function logout()
+        {
+            Controller::session_init();
+            if (isset($_SESSION['logged-in-user'])) {
+                unset($_SESSION['logged-in-user']);
+                unset($_SESSION);
+            }
+            $this->redirect('home/index');
         }
 
         /*
         **  Confirms the user's account once the activation link
         **  is clicked
         */
+
         public function activate($userHashId = "") {
             $user = $this->user->findUserByHash($userHashId);
             $this->data['active'] = false;
@@ -101,7 +154,7 @@
         }
 
         private function mailAccountActivationLink() {
-            $user = $this->user->findUserByEmail($this->user->getEmail());
+            $user = $this->user->findUserByEmail($_SESSION['email']);
             $link = URLROOT . '/users/activate/' . $user->hash;
             $toEmail = $user->email;
 			$subject = "User Registration Activation Mail";
@@ -114,26 +167,6 @@
             return false;
         }
         
-        /*
-        **  Verifies Whether the user account is already taken or not
-        **  in success it returns null, otherwise it return a data array
-        **  describing the errors
-        */
-
-        private function verifyUserCredentials(&$data) {
-            if (filter_var($this->user->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
-                $data['email_error'] = 'invalid email';
-            }
-            if ($this->user->findUserByEmail($this->user->getEmail())) {
-                $data['email_error'] = 'email already registred';
-            }
-            if (preg_match('/^[a-zA-Z0-9]{8,20}$/', $this->user->getUserName()) == 0) {
-                $data['username_error'] = 'username must contain alphabets and numbers and must be 8 up to 20 characters.';
-            }
-            $this->checkPasswordStrength($data);
-            if ($this->user->getPassword() != $_POST['confirm_password'])
-                $data['confirm_password_error'] = 'Passwords do not match !';
-        }
 
         private function checkPasswordStrength(&$data) {
 
@@ -142,6 +175,6 @@
             if (!preg_match("#[0-9]+#", $this->user->getPassword()))
                 $data['password_error'] = 'Password must include at least one number !';
             if (!preg_match("#[a-zA-Z]+#", $this->user->getPassword()))
-                $data['passwor_error'] = 'Password must include at least one letter !';
+                $data['password_error'] = 'Password must include at least one letter !';
         }
     }

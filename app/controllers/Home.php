@@ -10,17 +10,14 @@
         }
 
         public function index() {
-            $data = [
-                'title' => 'Welcome to Camagru',
-            ];
-            $this->view('home/index', $data);
+            Controller::session_init();
+            $this->view('home/index');
         }
 
         public function gallery() {
-            $data = [];
+            Controller::session_init();
             $images = $this->image->getGalleryImages();
-            $data['images'] = $images;
-            // var_dump($images);die();
-            $this->view('home/gallery', $data);
+            $_SESSION['images'] = $images;
+            $this->view('home/gallery');
         }
     }

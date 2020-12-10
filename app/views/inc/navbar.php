@@ -1,6 +1,7 @@
 <?php
-    if (isset($_SESSION['username'])) {
-        $userOrSignIn = $_SESSION['username'];
+    if (isset($_SESSION['logged-in-user']) && !empty($_SESSION['logged-in-user'])) {
+        // print_r($_SESSION);
+        $userOrSignIn = $_SESSION['logged-in-user'];
         $logOutOrSingUp = 'Logout';
         $url1 = '';
         $url2 = URLROOT . '/users/logout';
@@ -11,6 +12,7 @@
         $url1 = URLROOT . '/users/login';
         $url2 = URLROOT . '/users/register';
     }
+    // print_r(['userOrsignin' => $userOrSignIn, 'logoutorsignup' => $logOutOrSingUp, 'urlsignin' => $url1, 'url2signup' => $url2]);
 ?>
 
 <nav class="navbar">
