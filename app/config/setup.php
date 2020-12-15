@@ -4,7 +4,7 @@
     require_once 'app/config/config.php';
     define('DB_INIT', 0);
 
-    $db = Database::connect(DB_INIT);
+    $db = Database::connect(DB_INIT);/*
     $query =
         "
         DROP DATABASE IF EXISTS camagru;
@@ -29,7 +29,22 @@
             FOREIGN KEY (user_id) REFERENCES user(id)
         );
         ";
-    if ($db->prepare($query)->execute())
-         echo 'Database Scheme has been successfully created !!';
+*/
+    // $query = 'CREATE VIEW public_gallery_images AS SELECT u.username,i.data FROM image as i, user as u WHERE i.user_id=u.id';
+    // if ($db->prepare($query)->execute())
+    //      echo 'Database Scheme has been successfully created !!';
+
+    $str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ0123456789_";
+    if (isset($argv[1]) && $argv[1] == '-p') {
+        for ($i = 1; $i <= 100; $i++) {
+            $rand = base64_encode(random_bytes(512));
+            $query = 'insert into image (name, data, user_id) values (\'';
+            $query .= $str[rand(0, strlen($str) - 1)] . '\', \'';
+            $query .= $rand . '\', ';
+            $query .= $i . ');';
+            var_dump($query);;
+            $db->prepare($query)->execute();
+        }
+    }
     unset($db); // close PDO connection
 ?>

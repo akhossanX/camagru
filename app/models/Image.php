@@ -28,8 +28,7 @@ class Image extends BaseModel {
     }
 
     public function getGalleryImages() {
-        $query = 'CREATE VIEW image_view AS SELECT u.username,i.data FROM image as i, user as u WHERE i.user_id=u.id';
-        $this->query('SELECT * from image_view');
+        $this->query('SELECT * from public_gallery_images');
         return $this->resultset();
     }
 

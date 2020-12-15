@@ -9,7 +9,7 @@
     {
 
         static $pdo = null;
-        private $error;
+        static $error;
 
         public static function connect($flag = 1) {
             $flag === 0 ? $dbname = '' : $dbname = ';dbname=' . DB_NAME;
