@@ -3,16 +3,12 @@
     {
         private $user;
 
-        public function __construct()
-        {
+        public function __construct() {
             $this->user = $this->model('User');
+            Controller::session_init();
         }
 
         public function index() {
-            // $this->view('home/index', $data);
-            // session_init();
-            // $_SESSION[] = $data;
-            Controller::session_init();
             if (isset($_SESSION['username']))
                 $this->view('users/index');
             else
@@ -20,7 +16,6 @@
         }
         
         public function login() {
-            Controller::session_init();
             if (isset($_POST['submit'])) {
                 $_SESSION['username_error'] = '';
                 $_SESSION['password_error'] = '';
@@ -62,7 +57,6 @@
         }
 
         public function register() {
-            Controller::session_init();
             if (isset($_POST['submit'])) {
                 $_SESSION['username'] = $_POST['username'];
                 $_SESSION['email'] = $_POST['email'];
@@ -110,7 +104,6 @@
             if (!empty($data['username']) && $user === false)
             {
                 $user = $this->user->findUserByName($this->user->getUserName());
-                // var_dump($user);
             }
             empty($data['username']) ? $data['username_error'] = 'Empty username' : 0;
             if ($user) {
@@ -119,7 +112,7 @@
                 if ($user->username === $data['username'])
                     $data['username_error'] = 'username is already taken, please choose another one!';
             }
-            if (preg_match('/^[a-zA-Z0-9]{8,20}$/', $this->user->getUserName()) == 0) {
+            if (preg_match('/^[a-zA-Z0-9_]{8,20}$/', $this->user->getUserName()) == 0) {
                 $data['username_error'] = 'username must contain alphabets and numbers and must be 8 up to 20 characters.';
             }
             $this->checkPasswordStrength($data);
@@ -128,14 +121,24 @@
             // var_dump($data);die();
         }
 
-        public function logout()
-        {
-            Controller::session_init();
+        public function logout() {
             if (isset($_SESSION['logged-in-user'])) {
                 unset($_SESSION['logged-in-user']);
                 unset($_SESSION);
             }
             $this->redirect('home/index');
+        }
+
+        /*
+        **  Manage user profile editing
+        */
+
+        public function profile() {
+            require_once(APPROOT . '/helpers/isAuthentified.php');
+            if (isAuthentified())
+                $this->view('users/profile');
+            else
+                $this->redirect('home/index');
         }
 
         /*
@@ -145,12 +148,17 @@
 
         public function activate($userHashId = "") {
             $user = $this->user->findUserByHash($userHashId);
-            $this->data['active'] = false;
-            if ($user != null && $user->active == false) {
-                $this->user->updateRecord($user->id, 'active', true);
-                $this->data['active'] = true;
+            $_SESSION['active'] = false;
+            if ($user) {
+                if ($user->active == false) {
+                    $this->user->updateRecord($user->id, 'active', true);
+                    $_SESSION['active'] = true;
+                }
             }
-            $this->view('users/activate', $this->data);
+            else {
+                $_SESSION['active'] = 'Invalid activation token';
+            }
+            $this->view('users/activate');
         }
 
         private function mailAccountActivationLink() {
@@ -167,14 +175,16 @@
             return false;
         }
         
-
         private function checkPasswordStrength(&$data) {
-
             if (strlen($this->user->getPassword()) < 8)
                 $data['password_error'] = 'Password too short';
             if (!preg_match("#[0-9]+#", $this->user->getPassword()))
                 $data['password_error'] = 'Password must include at least one number !';
             if (!preg_match("#[a-zA-Z]+#", $this->user->getPassword()))
                 $data['password_error'] = 'Password must include at least one letter !';
+        }
+
+        private function isAuthentified() {
+            return isset($_SESSION['logged-in-user']) && !empty($_SESSION['logged-in-user']);
         }
     }
