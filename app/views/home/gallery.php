@@ -3,7 +3,9 @@
     <h1>Gallery</h1>
 
         <?php foreach ($_SESSION['images'] as $image): ?>
-           <img src="data:image/png;base64,<?=$image->data ?>" style="width: 200px; heigth:200px"/>
-           <span><?=$image->username;?></span>
+            <div style="display:inline-block;">
+                <img src="data:image/png;base64,<?=$image->data ?>" style="width: 200px; heigth:300px;"/>
+                <!-- <span><?=$image->username;?></span> -->
+            </div>
         <?php endforeach;?>
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>

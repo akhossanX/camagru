@@ -43,11 +43,24 @@
             return $this->single();
         }
 
-        public function updateRecord($targetId, $column, $value) {
+        public function updateColumn($targetId, $column, $value) {
             $query = 'UPDATE user SET ' . $column . '=:value WHERE id like :id';
             $this->query($query);
             $this->bind(':value', $value);
             $this->bind(':id', $targetId);
+            $this->execute();
+        }
+        /*
+        **  Update an entire row identified by its id
+        */
+        public function updateRow($id) {
+            $pwd = hash('whirlpool', $this->password);
+            $query = 'UPDATE user SET username=:username, email=:email, password=:password where id like :id;';
+            $this->query($query);
+            $this->bind(':username', $this->username);
+            $this->bind(':email', $this->email);
+            $this->bind(':password', $pwd);
+            $this->bind(':id', $id);
             $this->execute();
         }
 

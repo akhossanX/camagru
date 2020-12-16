@@ -90,14 +90,15 @@ input {
     display: block;
     width: 50%;
     height: 30px;
-    margin: 10px auto;
+    /* margin: 10px auto; */
 }
+
 
 span.form-error {
     font-weight: lighter;
     font-size: 14px;
     color: red;
-    text-align: center;
+    /* text-align: center; */
     display: block;
 }
 

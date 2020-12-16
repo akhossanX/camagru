@@ -1,6 +1,6 @@
 <?php
-    if (isset($_SESSION['logged-in-user']) && !empty($_SESSION['logged-in-user'])) {
-        $userOrSignIn = $_SESSION['logged-in-user'];
+    if (isset($_SESSION['logged-in-user'])) {
+        $userOrSignIn = $_SESSION['logged-in-user']->username;
         $logOutOrSingUp = 'Logout';
         $url1 = URLROOT . '/users/profile';
         $url2 = URLROOT . '/users/logout';

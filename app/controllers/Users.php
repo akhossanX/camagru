@@ -9,7 +9,7 @@
         }
 
         public function index() {
-            if (isset($_SESSION['username']))
+            if (isset($_SESSION['logged-in-user']))
                 $this->view('users/index');
             else
                 $this->view('home/index');
@@ -24,7 +24,6 @@
                 $_SESSION = ['username' => '', 'username_error' => '', 'password_error' => ''];
             }
             if (isset($_POST['submit'])) {
-                $this->user->setUserName($_POST['username']);
                 // check for user credentials conformity
                 $user = $this->user->findUserByName($_POST['username']);
                 if ($user) {
@@ -37,7 +36,7 @@
                 }
                 if (empty($_SESSION['username_error']) && empty($_SESSION['password_error'])) {
                     if ($user->active == true) {
-                        $_SESSION['logged-in-user'] = $_POST['username'];
+                        $_SESSION['logged-in-user'] = $user;
                         return $this->redirect('users/index');
                     }
                     else
@@ -83,7 +82,6 @@
                     return Controller::redirect('users/login');
             }
             else {
-                // var_dump($_SESSION);//
                 $this->view('users/register');
             }
         }
@@ -108,7 +106,7 @@
             empty($data['username']) ? $data['username_error'] = 'Empty username' : 0;
             if ($user) {
                 if ($user->email === $data['email'])
-                    $data['email_error'] = 'email already registred';
+                    $data['email_error'] = 'email already registered';
                 if ($user->username === $data['username'])
                     $data['username_error'] = 'username is already taken, please choose another one!';
             }
@@ -118,7 +116,6 @@
             $this->checkPasswordStrength($data);
             if ($this->user->getPassword() != $_POST['confirm_password'])
                 $data['confirm_password_error'] = 'Passwords do not match !';
-            // var_dump($data);die();
         }
 
         public function logout() {
@@ -135,8 +132,38 @@
 
         public function profile() {
             require_once(APPROOT . '/helpers/isAuthentified.php');
-            if (isAuthentified())
-                $this->view('users/profile');
+            $_SESSION['username_error'] = '';
+            $_SESSION['email_error'] = '';
+            $_SESSION['password_error'] = '';
+            $_SESSION['confirm_password_error'] = '';
+            if (isAuthentified()) {
+                if (isset($_POST['save'])) {
+                    $_SESSION['username'] = $_POST['username'];
+                    $_SESSION['email'] = $_POST['email'];
+                    if (empty($_POST['username']))
+                        $_SESSION['username_error'] = 'username can\'t be empty';
+                    $this->user->setUserName($_POST['username']);
+                    $this->user->setPassword($_POST['password']);
+                    $this->user->setEmail($_POST['email']);
+                    $this->verifyUserCredentials($_SESSION);
+                    if ($_SESSION['email_error'] == 'email already registered')
+                        $_SESSION['email_error'] = '';
+                    if (!empty($_SESSION['email_error']) || !empty($_SESSION['password_error']) || 
+                    !empty($_SESSION['confirm_password_error']) || !empty($_SESSION['username_error'])
+                    ) {
+                        return $this->view('users/profile');
+                    }
+                    $this->user->updateRow($_SESSION['logged-in-user']->id);
+                    $_SESSION['logged-in-user']->username = $this->user->getUserName();
+                    $_SESSION['logged-in-user']->email = $this->user->getEmail();
+                    return $this->redirect('users/index');
+                }
+                else if (isset($_POST['cancel'])) {
+                    $this->redirect('users/index');
+                }
+                else 
+                    $this->view('users/profile');
+            }
             else
                 $this->redirect('home/index');
         }
@@ -182,9 +209,5 @@
                 $data['password_error'] = 'Password must include at least one number !';
             if (!preg_match("#[a-zA-Z]+#", $this->user->getPassword()))
                 $data['password_error'] = 'Password must include at least one letter !';
-        }
-
-        private function isAuthentified() {
-            return isset($_SESSION['logged-in-user']) && !empty($_SESSION['logged-in-user']);
         }
     }

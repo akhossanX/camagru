@@ -17,7 +17,6 @@
         public function gallery() {
             Controller::session_init();
             $images = $this->image->getGalleryImages();
-            // var_dump($images);die();
             $_SESSION['images'] = $images;
             $this->view('home/gallery');
         }
