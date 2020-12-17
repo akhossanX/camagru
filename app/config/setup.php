@@ -48,11 +48,11 @@
         }
 
         for ($i = 1; $i <= 100; $i++) {
-            $url = 'https://picsum.photos/id/' . rand(1, 100) . '/200/200';
-            $data = base64_encode(file_get_contents($url));
+            $url = 'https://picsum.photos/id/' . rand(1, 100) . '/200/300';
+            $rand = base64_encode(file_get_contents($url));
             $query = 'insert into image (name, data, user_id) values (\'';
             $query .= substr($str, rand(0, strlen($str) - 1), rand(2, 8)) . '\', \'';
-            $query .= $data . '\', ';
+            $query .= $rand . '\', ';
             $query .= $i . ');';
             var_dump($query);
             $db->prepare($query)->execute();

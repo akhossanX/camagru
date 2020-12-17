@@ -1,5 +1,7 @@
 <?php
 
+	require_once(APPROOT . '/helpers/isAuthentified.php');
+
 	/*
 	 *	App core Class
 	 *	Creates URL & Loads core controller

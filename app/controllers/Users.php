@@ -9,10 +9,11 @@
         }
 
         public function index() {
-            if (isset($_SESSION['logged-in-user']))
-                $this->view('users/index');
+            if (isset($_SESSION['logged-in-user'])) {
+                $this->redirect('users/camera');
+            }
             else
-                $this->view('home/index');
+                $this->redirect('home/index');
         }
         
         public function login() {
@@ -120,8 +121,7 @@
 
         public function logout() {
             if (isset($_SESSION['logged-in-user'])) {
-                unset($_SESSION['logged-in-user']);
-                unset($_SESSION);
+                session_destroy();
             }
             $this->redirect('home/index');
         }
@@ -131,7 +131,6 @@
         */
 
         public function profile() {
-            require_once(APPROOT . '/helpers/isAuthentified.php');
             $_SESSION['username_error'] = '';
             $_SESSION['email_error'] = '';
             $_SESSION['password_error'] = '';
@@ -164,6 +163,13 @@
                 else 
                     $this->view('users/profile');
             }
+            else
+                $this->redirect('home/index');
+        }
+
+        public function camera() {
+            if (isAuthentified())
+                $this->view('users/camera');
             else
                 $this->redirect('home/index');
         }

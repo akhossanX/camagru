@@ -11,6 +11,10 @@
 
         public function index() {
             Controller::session_init();
+            require_once(APPROOT . '/helpers/isAuthentified.php');
+            if (isAuthentified()) {
+                return $this->redirect('users/camera');
+            }
             $this->view('home/index');
         }
 
