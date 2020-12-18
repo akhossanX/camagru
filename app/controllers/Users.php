@@ -184,7 +184,7 @@
             $_SESSION['active'] = false;
             if ($user) {
                 if ($user->active == false) {
-                    $this->user->updateRecord($user->id, 'active', true);
+                    $this->user->updateColumn($user->id, 'active', true);
                     $_SESSION['active'] = true;
                 }
             }

@@ -7,8 +7,12 @@
     define ('PORT', '8080');
     define ('ADDRESS', 'http://localhost');
 
+    // Entire project root folder
+    define('ROOT', dirname(dirname(dirname(__FILE__))));
+
 	// App Root
     define('APPROOT', dirname(dirname(__FILE__)));
+
     // URL Root
     define('URLROOT', ADDRESS . ':' . PORT);
     // Site name

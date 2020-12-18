@@ -2,4 +2,15 @@ div.video-container {
     width: 40%;
     height: 500px;
     border: 2px solid gray;
+    position: relative;
+}
+
+.stickers .form-check.form-check-inline .form-check-label img {
+    width: 50%;
+    height: 100px;
+}
+
+.stickers .form-check.form-check-inline .form-check-label img {
+    width : 30%;
+    height: 100px;
 }
