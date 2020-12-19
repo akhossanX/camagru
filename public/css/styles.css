@@ -20,6 +20,7 @@ nav {
     font-size: 1.4rem;
     cursor: pointer;
     height: 5rem;
+    position: fixed;
 }
 
 nav.navbar a {

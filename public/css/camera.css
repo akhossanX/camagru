@@ -1,16 +1,19 @@
 div.video-container {
     width: 40%;
     height: 500px;
-    border: 2px solid gray;
+    border: 4px solid gray;
+    border-radius: 4px;
     position: relative;
 }
 
-.stickers .form-check.form-check-inline .form-check-label img {
-    width: 50%;
+.stickers img {
+    width : 100px;
     height: 100px;
+    display: inline;
 }
 
-.stickers .form-check.form-check-inline .form-check-label img {
-    width : 30%;
-    height: 100px;
+.jumbotron {
+    font-weight: bolder;
+    font-size: 3rem;
+    text-align: center;
 }
