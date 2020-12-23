@@ -16,4 +16,5 @@ div.video-container {
     font-weight: bolder;
     font-size: 3rem;
     text-align: center;
+    background: rgb(250, 128, 128);
 }
