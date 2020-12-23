@@ -49,22 +49,25 @@ function onStickerDragOver(event) {
 }
 
 function onStickerDrop(event) {
-    console.log('Drop Event: ' + event.type)
+    console.log('Drop Event: ')
     var liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'))
     console.log('video position: (' + videoPosition.left + ', ' + videoPosition.top + ')')
     console.log('mouse absolute position: (' + event.clientX + ', ' + event.clientY + ')')
-    var translationVector = {
+    var mouseRelativePosition = {
         x: event.clientX - videoPosition.left,
         y: event.clientY - videoPosition.top
     }
-    console.log(translationVector)
-    console.log('mouse relatvie position: ' + parseInt(event.clientX + translationVector.x) + ', '
-        + parseInt(event.clientY + translationVector.y))
-    console.log('element new position: ' + 
-                liveSticker.style.left + translationVector.x + ', ' + 
-                liveSticker.style.top + translationVector.y)
+    console.log(mouseRelativePosition)
+
+    var translationVector = {
+        x: mouseRelativePosition.x - parseInt(liveSticker.style.left),
+        y: mouseRelativePosition.y - parseInt(liveSticker.style.top)
+    }
+
+    console.log('elements old position: ' + liveSticker.style.left + ', ' + liveSticker.style.top)
     liveSticker.style.left = parseInt(liveSticker.style.left) +  translationVector.x + 'px'
     liveSticker.style.top = parseInt(liveSticker.style.top) + translationVector.y + 'px'
+    console.log('elements new position: ' + liveSticker.style.left + ', ' + liveSticker.style.top)
 }
 
 var video = $('#video-id'),
