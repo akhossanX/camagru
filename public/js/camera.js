@@ -18,7 +18,7 @@ function stream_init() {
     }
 }
 
-function onStickerClick() {
+function onStickerClickChooser() {
     var img = document.createElement('img')
     img.style.position = 'absolute';
     img.style.left = leftCorner + 'px'
@@ -30,6 +30,9 @@ function onStickerClick() {
     img.draggable = true
     img.id = '_' + Math.random().toString(36)
     img.ondragstart = onStickerDragStart
+    img.ondragover = onStickerDragOver
+    img.ondrop = onStickerDrop
+    img.style.zIndex = zIndex++
     video.insertAdjacentElement('afterEnd', img)
 }
 
@@ -39,7 +42,6 @@ function OnStickerDoubleClick() {
 
 function onStickerDragStart(event) {
     console.log('Drag Start: ' + event.type)
-    console.log(this.id)
     event.dataTransfer.setData('text/plain', this.id)
 } 
 
@@ -49,59 +51,83 @@ function onStickerDragOver(event) {
 }
 
 function onStickerDrop(event) {
+
+    event.preventDefault()
     console.log('Drop Event: ')
     var liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'))
-    console.log('video position: (' + videoPosition.left + ', ' + videoPosition.top + ')')
-    console.log('mouse absolute position: (' + event.clientX + ', ' + event.clientY + ')')
     var mouseRelativePosition = {
-        x: event.clientX - videoPosition.left,
-        y: event.clientY - videoPosition.top
+        x: event.clientX + document.documentElement.scrollLeft - videoPosition.left,
+        y: event.clientY + document.documentElement.scrollTop - videoPosition.top
     }
-    console.log(mouseRelativePosition)
-
     var translationVector = {
         x: mouseRelativePosition.x - parseInt(liveSticker.style.left),
         y: mouseRelativePosition.y - parseInt(liveSticker.style.top)
     }
+    var x = translationVector.x + parseInt(liveSticker.style.left) - 50,
+        y = translationVector.y + parseInt(liveSticker.style.top) - 50
 
-    console.log('elements old position: ' + liveSticker.style.left + ', ' + liveSticker.style.top)
-    liveSticker.style.left = parseInt(liveSticker.style.left) +  translationVector.x + 'px'
-    liveSticker.style.top = parseInt(liveSticker.style.top) + translationVector.y + 'px'
-    console.log('elements new position: ' + liveSticker.style.left + ', ' + liveSticker.style.top)
+    console.log(x + ', ' + y)
+    if (x > videoDimensions.x - 50) {
+        console.log('x >')
+        x = x - videoDimensions.x + 50
+    }
+    if (x < videoDimensions.x) {
+        console.log('x <')
+        x = videoDimensions.x - 50 - x
+    }
+    if (y > videoDimensions.y - 50) {
+        console.log('y >')
+        y = y - videoDimensions.y + 50
+    }
+    if (x < videoDimensions.y - 50) {
+        console.log('y <')
+        y = videoDimensions.y - 50 - x
+    }
+
+    liveSticker.style.left = x + 'px'
+    liveSticker.style.top = y + 'px'
 }
 
 var video = $('#video-id'),
-    videoContainer = document.getElementById('video-container-id')
+    videoContainer = document.getElementById('video-container-id'),
+    zIndex = 1,
+    styles = window.getComputedStyle(videoContainer, null),
+    width = parseInt(styles.getPropertyValue('width')),
+    height = parseInt(styles.getPropertyValue('height')),
 
-var styles = window.getComputedStyle(videoContainer, null)
-var width = parseInt(styles.getPropertyValue('width'))
-var height = parseInt(styles.getPropertyValue('height'))
-
-var constraints = {
-    video: {
-        width: width - 8,
-        height: height - 8
-    }
-}
+    // 8 is the double of the video element's border size
+    constraints = {
+        video: {
+            width: width - 8,
+            height: height - 8
+        }
+    },
+    stickers = document.querySelectorAll('#stickers img'),
+    topCorner = 100, 
+    leftCorner = 100
 
 stream_init()
 
-var stickers = document.querySelectorAll('#stickers img')
-
-var topCorner = 100, leftCorner = 100
-
-stickers.forEach(sticker => sticker.onclick = onStickerClick)
+stickers.forEach(sticker => sticker.onclick = onStickerClickChooser)
 
 video.ondrop = onStickerDrop
 video.ondragover = onStickerDragOver
 
-var videRect = video.getBoundingClientRect()
-var videoPosition = {
-    left: videRect.left + document.documentElement.scrollLeft,
-    top: videRect.top + document.documentElement.scrollTop
-}
+var videRect = video.getBoundingClientRect(),
+    videoPosition = {
+        left: videRect.left + document.documentElement.scrollLeft,
+        top: videRect.top + document.documentElement.scrollTop
+    },
 
-console.log('vide pos: ' + videoPosition.left + ', ', + videoPosition.top)
+    styles = window.getComputedStyle(video, null),
+
+    videoDimensions = {
+        width: parseInt(styles['width']),
+        height: parseInt(styles['height'])
+    }
+
+console.log(videoPosition)
+console.log(videoDimensions)
 
 
     
