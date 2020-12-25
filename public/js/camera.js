@@ -41,7 +41,6 @@ function OnStickerDoubleClick() {
 }
 
 function onStickerDragStart(event) {
-    console.log('Drag Start: ' + event.type)
     event.dataTransfer.setData('text/plain', this.id)
 } 
 
@@ -51,9 +50,7 @@ function onStickerDragOver(event) {
 }
 
 function onStickerDrop(event) {
-
     event.preventDefault()
-    console.log('Drop Event: ')
     var liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'))
     var mouseRelativePosition = {
         x: event.clientX + document.documentElement.scrollLeft - videoPosition.left,
@@ -65,25 +62,6 @@ function onStickerDrop(event) {
     }
     var x = translationVector.x + parseInt(liveSticker.style.left) - 50,
         y = translationVector.y + parseInt(liveSticker.style.top) - 50
-
-    console.log(x + ', ' + y)
-    if (x > videoDimensions.x - 50) {
-        console.log('x >')
-        x = x - videoDimensions.x + 50
-    }
-    if (x < videoDimensions.x) {
-        console.log('x <')
-        x = videoDimensions.x - 50 - x
-    }
-    if (y > videoDimensions.y - 50) {
-        console.log('y >')
-        y = y - videoDimensions.y + 50
-    }
-    if (x < videoDimensions.y - 50) {
-        console.log('y <')
-        y = videoDimensions.y - 50 - x
-    }
-
     liveSticker.style.left = x + 'px'
     liveSticker.style.top = y + 'px'
 }
@@ -126,8 +104,19 @@ var videRect = video.getBoundingClientRect(),
         height: parseInt(styles['height'])
     }
 
-console.log(videoPosition)
-console.log(videoDimensions)
+var captureBtn = $('#capture-id')
+
+captureBtn.addEventListener('click', function () {
+    console.log('shot event fired')
+    video.pause()
+    var canvas = $('canvas'),
+        context = canvas.getContext('2d')
+    canvas.style.width = videoDimensions.width + 'px'
+    canvas.style.height = videoDimensions.height + 'px'
+    console.log(videoDimensions)
+    console.log('canva: ' + canvas.style.width + ', ' + canvas.style.height)
+    context.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
+})
 
 
     

@@ -1,10 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
 @import "camera.css";
 
+* {
+    font-family: 'Dosis', sans-serif !important;
+    letter-spacing: 1px;
+}
 
 body {
     margin: 0 5px;
-    font-family: 'Montserrat', sans-serif;
+    /* font-family: 'Montserrat', sans-serif; */
     background: white;
 }
 
