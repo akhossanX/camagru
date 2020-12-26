@@ -21,10 +21,10 @@ function stream_init() {
 function onStickerClickChooser() {
     var img = document.createElement('img')
     img.style.position = 'absolute';
-    img.style.left = leftCorner + 'px'
-    img.style.top = topCorner + 'px'
-    img.style.width = '100px';
-    img.style.height = '100px';
+    img.style.left = '50px'
+    img.style.top = '50px'
+    img.style.width = '70px';
+    img.style.height = '80px';
     img.src = this.src
     img.ondblclick = OnStickerDoubleClick
     img.draggable = true
@@ -106,17 +106,33 @@ var videRect = video.getBoundingClientRect(),
 
 var captureBtn = $('#capture-id')
 
-captureBtn.addEventListener('click', function () {
-    console.log('shot event fired')
-    video.pause()
-    var canvas = $('canvas'),
-        context = canvas.getContext('2d')
+captureBtn.addEventListener('click', Capture)
+
+function Capture() {
+    var frames = 0
+    var canvas = $('canvas')
     canvas.style.width = videoDimensions.width + 'px'
     canvas.style.height = videoDimensions.height + 'px'
-    console.log(videoDimensions)
-    console.log('canva: ' + canvas.style.width + ', ' + canvas.style.height)
-    context.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
-})
+    canvas.width = videoDimensions.width
+    canvas.height = videoDimensions.height
+    var context = canvas.getContext('2d')
+    context.globalCompositionOperation = 'difference'
+    var id = setInterval(
+        function () {
+            context.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
+            frames +=1
+            if (frames >= 10) {
+                clearInterval(id)
+                var st = document.querySelectorAll('#video-container-id img')
+                for (var i = st.length - 1; i >= 0; i--) {
+                    context.drawImage(st[i], parseInt(st[i].style.left), parseInt(st[i].style.top),
+                    parseInt(st[i].style.width), parseInt(st[i].style.height))
+                }
+            }
+        },
+        5
+    )
+}
 
 
     

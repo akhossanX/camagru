@@ -5,7 +5,7 @@ div.video-container {
 
 video#video-id {
     width: 100%;
-    height: 100%;
+    height: auto;
 }
 
 .heading {
@@ -33,4 +33,9 @@ video#video-id {
     font-size: 3rem;
     text-align: center;
     background: rgb(250, 128, 128);
+}
+
+#canvas {
+    width: 100%;
+    height: 100%;
 }

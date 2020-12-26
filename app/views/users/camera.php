@@ -20,16 +20,16 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6">
-                <div class="video-container" id="video-container-id">
+            <div class="col-md-6 col-sm">
+                <div class="video-container col-12" id="video-container-id">
                     <video id="video-id" class="border border-danger rounded border-5"></video>
                 </div>
-                <div class="text-center">
+                <div class="text-center col-12">
                     <input id="capture-id" type="button" class="btn btn-danger shot-btn" value="Capture">
                 </div>
             </div>
             <div class="col-md-6">
-                <canvas id="canvas"></canvas>
+                <canvas id="canvas" class="border border-danger rounded border-5"></canvas>
             </div>
         </div>
     </div>
