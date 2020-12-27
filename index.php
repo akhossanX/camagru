@@ -5,10 +5,12 @@
 	ini_set('display_errors', 'On');
 	set_error_handler("var_dump");
 
+
 	if (preg_match('/\.(?:png|jpg|jpeg|gif|css|js)$/', $_SERVER["REQUEST_URI"]))
 		return false;
 	else
 		// Init Core library
 		$init = new Core();
+
 
 ?>

@@ -98,13 +98,31 @@ function savePicture() {
 
 function sendPictureDataToServer(data) {
     var xhr = new XMLHttpRequest(),
-        url = new URL('http://localhost:8080/users/save_picture')
-        xhr.onload = function() {
-            let responseObj = xhr.response
-            console.log(responseObj)
+        url = new URL('http://localhost:8080/users/camera'),
+        fd = new FormData()
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200 ) {
+                console.log(this.responseText)
+            }
         };
-        xhr.open('POST', url)
-        xhr.send(data)
+
+        xhr.upload.onprogress = function(event) {
+            console.log(`Uploaded ${event.loaded} of ${event.total} bytes`);
+        };
+        xhr.upload.onload = function() {
+            console.log(`Upload finished successfully.`);
+        };
+        
+        xhr.upload.onerror = function() {
+            console.log(`Error during the upload: ${request.status}`);
+        };
+
+        xhr.open('POST', url, true)
+        xhr.setRequestHeader("Content-type", 
+            "application/x-www-form-urlencoded");
+        fd.append('pic', data)
+        xhr.send(fd)
 }
 
 

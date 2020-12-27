@@ -168,6 +168,8 @@
         }
 
         public function camera() {
+            if (isset($_POST))
+                print_r($_POST);
             if (isAuthentified())
                 $this->view('users/camera');
             else
@@ -220,8 +222,11 @@
 
         private function save_picture() {
             // header("Content-Type: text/plain");
-            echo 'hello';
-            print_r($_POST);
+            if (isset($_POST)) {
+                echo $_POST['pic'];
+            } else {
+                echo 'No received data';
+            }
         }
 
     }
