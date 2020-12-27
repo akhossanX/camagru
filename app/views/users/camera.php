@@ -13,7 +13,7 @@
     <div class="stickers" id="stickers">
         <?php foreach ($stickers as $png): ?>
             <img src='<?=URLROOT . "/public/img/${png}"?>'>
-        <?endforeach;?>
+        <?php endforeach;?>
     </div>
 
     <br><br>
