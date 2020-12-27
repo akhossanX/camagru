@@ -66,6 +66,48 @@ function onStickerDrop(event) {
     liveSticker.style.top = y + 'px'
 }
 
+function Capture() {
+    var frames = 0  
+    canvas.style.width = videoDimensions.width + 'px'
+    canvas.style.height = videoDimensions.height + 'px'
+    canvas.width = videoDimensions.width
+    canvas.height = videoDimensions.height
+    var context = canvas.getContext('2d')
+    context.globalCompositionOperation = 'difference'
+    var id = setInterval(
+        function () {
+            context.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
+            frames +=1
+            if (frames >= 10) {
+                clearInterval(id)
+                var st = document.querySelectorAll('#video-container-id img')
+                for (var i = st.length - 1; i >= 0; i--) {
+                    context.drawImage(st[i], parseInt(st[i].style.left), parseInt(st[i].style.top),
+                    parseInt(st[i].style.width), parseInt(st[i].style.height))
+                }
+            }
+        },
+        5
+    )
+}
+
+function savePicture() {
+    var dataUrl = canvas.toDataURL('image/png')
+    sendPictureDataToServer(dataUrl)
+}
+
+function sendPictureDataToServer(data) {
+    var xhr = new XMLHttpRequest(),
+        url = new URL('http://localhost:8080/users/save_picture')
+        xhr.onload = function() {
+            let responseObj = xhr.response
+            console.log(responseObj)
+        };
+        xhr.open('POST', url)
+        xhr.send(data)
+}
+
+
 var video = $('#video-id'),
     videoContainer = document.getElementById('video-container-id'),
     zIndex = 1,
@@ -104,35 +146,13 @@ var videRect = video.getBoundingClientRect(),
         height: parseInt(styles['height'])
     }
 
-var captureBtn = $('#capture-id')
+var captureBtn = $('#capture-btn'),
+    saveBtn = $('#save-btn'),
+    canvas = $('#canvas')
 
 captureBtn.addEventListener('click', Capture)
+saveBtn.addEventListener('click', savePicture)
 
-function Capture() {
-    var frames = 0
-    var canvas = $('canvas')
-    canvas.style.width = videoDimensions.width + 'px'
-    canvas.style.height = videoDimensions.height + 'px'
-    canvas.width = videoDimensions.width
-    canvas.height = videoDimensions.height
-    var context = canvas.getContext('2d')
-    context.globalCompositionOperation = 'difference'
-    var id = setInterval(
-        function () {
-            context.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
-            frames +=1
-            if (frames >= 10) {
-                clearInterval(id)
-                var st = document.querySelectorAll('#video-container-id img')
-                for (var i = st.length - 1; i >= 0; i--) {
-                    context.drawImage(st[i], parseInt(st[i].style.left), parseInt(st[i].style.top),
-                    parseInt(st[i].style.width), parseInt(st[i].style.height))
-                }
-            }
-        },
-        5
-    )
-}
 
 
     

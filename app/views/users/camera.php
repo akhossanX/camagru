@@ -25,11 +25,16 @@
                     <video id="video-id" class="border border-danger rounded border-5"></video>
                 </div>
                 <div class="text-center col-12">
-                    <input id="capture-id" type="button" class="btn btn-danger shot-btn" value="Capture">
+                    <input id="capture-btn" type="button" class="btn btn-danger shot-btn" value="Capture">
                 </div>
             </div>
-            <div class="col-md-6">
-                <canvas id="canvas" class="border border-danger rounded border-5"></canvas>
+            <div class="col-md-6 col-sm">
+                <div class="col-12">
+                    <canvas id="canvas" class="border border-success rounded border-5"></canvas>
+                </div>
+                <div class="text-center col-12">
+                    <button id="save-btn" type="submit" class="btn btn-success shot-btn">Save</button>
+                </div>
             </div>
         </div>
     </div>

@@ -47,7 +47,7 @@
             $this->view('users/login');
         }
         
-        public function verifyPassword($user, &$data) {
+        private function verifyPassword($user, &$data) {
             if (hash('whirlpool', $_POST['password']) === $user->password) {
                 $data['password_error'] = '';
                 return true;
@@ -216,4 +216,12 @@
             if (!preg_match("#[a-zA-Z]+#", $this->user->getPassword()))
                 $data['password_error'] = 'Password must include at least one letter !';
         }
+
+
+        private function save_picture() {
+            // header("Content-Type: text/plain");
+            echo 'hello';
+            print_r($_POST);
+        }
+
     }
