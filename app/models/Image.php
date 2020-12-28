@@ -32,4 +32,13 @@ class Image extends BaseModel {
         return $this->resultset();
     }
 
+    public function saveUserImage($userId) {
+        $sql = 'INSERT INTO image (name, data, user_id) values (:name, :data, :user_id)';
+        $this->query($sql);
+        $this->bind(':name', $this->name);
+        $this->bind(':data', $this->data);
+        $this->bind(':user_id', $userId);
+        $this->execute();
+    }
+
 }

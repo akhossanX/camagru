@@ -93,17 +93,18 @@ function Capture() {
 
 function savePicture() {
     var dataUrl = canvas.toDataURL('image/png')
+        dataUrl = dataUrl.replace("data:image/png;base64,", "")
+    console.log(dataUrl)
     sendPictureDataToServer(dataUrl)
 }
 
 function sendPictureDataToServer(data) {
     var xhr = new XMLHttpRequest(),
-        url = new URL('http://localhost:8080/users/camera'),
-        fd = new FormData()
+        url = new URL('http://localhost:8080/images/save_picture')
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200 ) {
-                console.log(this.responseText)
+                console.log(xhr.response)
             }
         };
 
@@ -115,14 +116,14 @@ function sendPictureDataToServer(data) {
         };
         
         xhr.upload.onerror = function() {
-            console.log(`Error during the upload: ${request.status}`);
+            console.log(`Error during the upload: ${xhr.status}`);
         };
 
         xhr.open('POST', url, true)
         xhr.setRequestHeader("Content-type", 
             "application/x-www-form-urlencoded");
-        fd.append('pic', data)
-        xhr.send(fd)
+        // xhr.setRequestHeader('Content-Type', 'application/upload');
+        xhr.send('pic=' + data)
 }
 
 

@@ -168,12 +168,11 @@
         }
 
         public function camera() {
-            if (isset($_POST))
-                print_r($_POST);
-            if (isAuthentified())
+            if (isAuthentified()) {
                 $this->view('users/camera');
-            else
+            } else {
                 $this->redirect('home/index');
+            }
         }
 
         /*
@@ -220,13 +219,5 @@
         }
 
 
-        private function save_picture() {
-            // header("Content-Type: text/plain");
-            if (isset($_POST)) {
-                echo $_POST['pic'];
-            } else {
-                echo 'No received data';
-            }
-        }
 
     }
