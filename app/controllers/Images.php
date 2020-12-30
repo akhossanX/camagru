@@ -7,13 +7,14 @@ class Images extends Controller {
         Controller::session_init();
     }
 
-    public function save_picture () {
+    public function save () {
         if (isAuthentified()) {
-            if (isset($_POST) && isset($_POST['pic'])) {
-                // Grab image data (base64 encoded) and make a query to save it in database
-                echo $_POST;
-                $imgData = substr($_POST['pic'], strpos($_POST['pic'], ',') + 1);
-                // print('Image Data' . PHP_EOL . $imgData);
+            $putdata = fopen("php://input", "r");
+            $imgData = "";
+            while (!feof($putdata)) {
+                $imgData .= fread($putdata, 1024);
+            }
+            if (isset($_POST) ) {
                 $this->image->setData($imgData);
                 $this->image->setName($_SESSION['username'] . '_' . time() . '_gallery' . '.png');
                 $this->image->saveUserImage($_SESSION['logged-in-user']->id);
@@ -22,6 +23,13 @@ class Images extends Controller {
             }
         } else {
             $this->redirect('home/index');
+        }
+    }
+
+    public function preview() {
+        if (isAuthentified()) {
+            $images = $this->
+
         }
     }
 }

@@ -1,5 +1,13 @@
 'use strict';
 
+const STICKER_WIDTH = 70
+const STICKER_HEIGHT = 80
+const STICKER_INIT_LEFT_OFFSET = '40%'
+const STICKER_INIT_TOP_OFFSET = '40%'
+const SAVE_IMAGE_URI = 'http://localhost:8080/images/save'
+const PREVIEW_IMAGES_URI = 'http://localhost:8080/images/preview'
+
+
 function $(selector) {
     return document.querySelector(selector)
 }
@@ -21,12 +29,12 @@ function stream_init() {
 function onStickerClickChooser() {
     var img = document.createElement('img')
     img.style.position = 'absolute';
-    img.style.left = '50px'
-    img.style.top = '50px'
-    img.style.width = '70px';
-    img.style.height = '80px';
+    img.style.left = STICKER_INIT_LEFT_OFFSET
+    img.style.top = STICKER_INIT_TOP_OFFSET
+    img.style.width = STICKER_WIDTH + 'px'
+    img.style.height = STICKER_HEIGHT + 'px'
     img.src = this.src
-    img.ondblclick = OnStickerDoubleClick
+    img.ondblclick = onStickerDoubleClick
     img.draggable = true
     img.id = '_' + Math.random().toString(36)
     img.ondragstart = onStickerDragStart
@@ -36,7 +44,7 @@ function onStickerClickChooser() {
     video.insertAdjacentElement('afterEnd', img)
 }
 
-function OnStickerDoubleClick() {
+function onStickerDoubleClick() {
     this.remove()
 }
 
@@ -60,14 +68,14 @@ function onStickerDrop(event) {
         x: mouseRelativePosition.x - parseInt(liveSticker.style.left),
         y: mouseRelativePosition.y - parseInt(liveSticker.style.top)
     }
-    var x = translationVector.x + parseInt(liveSticker.style.left) - 50,
-        y = translationVector.y + parseInt(liveSticker.style.top) - 50
+    var x = translationVector.x + parseInt(liveSticker.style.left) - STICKER_WIDTH / 2,
+        y = translationVector.y + parseInt(liveSticker.style.top) - STICKER_HEIGHT / 2
     liveSticker.style.left = x + 'px'
     liveSticker.style.top = y + 'px'
 }
 
-function Capture() {
-    var frames = 0  
+function capture() {
+    var frames = 0
     canvas.style.width = videoDimensions.width + 'px'
     canvas.style.height = videoDimensions.height + 'px'
     canvas.width = videoDimensions.width
@@ -77,7 +85,7 @@ function Capture() {
     var id = setInterval(
         function () {
             context.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
-            frames +=1
+            frames += 1
             if (frames >= 10) {
                 clearInterval(id)
                 var st = document.querySelectorAll('#video-container-id img')
@@ -89,43 +97,61 @@ function Capture() {
         },
         5
     )
+    // Activate save button in live preview canvas
+    saveBtn.disabled = false
 }
 
 function savePicture() {
-    var dataUrl = canvas.toDataURL('image/png')
-        dataUrl = dataUrl.replace("data:image/png;base64,", "")
-    console.log(dataUrl)
-    sendPictureDataToServer(dataUrl)
+    var dataUrl = canvas.toDataURL('image/png').replace("data:image/png;base64,", "")
+    var pictures = document.querySelectorAll('#video-container-id img');
+    var arr = [].slice.call(pictures);
+    var data = [];
+    arr.forEach(img => {
+        let obj = {};
+        console.log(img.src);
+        obj.src = img.src;
+        obj.x = img.offsetLeft;
+        obj.y = img.offsetTop;
+        obj.width = img.width;
+        obj.height = img.height;
+        data.push(obj);
+    });
+
+    console.log(data);
+
+    // sendPictureDataToServer(dataUrl)
+    // Deactivate save button to prevent saving multiple copies of the same picture
+    this.disabled = true
 }
 
 function sendPictureDataToServer(data) {
     var xhr = new XMLHttpRequest(),
-        url = new URL('http://localhost:8080/images/save_picture')
-
+        url = new URL(SAVE_IMAGE_URI)
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200 ) {
-                console.log(xhr.response)
+                console.log(xhr.responseText)
             }
-        };
-
-        xhr.upload.onprogress = function(event) {
-            console.log(`Uploaded ${event.loaded} of ${event.total} bytes`);
-        };
-        xhr.upload.onload = function() {
-            console.log(`Upload finished successfully.`);
-        };
-        
-        xhr.upload.onerror = function() {
-            console.log(`Error during the upload: ${xhr.status}`);
-        };
-
+        }
         xhr.open('POST', url, true)
-        xhr.setRequestHeader("Content-type", 
-            "application/x-www-form-urlencoded");
-        // xhr.setRequestHeader('Content-Type', 'application/upload');
-        xhr.send('pic=' + data)
+        xhr.setRequestHeader("Content-type", "image/png")
+        xhr.send(data)
 }
 
+function displayUserImages(picList) {
+    var xhr = new XMLHttpRequest();
+    var url = new URL(PREVIEW_IMAGES_URI)
+    xhr.open('GET', url, true)
+    xhr.onload = function () {
+        var response = xhr.responseText;
+        var img = new Image();
+        var bin = ""
+        for (i = 0; i < response.length; i++) {
+            bin += String.fromCharCode(response.charCodeAt(i) & 0xff)
+        }
+        img.src = IMAGE_HEADER + btoa(bin)
+        picList.appendChild(img)
+    }
+}
 
 var video = $('#video-id'),
     videoContainer = document.getElementById('video-container-id'),
@@ -141,9 +167,7 @@ var video = $('#video-id'),
             height: height - 8
         }
     },
-    stickers = document.querySelectorAll('#stickers img'),
-    topCorner = 100, 
-    leftCorner = 100
+    stickers = document.querySelectorAll('#stickers img')
 
 stream_init()
 
@@ -169,8 +193,18 @@ var captureBtn = $('#capture-btn'),
     saveBtn = $('#save-btn'),
     canvas = $('#canvas')
 
-captureBtn.addEventListener('click', Capture)
+// Deactivate saveBtn by default to prevent storing empty images
+saveBtn.disabled = true;
+
+captureBtn.addEventListener('click', capture)
 saveBtn.addEventListener('click', savePicture)
+
+var picList = $('#pictures-list')
+
+// console.log(picList)
+displayUserImages(picList)
+
+
 
 
 

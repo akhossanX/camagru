@@ -37,7 +37,12 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6 col-sm" id="pictures-list">
+                The list of pictures are displayed here
+            </div>
+        </div>
     </div>
 
-    <script src="<?=URLROOT?>/public/js/camera.js"></script>
+    <script src="<?=URLROOT?>/public/js/camera.js" type="module"></script>
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>
