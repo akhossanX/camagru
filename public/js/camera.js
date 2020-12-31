@@ -105,36 +105,48 @@ function savePicture() {
     var dataUrl = canvas.toDataURL('image/png').replace("data:image/png;base64,", "")
     var pictures = document.querySelectorAll('#video-container-id img');
     var arr = [].slice.call(pictures);
-    var data = [];
+    var st = [];
     arr.forEach(img => {
         let obj = {};
-        console.log(img.src);
         obj.src = img.src;
         obj.x = img.offsetLeft;
         obj.y = img.offsetTop;
         obj.width = img.width;
         obj.height = img.height;
-        data.push(obj);
+        st.push(obj);
     });
 
-    console.log(data);
+    var cv = document.createElement('canvas');
+    cv.width = videoDimensions.width;
+    cv.height = videoDimensions.height;
+    var ctx = cv.getContext('2d');
+    ctx.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
+    // console.log(cv.toDataURL('image/png', 1));
+    var im = cv.toDataURL('image/png', 1);
+    console.log(st);
+    console.log(im);
 
-    // sendPictureDataToServer(dataUrl)
+    sendPictureDataToServer(st, im)
     // Deactivate save button to prevent saving multiple copies of the same picture
     this.disabled = true
 }
 
-function sendPictureDataToServer(data) {
+function sendPictureDataToServer(st, img) {
     var xhr = new XMLHttpRequest(),
         url = new URL(SAVE_IMAGE_URI)
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200 ) {
-                console.log(xhr.responseText)
+                console.log(xhr.response)
             }
         }
         xhr.open('POST', url, true)
-        xhr.setRequestHeader("Content-type", "image/png")
-        xhr.send(data)
+        // xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        // data = JSON.stringify(data);
+        var fd = new FormData();
+        fd.append('image', img);
+        fd.append('stickers', st);
+        xhr.send(fd);
 }
 
 function displayUserImages(picList) {
