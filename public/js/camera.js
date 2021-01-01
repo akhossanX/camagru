@@ -115,38 +115,37 @@ function savePicture() {
         obj.height = img.height;
         st.push(obj);
     });
-
     var cv = document.createElement('canvas');
     cv.width = videoDimensions.width;
     cv.height = videoDimensions.height;
     var ctx = cv.getContext('2d');
     ctx.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
-    // console.log(cv.toDataURL('image/png', 1));
     var im = cv.toDataURL('image/png', 1);
-    console.log(st);
-    console.log(im);
-
-    sendPictureDataToServer(st, im)
+    // console.log(st);
+    // console.log(im);
+    sendPictureDataToServer(st, im);
     // Deactivate save button to prevent saving multiple copies of the same picture
     this.disabled = true
 }
 
 function sendPictureDataToServer(st, img) {
+    var requestData = {
+        stickers: st,
+        image: img.replace("data:image/png;base64,", "")
+    }
     var xhr = new XMLHttpRequest(),
-        url = new URL(SAVE_IMAGE_URI)
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200 ) {
-                console.log(xhr.response)
-            }
+        url = new URL(SAVE_IMAGE_URI);
+        console.log(xhr);
+        xhr.onload = () => {
+            console.log(xhr.responseText);
         }
-        xhr.open('POST', url, true)
-        // xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-        // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        // data = JSON.stringify(data);
-        var fd = new FormData();
-        fd.append('image', img);
-        fd.append('stickers', st);
-        xhr.send(fd);
+        xhr.onerror = (error) => {
+            console.log(error);
+        }
+        requestData = JSON.stringify(requestData);
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        xhr.send(requestData);
 }
 
 function displayUserImages(picList) {
@@ -208,8 +207,8 @@ var captureBtn = $('#capture-btn'),
 // Deactivate saveBtn by default to prevent storing empty images
 saveBtn.disabled = true;
 
-captureBtn.addEventListener('click', capture)
-saveBtn.addEventListener('click', savePicture)
+captureBtn.onclick = capture
+saveBtn.onclick = savePicture;
 
 var picList = $('#pictures-list')
 
