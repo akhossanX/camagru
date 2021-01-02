@@ -12,8 +12,11 @@ class Images extends Controller {
             $rawData = file_get_contents('php://input');
             if ($rawData) {
                 $assembledImage = $this->superposeImages($rawData);
-
-                var_dump(base64_encode($assembledImage));
+                ob_start();
+                $data = imagepng($assembledImage);
+                $data = ob_get_contents();
+                ob_end_clean();
+                var_dump(base64_encode($data));
 
             } else {
                 $this->redirect('home/index');
@@ -27,12 +30,17 @@ class Images extends Controller {
         $data = json_decode($rawData, true);// returns associative array
         $image = base64_decode($data['image']);
         $image = imagecreatefromstring($image);
+        if ($image === false)
+            die("can't create image from string");
         $stickers = $data['stickers'];
         $pngs = [];
-        foreach ($stickers  as $sticker) {
+        foreach ($stickers as $sticker) {
             $width = $sticker["width"];
             $height = $sticker["height"];
-            $png = imagecreatefrompng($sticker["src"]);
+            $png = imagecreatefrompng( ROOT . "/public/img/" . $sticker["src"] );
+            if ($png === false) {
+                die("can't create png image from path");
+            }
             $png = $this->resizeImage($png, $width, $height);
             imagecopymerge($image, $png, $sticker["x"], $sticker["y"], 0, 0, $width, $height, 0);
         }
@@ -40,7 +48,8 @@ class Images extends Controller {
     }
 
     private function resizeImage($img, $width, $height) {
-        list($oldWidth, $oldHeight) = getimagesize($img);
+        $oldWidth = imagesx($img);
+        $oldHeight = imagesy($img);
         $resized = imagecreatetruecolor($width, $height);
         imagecopyresampled($resized, $img, 0, 0, 0, 0, $width, $height, $oldWidth, $oldHeight);
         return $resized;

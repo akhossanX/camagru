@@ -20,7 +20,6 @@ function stream_init() {
             video.play()
         })
         .catch(function (error){
-            console.log(error)
             alert(error)
         })
     }
@@ -74,32 +73,6 @@ function onStickerDrop(event) {
     liveSticker.style.top = y + 'px'
 }
 
-function capture() {
-    var frames = 0
-    canvas.style.width = videoDimensions.width + 'px'
-    canvas.style.height = videoDimensions.height + 'px'
-    canvas.width = videoDimensions.width
-    canvas.height = videoDimensions.height
-    var context = canvas.getContext('2d')
-    context.globalCompositionOperation = 'difference'
-    var id = setInterval(
-        function () {
-            context.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
-            frames += 1
-            if (frames >= 10) {
-                clearInterval(id)
-                var st = document.querySelectorAll('#video-container-id img')
-                for (var i = st.length - 1; i >= 0; i--) {
-                    context.drawImage(st[i], parseInt(st[i].style.left), parseInt(st[i].style.top),
-                    parseInt(st[i].style.width), parseInt(st[i].style.height))
-                }
-            }
-        },
-        5
-    )
-    // Activate save button in live preview canvas
-    saveBtn.disabled = false
-}
 
 function savePicture() {
     var dataUrl = canvas.toDataURL('image/png').replace("data:image/png;base64,", "")
@@ -108,7 +81,8 @@ function savePicture() {
     var st = [];
     arr.forEach(img => {
         let obj = {};
-        obj.src = img.src;
+        let str = new String(img.src).substring(img.src.lastIndexOf('/') + 1);
+        obj.src = str;
         obj.x = img.offsetLeft;
         obj.y = img.offsetTop;
         obj.width = img.width;
@@ -121,11 +95,9 @@ function savePicture() {
     var ctx = cv.getContext('2d');
     ctx.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height)
     var im = cv.toDataURL('image/png', 1);
-    // console.log(st);
-    // console.log(im);
     sendPictureDataToServer(st, im);
     // Deactivate save button to prevent saving multiple copies of the same picture
-    this.disabled = true
+    saveBtn.disabled = true
 }
 
 function sendPictureDataToServer(st, img) {
@@ -148,20 +120,35 @@ function sendPictureDataToServer(st, img) {
         xhr.send(requestData);
 }
 
-function displayUserImages(picList) {
-    var xhr = new XMLHttpRequest();
-    var url = new URL(PREVIEW_IMAGES_URI)
-    xhr.open('GET', url, true)
-    xhr.onload = function () {
-        var response = xhr.responseText;
-        var img = new Image();
-        var bin = ""
-        for (i = 0; i < response.length; i++) {
-            bin += String.fromCharCode(response.charCodeAt(i) & 0xff)
-        }
-        img.src = IMAGE_HEADER + btoa(bin)
-        picList.appendChild(img)
-    }
+function capture() {
+    var frames = 0;
+    var dpi = window.devicePixelRatio;
+    hiddenCanvas.style.width = videoDimensions.width + 'px'
+    hiddenCanvas.style.height = videoDimensions.height + 'px'
+    hiddenCanvas.width = videoDimensions.width;
+    hiddenCanvas.height = videoDimensions.height;
+
+    // hiddenCanvas.style.display = 'none';
+
+    var context = hiddenCanvas.getContext('2d');
+    context.globalCompositionOperation = 'difference';
+    var id = setInterval(
+        function () {
+            context.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height)
+            frames += 1
+            if (frames >= 10) {
+                clearInterval(id)
+                var st = document.querySelectorAll('#video-container-id img')
+                for (var i = st.length - 1; i >= 0; i--) {
+                    context.drawImage(st[i], parseInt(st[i].style.left), parseInt(st[i].style.top),
+                    parseInt(st[i].style.width), parseInt(st[i].style.height))
+                }
+            }
+        },
+        5 // 5 milliseconds between each capture
+    )
+    // Activate save button in live preview Canvas
+    saveBtn.disabled = false;
 }
 
 var video = $('#video-id'),
@@ -170,7 +157,6 @@ var video = $('#video-id'),
     styles = window.getComputedStyle(videoContainer, null),
     width = parseInt(styles.getPropertyValue('width')),
     height = parseInt(styles.getPropertyValue('height')),
-
     // 8 is the double of the video element's border size
     constraints = {
         video: {
@@ -202,18 +188,19 @@ var videRect = video.getBoundingClientRect(),
 
 var captureBtn = $('#capture-btn'),
     saveBtn = $('#save-btn'),
-    canvas = $('#canvas')
+    canvas = $('#canvas'), 
+    hiddenCanvas = document.createElement('canvas');
 
 // Deactivate saveBtn by default to prevent storing empty images
 saveBtn.disabled = true;
 
-captureBtn.onclick = capture
+captureBtn.onclick = capture;
 saveBtn.onclick = savePicture;
 
 var picList = $('#pictures-list')
 
 // console.log(picList)
-displayUserImages(picList)
+// displayUserImages(picList)
 
 
 
