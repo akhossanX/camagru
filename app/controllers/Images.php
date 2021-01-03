@@ -16,7 +16,7 @@ class Images extends Controller {
                 $data = imagepng($assembledImage);
                 $data = ob_get_contents();
                 ob_end_clean();
-                var_dump(base64_encode($data));
+                echo base64_encode($data);
 
             } else {
                 $this->redirect('home/index');
