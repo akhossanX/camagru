@@ -26,6 +26,8 @@ function stream_init() {
 }
 
 function onStickerClickChooser() {
+    //activate capture button
+    captureBtn.disabled = false;
     var img = document.createElement('img')
     img.style.position = 'absolute';
     img.style.left = STICKER_INIT_LEFT_OFFSET
@@ -39,7 +41,7 @@ function onStickerClickChooser() {
     img.ondragstart = onStickerDragStart
     img.ondragover = onStickerDragOver
     img.ondrop = onStickerDrop
-    img.style.zIndex = zIndex++
+    img.style.zIndex = zIndex++;
     video.insertAdjacentElement('afterEnd', img)
 }
 
@@ -71,22 +73,28 @@ function onStickerDrop(event) {
         y = translationVector.y + parseInt(liveSticker.style.top) - STICKER_HEIGHT / 2
     liveSticker.style.left = x + 'px'
     liveSticker.style.top = y + 'px'
+    console.log(event.target);
+    liveSticker.style.zIndex = parseInt(event.target.style.zIndex) + 1;
 }
 
-function drawToCanvas(stream, streamDimensions) {
-    var cv = document.createElement('canvas');
-    cv.width = streamDimensions.width;
-    cv.height = streamDimensions.height;
-    var ctx = cv.getContext('2d');
-    ctx.drawImage(stream, 0, 0, streamDimensions.width, streamDimensions.height)
-    return cv.toDataURL('image/png', 1);
+function sendPictureDataToServer(data) {
+    var xhr = new XMLHttpRequest(),
+    url = new URL(SAVE_IMAGE_URI);
+    xhr.onload = () => {
+        console.log(xhr.responseText);
+    }
+    xhr.onerror = (error) => {
+        console.log(error);
+    }
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    xhr.send(JSON.stringify(data));
 }
 
-function assemblePicturesData() {
-    var dataUrl = canvas.toDataURL('image/png').replace("data:image/png;base64,", "")
+function assemblePicturesData(imageURI) {
     var pictures = document.querySelectorAll('#video-container-id img');
     var arr = [].slice.call(pictures);
-    var st = [];
+    var stickers = [];
     arr.forEach(img => {
         let obj = {};
         let str = new String(img.src).substring(img.src.lastIndexOf('/') + 1);
@@ -95,67 +103,53 @@ function assemblePicturesData() {
         obj.y = img.offsetTop;
         obj.width = img.width;
         obj.height = img.height;
-        st.push(obj);
+        obj.zIndex = parseInt(img.style.zIndex);
+        stickers.push(obj);
     });
-    let im = drawToCanvas(video, videoDimensions);
-    sendPictureDataToServer(st, im);
+    // sort stickers according to their zindex;
+    stickers.sort((a, b) => a.zIndex - b.zIndex);
+    console.log(stickers);
+    sendPictureDataToServer({stickers: stickers, image: imageURI});
     // Deactivate save button to prevent saving multiple copies of the same picture
     saveBtn.disabled = true
 }
 
-function sendPictureDataToServer(st, img) {
-    var requestData = {
-        stickers: st,
-        image: img.replace("data:image/png;base64,", "")
-    }
-    var xhr = new XMLHttpRequest(),
-        url = new URL(SAVE_IMAGE_URI);
-        console.log(xhr);
-        xhr.onload = () => {
-            console.log(xhr.responseText);
-            let image = new Image();
-            image.src = 'data:image/png;base64, ' + xhr.responseText;
-            drawToCanvas(image, {width: image.width, height: image.height})
-            var previewArea = $('#preview-area').style.display = 'block';
-        }
-        xhr.onerror = (error) => {
-            console.log(error);
-        }
-        requestData = JSON.stringify(requestData);
-        xhr.open('POST', url, true);
-        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        xhr.send(requestData);
-}
-
-function capture() {
-    var frames = 0;
-    // var dpi = window.devicePixelRatio;
-    // console.log(dpi)
-    // canvas.style.width = videoDimensions.width + 'px'
-    // canvas.style.height = videoDimensions.height + 'px'
+function drawToPreviewCanvas() {
+    var context = canvas.getContext('2d');
+    canvas.style.width = videoDimensions.width + 'px';
+    canvas.style.height = videoDimensions.height + 'px';
     canvas.width = videoDimensions.width;
     canvas.height = videoDimensions.height;
-
-    var context = canvas.getContext('2d');
-    context.globalCompositionOperation = 'difference';
-    var id = setInterval(
-        function () {
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            frames += 1
-            if (frames >= 10) {
-                clearInterval(id)
-                // var st = document.querySelectorAll('#video-container-id img')
-                // for (var i = st.length - 1; i >= 0; i--) {
-                //     context.drawImage(st[i], parseInt(st[i].style.left), parseInt(st[i].style.top),
-                //     parseInt(st[i].style.width), parseInt(st[i].style.height))
-                // }
-            }
-        },
-        5 // 5 milliseconds between each capture
-    )
-    // Activate save button in live preview Canvas
+    context.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height);
+    var st = document.querySelectorAll('#video-container-id img');
+    console.log(st);
+    st = [].slice.call(st).sort((a, b) => parseInt(a.style.zIndex) - parseInt(b.style.zIndex));
+    for(var i = 0; i < st.length; i++) {
+        context.drawImage(st[i], parseInt(st[i].style.left), parseInt(st[i].style.top),
+        parseInt(st[i].style.width), parseInt(st[i].style.height));
+    }
+    var previewArea = $('#preview-area').style.display = 'block';
     saveBtn.disabled = false;
-    assemblePicturesData();
+}
+
+// can't be triggered until stickers are selected;
+function capture() {
+    var frames = 0;
+    hiddenCanvas.style.width = videoDimensions.width + 'px'
+    hiddenCanvas.style.height = videoDimensions.height + 'px'
+    hiddenCanvas.width = videoDimensions.width;
+    hiddenCanvas.height = videoDimensions.height;
+    let context = hiddenCanvas.getContext('2d');
+    context.globalCompositionOperation = 'difference';
+    video.pause();
+    context.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+    video.play();
+    drawToPreviewCanvas();
+}
+
+function savePicture() {
+    var imageURI = hiddenCanvas.toDataURL('image/png', 1.0).replace('data:image/png;base64,', '');
+    assemblePicturesData(imageURI);
 }
 
 var video = $('#video-id'),
@@ -186,14 +180,17 @@ var videRect = video.getBoundingClientRect(),
     }
 var captureBtn = $('#capture-btn'),
     saveBtn = $('#save-btn'),
-    canvas = $('#canvas'), 
+    canvas = $('#preview-canvas'),
     hiddenCanvas = document.createElement('canvas');
 
 // Deactivate saveBtn by default to prevent storing empty images
 saveBtn.disabled = true;
 
 captureBtn.onclick = capture;
-// saveBtn.onclick = savePicture;
+captureBtn.disabled = true; // deactivated until sticker selection
+saveBtn.onclick = savePicture;
+video.style.zIndex = 0;
+var zIndex = 0;
 
 var picList = $('#pictures-list')
 

@@ -29,6 +29,7 @@ class Images extends Controller {
     private function superposeImages($rawData) {
         $data = json_decode($rawData, true);// returns associative array
         $image = base64_decode($data['image']);
+        // die($data['image']);
         $image = imagecreatefromstring($image);
         if ($image === false)
             die("can't create image from string");
@@ -42,7 +43,8 @@ class Images extends Controller {
                 die("can't create png image from path");
             }
             $png = $this->resizeImage($png, $width, $height);
-            imagecopymerge($image, $png, $sticker["x"], $sticker["y"], 0, 0, $width, $height, 0);
+            if (!imagecopy($image, $png, $sticker["x"], $sticker["y"], 0, 0, $width, $height))
+                die('could not merge pictures :-(');
         }
         return $image;
     }
@@ -51,6 +53,10 @@ class Images extends Controller {
         $oldWidth = imagesx($img);
         $oldHeight = imagesy($img);
         $resized = imagecreatetruecolor($width, $height);
+        imagealphablending($resized, false);
+        imagesavealpha($resized,true);
+        $transparency = imagecolorallocatealpha($resized, 255, 255, 255, 127);
+        imagefilledrectangle($resized, 0, 0, $width, $height, $transparency);
         imagecopyresampled($resized, $img, 0, 0, 0, 0, $width, $height, $oldWidth, $oldHeight);
         return $resized;
     }

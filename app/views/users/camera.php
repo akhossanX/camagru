@@ -40,7 +40,7 @@
                 pb-1 full-height preview-area" id="preview-area">
                     <div class="row"> <!-- live preview Canvas -->
                         <div class="col">
-                            <canvas id="canvas"></canvas>
+                            <canvas id="preview-canvas"></canvas>
                         </div>
                     </div>
                     <div class="row"> <!-- save butto -->
