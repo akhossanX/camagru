@@ -1,11 +1,12 @@
 'use strict';
 
-const STICKER_WIDTH = 70
-const STICKER_HEIGHT = 80
+const STICKER_WIDTH = 70;
+const STICKER_HEIGHT = 80;
 const STICKER_INIT_LEFT_OFFSET = '40%'
 const STICKER_INIT_TOP_OFFSET = '40%'
 const SAVE_IMAGE_URI = 'http://localhost:8080/images/save'
-const PREVIEW_IMAGES_URI = 'http://localhost:8080/images/preview'
+const PREVIEW_IMAGES_URI = 'http://localhost:8080/images/preview';
+const DEVICE_PIXEL_RATIO = window.devicePixelRatio;
 
 
 function $(selector) {
@@ -15,11 +16,11 @@ function $(selector) {
 function stream_init() {
     if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia(constraints)
-        .then(function (stream) {
-            video.srcObject = stream
+        .then((stream) => {
+            video.srcObject = stream;
             video.play()
         })
-        .catch(function (error){
+        .catch((error) => {
             alert(error)
         })
     }
@@ -61,19 +62,20 @@ function onStickerDragOver(event) {
 function onStickerDrop(event) {
     event.preventDefault()
     var liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'))
+    if (liveSticker === null)
+        return ;
     var mouseRelativePosition = {
         x: event.clientX + document.documentElement.scrollLeft - videoPosition.left,
         y: event.clientY + document.documentElement.scrollTop - videoPosition.top
     }
     var translationVector = {
-        x: mouseRelativePosition.x - parseInt(liveSticker.style.left),
-        y: mouseRelativePosition.y - parseInt(liveSticker.style.top)
+        x: mouseRelativePosition.x - parseFloat(liveSticker.style.left),
+        y: mouseRelativePosition.y - parseFloat(liveSticker.style.top)
     }
-    var x = translationVector.x + parseInt(liveSticker.style.left) - STICKER_WIDTH / 2,
-        y = translationVector.y + parseInt(liveSticker.style.top) - STICKER_HEIGHT / 2
+    var x = translationVector.x + parseFloat(liveSticker.style.left) - STICKER_WIDTH / 2.0,
+        y = translationVector.y + parseFloat(liveSticker.style.top) - STICKER_HEIGHT / 2.0
     liveSticker.style.left = x + 'px'
     liveSticker.style.top = y + 'px'
-    console.log(event.target);
     liveSticker.style.zIndex = parseInt(event.target.style.zIndex) + 1;
 }
 
@@ -99,16 +101,15 @@ function assemblePicturesData(imageURI) {
         let obj = {};
         let str = new String(img.src).substring(img.src.lastIndexOf('/') + 1);
         obj.src = str;
-        obj.x = img.offsetLeft;
-        obj.y = img.offsetTop;
-        obj.width = img.width;
-        obj.height = img.height;
+        obj.x = img.offsetLeft * DEVICE_PIXEL_RATIO;
+        obj.y = img.offsetTop * DEVICE_PIXEL_RATIO;
+        obj.width = img.width * DEVICE_PIXEL_RATIO;
+        obj.height = img.height * DEVICE_PIXEL_RATIO;
         obj.zIndex = parseInt(img.style.zIndex);
         stickers.push(obj);
     });
     // sort stickers according to their zindex;
     stickers.sort((a, b) => a.zIndex - b.zIndex);
-    console.log(stickers);
     sendPictureDataToServer({stickers: stickers, image: imageURI});
     // Deactivate save button to prevent saving multiple copies of the same picture
     saveBtn.disabled = true
@@ -116,20 +117,25 @@ function assemblePicturesData(imageURI) {
 
 function drawToPreviewCanvas() {
     var context = canvas.getContext('2d');
-    canvas.style.width = videoDimensions.width + 'px';
-    canvas.style.height = videoDimensions.height + 'px';
-    canvas.width = videoDimensions.width;
-    canvas.height = videoDimensions.height;
-    context.drawImage(video, 0, 0, videoDimensions.width, videoDimensions.height);
+    canvas.style.width = '100%';//video.style.width;//videoDimensions.width + 'px';
+    canvas.style.height = '100%';//video.style.height;//videoDimensions.height + 'px';
+    canvas.width = video.offsetWidth * DEVICE_PIXEL_RATIO;
+    canvas.height = video.offsetHeight * DEVICE_PIXEL_RATIO;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
     var st = document.querySelectorAll('#video-container-id img');
-    console.log(st);
     st = [].slice.call(st).sort((a, b) => parseInt(a.style.zIndex) - parseInt(b.style.zIndex));
     for(var i = 0; i < st.length; i++) {
-        context.drawImage(st[i], parseInt(st[i].style.left), parseInt(st[i].style.top),
-        parseInt(st[i].style.width), parseInt(st[i].style.height));
+        var styles = window.getComputedStyle(st[i]);
+        let left = parseFloat(styles['left']) * DEVICE_PIXEL_RATIO,
+            top = parseFloat(styles['top']) * DEVICE_PIXEL_RATIO,
+            width = parseFloat(st[i].style.width) * DEVICE_PIXEL_RATIO,
+            height = parseFloat(st[i].style.height) * DEVICE_PIXEL_RATIO;
+        context.drawImage(st[i], left, top, width, height);
     }
-    var previewArea = $('#preview-area').style.display = 'block';
+    canvas.style.display = 'block';
+    saveBtn.style.display = 'block';
     saveBtn.disabled = false;
+
 }
 
 // can't be triggered until stickers are selected;
@@ -137,8 +143,8 @@ function capture() {
     var frames = 0;
     hiddenCanvas.style.width = videoDimensions.width + 'px'
     hiddenCanvas.style.height = videoDimensions.height + 'px'
-    hiddenCanvas.width = videoDimensions.width;
-    hiddenCanvas.height = videoDimensions.height;
+    hiddenCanvas.width = videoDimensions.width * DEVICE_PIXEL_RATIO;
+    hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
     let context = hiddenCanvas.getContext('2d');
     context.globalCompositionOperation = 'difference';
     video.pause();
@@ -156,22 +162,20 @@ var video = $('#video-id'),
     zIndex = 0,
     styles = window.getComputedStyle(video, null),
     videoDimensions = {
-        width: parseInt(styles.getPropertyValue('width')),
-        height: parseInt(styles.getPropertyValue('height'))
+        width: parseFloat(styles.getPropertyValue('width')),
+        height: parseFloat(styles.getPropertyValue('height'))
     },
-    // 8 is the double of the video element's border size
     constraints = {
         video: videoDimensions
     },
-    stickers = document.querySelectorAll('#stickers img')
-    console.log('video dimensions');
-    console.log(videoDimensions)
+    stickers = document.querySelectorAll('#stickers img');
 
 stream_init()
 
 stickers.forEach(sticker => sticker.onclick = onStickerClickChooser)
 video.ondrop = onStickerDrop
 video.ondragover = onStickerDragOver
+video.style.zIndex = 0;
 
 var videRect = video.getBoundingClientRect(),
     videoPosition = {
@@ -179,17 +183,51 @@ var videRect = video.getBoundingClientRect(),
         top: videRect.top + document.documentElement.scrollTop
     }
 var captureBtn = $('#capture-btn'),
+    uploadBtn = $('#upload-btn'),
     saveBtn = $('#save-btn'),
     canvas = $('#preview-canvas'),
     hiddenCanvas = document.createElement('canvas');
 
 // Deactivate saveBtn by default to prevent storing empty images
 saveBtn.disabled = true;
+saveBtn.onclick = savePicture;
+saveBtn.style.display = 'none';
+
+canvas.style.display = 'none';
 
 captureBtn.onclick = capture;
 captureBtn.disabled = true; // deactivated until sticker selection
-saveBtn.onclick = savePicture;
-video.style.zIndex = 0;
+
+uploadBtn.onclick = () => {
+    // uploadBtn.type = 'file';
+    var inputFile = document.createElement('input');
+    inputFile.type = 'file';
+    inputFile.name = 'upload';
+    inputFile.accept = 'image/png, image/jpg';
+    inputFile.click();
+    inputFile.onchange = () => {
+        console.log('file is ready');
+        var file = inputFile.files[0];
+        console.log(file);
+        const image = document.createElement('img');
+        image.src = URL.createObjectURL(file);
+        image.style.width = videoDimensions.width + 'px';
+        image.style.height = videoDimensions.height + 'px';
+        image.style.position = 'absolute';
+        image.style.top = '0';
+        image.style.left = '0'
+        console.log(image);
+        video.insertAdjacentElement('afterEnd', image);
+        captureBtn.disabled = false;
+        hiddenCanvas.style.width = videoDimensions.width + 'px'
+        hiddenCanvas.style.height = videoDimensions.height + 'px'
+        hiddenCanvas.width = videoDimensions.width * DEVICE_PIXEL_RATIO;
+        hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
+        let context = hiddenCanvas.getContext('2d');
+        context.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+    }
+}
+
 var zIndex = 0;
 
 var picList = $('#pictures-list')

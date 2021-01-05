@@ -1,4 +1,5 @@
-div#video-container-id {
+div#video-container-id,
+div#preview-container-id {
     position: relative;
     overflow: hidden;
     padding: 0px 0px;
@@ -16,30 +17,19 @@ canvas#canvas {
     overflow: hidden;
 }
 
-
-.full-height {
-    height: 100%;
-}
-
-
 .heading {
     margin: auto auto 50px;
-}
-
-.shot-btn {
-    width: 30%;
-    height: 50px;
-    font-size: 20px;
-}
-
-.border-5 {
-    border-width: 5px !important;
 }
 
 .stickers img {
     width : 100px;
     height: 100px;
-    /* display: inline; */
+}
+
+#upload-btn,
+#save-btn,
+#capture-btn {
+    height: auto;
 }
 
 .jumbotron {
@@ -49,6 +39,3 @@ canvas#canvas {
     background: rgb(250, 128, 128);
 }
 
-.preview-area {
-    display: none;
-}

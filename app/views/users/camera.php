@@ -19,50 +19,43 @@
     <br><br>
 
     <div class="container-fluid">
-        <div class="editing-area">
-            <!-- Video Camera & Preview Area (2 columns) -->
-            <div class="row">
-                <!-- Camera Video and Capture button (2 separated rows) -->
-                <div class="col-12 col-sm-12 col-lg-6 mt-1 pb-1 full-height"> <!-- Camera and capture button -->
-                    <div class="row"> <!-- Camera row -->
-                        <div class="col" id="video-container-id">
-                            <video id="video-id"></video>
-                        </div>
+        <div class="row">
+            <div class="col-12 col-lg-6 editing-area">
+                <!-- Camera Video and Capture button -->
+                <div class="row mb-3"> <!-- Camera row -->
+                    <div class="col-12" id="video-container-id">
+                        <video id="video-id"></video>
                     </div>
-                    <div class="row"> <!-- Capture button row -->
-                        <div class="text-center col"> 
-                            <input id="capture-btn" type="button" class="btn btn-danger shot-btn" value="Capture">
-                        </div>
+                </div>
+                <div class="row mb-3"> <!-- Capture button row -->
+                    <div class="col-6 text-center"> 
+                        <input id="capture-btn" type="button" class="btn btn-primary shadow-lg" value="Capture">
+                    </div>
+                    <div class="col-6 text-center">
+                        <input id="upload-btn" type="button" class="btn btn-warning shadow-lg" value="Upload">
+                        <!-- <input type="file" id="upload-btn" name="upload" accept="image/png, image/jpeg"> -->
                     </div>
                 </div>
                 <!-- Live preview Area -->
-                <div class="col-12 col-sm-12 col-lg-6 mt-1 
-                pb-1 full-height preview-area" id="preview-area">
-                    <div class="row"> <!-- live preview Canvas -->
-                        <div class="col">
-                            <canvas id="preview-canvas"></canvas>
-                        </div>
-                    </div>
-                    <div class="row"> <!-- save butto -->
-                        <div class="col  text-center">
-                            <input id="save-btn" type="button" class="btn btn-success shot-btn" value="Save">
-                        </div>
+                <div class="row mb-3"> <!-- live preview Canvas -->
+                    <div class="col-12" id="preview-container-id">
+                        <canvas id="preview-canvas"></canvas>
                     </div>
                 </div>
-            </div>
-            <!-- End of Video Camera & Preview Area -->
-        </div>
-
-        <!-- Captured Photos display Area -->
-        <div class="user-photos-area">
-            <div class="row">
-                <div class="col-12 col-sm-12 col-lg-6 mt-1 pb-1" id="pictures-list">
-                    <h1>here the list of saved photos</h1>
+                <div class="row mb-3"> <!-- save button -->
+                    <div class="col-12">
+                        <input id="save-btn" type="button" class="btn btn-success mx-auto w-25 shadow-lg" value="Save">
+                    </div>
                 </div>
+                <!-- End of Video Camera & Preview Area -->
             </div>
+            <!-- Captured Photos display Area -->
+            <div class="col-12 col-lg-6 user-images-area pl-5">
+                <img src="https://picsum.photos/200/300" alt="" srcset="">    
+            </div>
+            <!-- End of User Photos Display Area -->
         </div>
-        <!-- End of Photos Display Area -->
-
+        
     </div>
 
     <script src="<?=URLROOT?>/public/js/camera.js" type="module"></script>
