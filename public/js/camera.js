@@ -9,19 +9,18 @@ const PREVIEW_IMAGES_URI = 'http://localhost:8080/images/preview';
 const DEVICE_PIXEL_RATIO = window.devicePixelRatio;
 
 
-function $(selector) {
-    return document.querySelector(selector)
-}
+let $ = (selector) => document.querySelector(selector);
 
-function stream_init() {
+let stream_init = () => {
     if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
             video.srcObject = stream;
-            video.play()
+            video.play();
         })
         .catch((error) => {
-            alert(error)
+            video.style.display = 'none';
+            alert(error);
         })
     }
 }
@@ -42,7 +41,7 @@ function onStickerClickChooser() {
     img.ondragstart = onStickerDragStart
     img.ondragover = onStickerDragOver
     img.ondrop = onStickerDrop
-    img.style.zIndex = zIndex++;
+    img.style.zIndex = ++zIndex;
     video.insertAdjacentElement('afterEnd', img)
 }
 
@@ -147,9 +146,11 @@ function capture() {
     hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
     let context = hiddenCanvas.getContext('2d');
     context.globalCompositionOperation = 'difference';
-    video.pause();
+    if (video.hasOwnProperty('pause'))
+        video.pause();
     context.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-    video.play();
+    if (video.hasOwnProperty('play'))
+        video.play();
     drawToPreviewCanvas();
 }
 
@@ -206,25 +207,32 @@ uploadBtn.onclick = () => {
     inputFile.accept = 'image/png, image/jpg';
     inputFile.click();
     inputFile.onchange = () => {
-        console.log('file is ready');
+        var fr = new FileReader();
         var file = inputFile.files[0];
+        fr.readAsDataURL(inputFile.files[0]);
         console.log(file);
-        const image = document.createElement('img');
-        image.src = URL.createObjectURL(file);
-        image.style.width = videoDimensions.width + 'px';
-        image.style.height = videoDimensions.height + 'px';
-        image.style.position = 'absolute';
-        image.style.top = '0';
-        image.style.left = '0'
-        console.log(image);
-        video.insertAdjacentElement('afterEnd', image);
-        captureBtn.disabled = false;
-        hiddenCanvas.style.width = videoDimensions.width + 'px'
-        hiddenCanvas.style.height = videoDimensions.height + 'px'
-        hiddenCanvas.width = videoDimensions.width * DEVICE_PIXEL_RATIO;
-        hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
-        let context = hiddenCanvas.getContext('2d');
-        context.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+        console.log(file.size);
+        fr.onload = (event) => {
+            if (file.size < 2e6) {
+                const image = document.createElement('img');
+                image.src = fr.result;
+                image.style.maxWidth = '100%';
+                image.style.maxHeight = '100%';
+                image.style.position = 'relative';
+                image.className += ' text-center';
+                console.log(image);
+                video.parentElement.appendChild(image);
+                captureBtn.disabled = false;
+                hiddenCanvas.style.width = videoDimensions.width + 'px'
+                hiddenCanvas.style.height = videoDimensions.height + 'px'
+                hiddenCanvas.width = videoDimensions.width * DEVICE_PIXEL_RATIO;
+                hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
+                let context = hiddenCanvas.getContext('2d');
+                context.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+            } else {
+                alert('Large file');
+            }
+        }
     }
 }
 

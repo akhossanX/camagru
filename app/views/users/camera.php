@@ -23,7 +23,7 @@
             <div class="col-12 col-lg-6 editing-area">
                 <!-- Camera Video and Capture button -->
                 <div class="row mb-3"> <!-- Camera row -->
-                    <div class="col-12" id="video-container-id">
+                    <div class="col-12 text-center" id="video-container-id">
                         <video id="video-id"></video>
                     </div>
                 </div>

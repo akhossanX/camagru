@@ -156,14 +156,11 @@
                     $_SESSION['logged-in-user']->username = $this->user->getUserName();
                     $_SESSION['logged-in-user']->email = $this->user->getEmail();
                     return $this->redirect('users/index');
-                }
-                else if (isset($_POST['cancel'])) {
+                } else if (isset($_POST['cancel'])) {
                     $this->redirect('users/index');
-                }
-                else 
+                } else 
                     $this->view('users/profile');
-            }
-            else
+            } else
                 $this->redirect('home/index');
         }
 
