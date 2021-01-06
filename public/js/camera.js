@@ -17,11 +17,16 @@ let stream_init = () => {
         .then((stream) => {
             video.srcObject = stream;
             video.play();
+            stickers.forEach(sticker => sticker.onclick = onStickerClickChooser);
+            video.ondrop = onStickerDrop;
+            video.ondragover = onStickerDragOver;
+            video.style.zIndex = 0;
+            uploadBtn.disabled = true;
         })
         .catch((error) => {
             video.style.display = 'none';
             alert(error);
-        })
+        });
     }
 }
 
@@ -30,37 +35,37 @@ function onStickerClickChooser() {
     captureBtn.disabled = false;
     var img = document.createElement('img')
     img.style.position = 'absolute';
-    img.style.left = STICKER_INIT_LEFT_OFFSET
-    img.style.top = STICKER_INIT_TOP_OFFSET
-    img.style.width = STICKER_WIDTH + 'px'
-    img.style.height = STICKER_HEIGHT + 'px'
-    img.src = this.src
-    img.ondblclick = onStickerDoubleClick
-    img.draggable = true
-    img.id = '_' + Math.random().toString(36)
-    img.ondragstart = onStickerDragStart
-    img.ondragover = onStickerDragOver
-    img.ondrop = onStickerDrop
+    img.style.left = STICKER_INIT_LEFT_OFFSET;
+    img.style.top = STICKER_INIT_TOP_OFFSET;
+    img.style.width = STICKER_WIDTH + 'px';
+    img.style.height = STICKER_HEIGHT + 'px';
+    img.src = this.src;
+    img.ondblclick = onStickerDoubleClick;
+    img.draggable = true;
+    img.id = '_' + Math.random().toString(36);
+    img.ondragstart = onStickerDragStart;
+    img.ondragover = onStickerDragOver;
+    img.ondrop = onStickerDrop;
     img.style.zIndex = ++zIndex;
-    video.insertAdjacentElement('afterEnd', img)
+    video.parentElement.appendChild(img);
 }
 
-function onStickerDoubleClick() {
-    this.remove()
+function onStickerDoubleClick(event) {
+    event.target.remove();
 }
 
 function onStickerDragStart(event) {
-    event.dataTransfer.setData('text/plain', this.id)
+    event.dataTransfer.setData('text/plain', event.target.id);
 } 
 
 function onStickerDragOver(event) {
-    event.preventDefault()
-    event.dataTransfer.dropEffect = 'move'
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
 }
 
 function onStickerDrop(event) {
-    event.preventDefault()
-    var liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'))
+    event.preventDefault();
+    var liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'));
     if (liveSticker === null)
         return ;
     var mouseRelativePosition = {
@@ -72,9 +77,9 @@ function onStickerDrop(event) {
         y: mouseRelativePosition.y - parseFloat(liveSticker.style.top)
     }
     var x = translationVector.x + parseFloat(liveSticker.style.left) - STICKER_WIDTH / 2.0,
-        y = translationVector.y + parseFloat(liveSticker.style.top) - STICKER_HEIGHT / 2.0
-    liveSticker.style.left = x + 'px'
-    liveSticker.style.top = y + 'px'
+        y = translationVector.y + parseFloat(liveSticker.style.top) - STICKER_HEIGHT / 2.0;
+    liveSticker.style.left = x + 'px';
+    liveSticker.style.top = y + 'px';
     liveSticker.style.zIndex = parseInt(event.target.style.zIndex) + 1;
 }
 
@@ -96,6 +101,7 @@ function assemblePicturesData(imageURI) {
     var pictures = document.querySelectorAll('#video-container-id img');
     var arr = [].slice.call(pictures);
     var stickers = [];
+    arr = arr.filter(st => st.id !== 'uploaded-image');
     arr.forEach(img => {
         let obj = {};
         let str = new String(img.src).substring(img.src.lastIndexOf('/') + 1);
@@ -111,16 +117,16 @@ function assemblePicturesData(imageURI) {
     stickers.sort((a, b) => a.zIndex - b.zIndex);
     sendPictureDataToServer({stickers: stickers, image: imageURI});
     // Deactivate save button to prevent saving multiple copies of the same picture
-    saveBtn.disabled = true
+    saveBtn.disabled = true;
 }
 
 function drawToPreviewCanvas() {
     var context = canvas.getContext('2d');
-    canvas.style.width = '100%';//video.style.width;//videoDimensions.width + 'px';
-    canvas.style.height = '100%';//video.style.height;//videoDimensions.height + 'px';
-    canvas.width = video.offsetWidth * DEVICE_PIXEL_RATIO;
-    canvas.height = video.offsetHeight * DEVICE_PIXEL_RATIO;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.style.maxWidth = '100%';
+    canvas.style.maxHeight = '100%';
+    canvas.width = target.offsetWidth * DEVICE_PIXEL_RATIO;
+    canvas.height = target.offsetHeight * DEVICE_PIXEL_RATIO;
+    context.drawImage(target, 0, 0, canvas.width, canvas.height);
     var st = document.querySelectorAll('#video-container-id img');
     st = [].slice.call(st).sort((a, b) => parseInt(a.style.zIndex) - parseInt(b.style.zIndex));
     for(var i = 0; i < st.length; i++) {
@@ -134,23 +140,22 @@ function drawToPreviewCanvas() {
     canvas.style.display = 'block';
     saveBtn.style.display = 'block';
     saveBtn.disabled = false;
-
 }
 
 // can't be triggered until stickers are selected;
 function capture() {
-    var frames = 0;
+    let styles = window.getComputedStyle(target, null);
     hiddenCanvas.style.width = videoDimensions.width + 'px'
     hiddenCanvas.style.height = videoDimensions.height + 'px'
     hiddenCanvas.width = videoDimensions.width * DEVICE_PIXEL_RATIO;
     hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
     let context = hiddenCanvas.getContext('2d');
     context.globalCompositionOperation = 'difference';
-    if (video.hasOwnProperty('pause'))
-        video.pause();
-    context.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-    if (video.hasOwnProperty('play'))
-        video.play();
+    if (target.hasOwnProperty('pause'))
+        target.pause();
+    context.drawImage(target, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+    if (target.hasOwnProperty('play'))
+        target.play();
     drawToPreviewCanvas();
 }
 
@@ -160,28 +165,33 @@ function savePicture() {
 }
 
 var video = $('#video-id'),
-    zIndex = 0,
-    styles = window.getComputedStyle(video, null),
-    videoDimensions = {
+    target = video;
+    zIndex = 0;
+
+let styles = window.getComputedStyle(target, null);
+let videoDimensions = {
         width: parseFloat(styles.getPropertyValue('width')),
         height: parseFloat(styles.getPropertyValue('height'))
     },
     constraints = {
         video: videoDimensions
-    },
-    stickers = document.querySelectorAll('#stickers img');
+    };
 
-stream_init()
+// Get all available stickers
+let stickers = document.querySelectorAll('#stickers img');
 
-stickers.forEach(sticker => sticker.onclick = onStickerClickChooser)
-video.ondrop = onStickerDrop
-video.ondragover = onStickerDragOver
-video.style.zIndex = 0;
+// Init streaming camera device
+stream_init();
 
-var videRect = video.getBoundingClientRect(),
+// stickers.forEach(sticker => sticker.onclick = onStickerClickChooser);
+// target.ondrop = onStickerDrop
+// target.ondragover = onStickerDragOver
+// target.style.zIndex = 0;
+
+var videoRect = target.getBoundingClientRect(),
     videoPosition = {
-        left: videRect.left + document.documentElement.scrollLeft,
-        top: videRect.top + document.documentElement.scrollTop
+        left: videoRect.left + document.documentElement.scrollLeft,
+        top: videoRect.top + document.documentElement.scrollTop
     }
 var captureBtn = $('#capture-btn'),
     uploadBtn = $('#upload-btn'),
@@ -199,8 +209,19 @@ canvas.style.display = 'none';
 captureBtn.onclick = capture;
 captureBtn.disabled = true; // deactivated until sticker selection
 
+var zIndex = 0;
+
+var picList = $('#pictures-list')
+
+
+
+
+
+
+
+
+
 uploadBtn.onclick = () => {
-    // uploadBtn.type = 'file';
     var inputFile = document.createElement('input');
     inputFile.type = 'file';
     inputFile.name = 'upload';
@@ -214,36 +235,33 @@ uploadBtn.onclick = () => {
         console.log(file.size);
         fr.onload = (event) => {
             if (file.size < 2e6) {
+                let oldImage = document.getElementById('uploaded-image');
+                if (oldImage !== null)
+                    video.parentElement.removeChild(oldImage);
+                stickers.forEach(sticker => sticker.onclick = onStickerClickChooser);// add click event on stickers
                 const image = document.createElement('img');
+                image.ondrop = onStickerDrop;
+                image.ondragover = onStickerDragOver;
+                image.id = 'uploaded-image';
+                video.style.zIndex = 0;
                 image.src = fr.result;
                 image.style.maxWidth = '100%';
                 image.style.maxHeight = '100%';
                 image.style.position = 'relative';
                 image.className += ' text-center';
-                console.log(image);
+                // console.log(image);
                 video.parentElement.appendChild(image);
+                target = image;
                 captureBtn.disabled = false;
-                hiddenCanvas.style.width = videoDimensions.width + 'px'
-                hiddenCanvas.style.height = videoDimensions.height + 'px'
-                hiddenCanvas.width = videoDimensions.width * DEVICE_PIXEL_RATIO;
-                hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
-                let context = hiddenCanvas.getContext('2d');
-                context.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+                // hiddenCanvas.style.width = videoDimensions.width + 'px';
+                // hiddenCanvas.style.height = videoDimensions.height + 'px';
+                // hiddenCanvas.width = videoDimensions.width * DEVICE_PIXEL_RATIO;
+                // hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
+                // let context = hiddenCanvas.getContext('2d');
+                // context.drawImage(target, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
             } else {
                 alert('Large file');
             }
         }
     }
 }
-
-var zIndex = 0;
-
-var picList = $('#pictures-list')
-
-
-
-
-
-
-
-    
