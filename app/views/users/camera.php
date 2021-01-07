@@ -7,9 +7,9 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php require_once APPROOT . '/views/inc/navbar.php'; ?>
 
-    <div class="container">
-        <h1 class="display-4 text-center heading">Select stickers and shot your picture !</h1>
-    </div>
+    <header class="jumbotron">
+        <h1 class="display-4 text-center">Select stickers and shot your picture !</h1>
+    </header>
     <div class="stickers" id="stickers">
         <?php foreach ($stickers as $png): ?>
             <img src='<?=URLROOT . "/public/img/${png}"?>'>

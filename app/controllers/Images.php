@@ -7,7 +7,22 @@ class Images extends Controller {
         Controller::session_init();
     }
 
-    public function save () {
+    private function save($imageData)
+    {
+        $creationTimeStamp = time();
+        $this->image->setName('' . $creationTimeStamp);
+        $this->image->setData($imageData);
+        $queryResult = $this->image->saveUserImage($_SESSION['logged-in-user']->id);
+        if ($queryResult) {
+            // make a Query to send the later saved picture to client
+            // and all its informations including comments likes....
+            echo $imageData;
+        } else {
+            echo 'Error: Image can not be saved';
+        }
+    }
+
+    public function get() {
         if (isAuthentified()) {
             $rawData = file_get_contents('php://input');
             if ($rawData) {
@@ -16,8 +31,8 @@ class Images extends Controller {
                 $data = imagepng($assembledImage);
                 $data = ob_get_contents();
                 ob_end_clean();
-                echo base64_encode($data);
-
+                $data = base64_encode($data);
+                $this->save($data);
             } else {
                 $this->redirect('home/index');
             }

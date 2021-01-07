@@ -6,7 +6,7 @@ div#preview-container-id {
 }
 
 video#video-id,
-canvas#canvas {
+canvas#preview-canvas {
     /* right: 0; 
     bottom: 0; */
     min-width: 100%; 
@@ -15,10 +15,11 @@ canvas#canvas {
     height: auto; 
     /* z-index: -100; */
     overflow: hidden;
+    outline: 7px solid rgba(43, 16, 1, 0.73);
 }
 
-.heading {
-    margin: auto auto 50px;
+.stickers {
+    height:  auto;
 }
 
 .stickers img {
@@ -36,6 +37,6 @@ canvas#canvas {
     font-weight: bolder;
     font-size: 3rem;
     text-align: center;
-    background: rgb(250, 128, 128);
+    background:  #DCD8CF;
 }
 

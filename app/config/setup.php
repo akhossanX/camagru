@@ -24,13 +24,15 @@
             name VARCHAR(255) NOT NULL,
             data LONGBLOB NOT NULL,
             user_id INT NOT NULL,
+            creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES user(id)
         );
         ";
 
     if ($db->prepare($query)->execute())
          echo 'Database Scheme has been successfully created !!';
-    $query = 'CREATE VIEW public_gallery_images AS SELECT u.username,i.data FROM image as i, user as u WHERE i.user_id=u.id';
+    $query = 'CREATE VIEW public_gallery_images AS 
+        SELECT u.username,i.data FROM image AS i, user AS u WHERE i.user_id=u.id';
     if ($db->prepare($query)->execute())
         echo 'Public gallery images view created successfully !!';
 

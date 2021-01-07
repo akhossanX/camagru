@@ -4,7 +4,7 @@ const STICKER_WIDTH = 70;
 const STICKER_HEIGHT = 80;
 const STICKER_INIT_LEFT_OFFSET = '40%'
 const STICKER_INIT_TOP_OFFSET = '40%'
-const SAVE_IMAGE_URI = 'http://localhost:8080/images/save'
+const SAVE_IMAGE_URI = 'http://localhost:8080/images/get'
 const PREVIEW_IMAGES_URI = 'http://localhost:8080/images/preview';
 const DEVICE_PIXEL_RATIO = window.devicePixelRatio;
 
@@ -87,6 +87,7 @@ function sendPictureDataToServer(data) {
     var xhr = new XMLHttpRequest(),
     url = new URL(SAVE_IMAGE_URI);
     xhr.onload = () => {
+        // Here We have to update the list of captured images belonging to the user;
         console.log(xhr.responseText);
     }
     xhr.onerror = (error) => {
@@ -183,11 +184,6 @@ let stickers = document.querySelectorAll('#stickers img');
 // Init streaming camera device
 stream_init();
 
-// stickers.forEach(sticker => sticker.onclick = onStickerClickChooser);
-// target.ondrop = onStickerDrop
-// target.ondragover = onStickerDragOver
-// target.style.zIndex = 0;
-
 var videoRect = target.getBoundingClientRect(),
     videoPosition = {
         left: videoRect.left + document.documentElement.scrollLeft,
@@ -212,10 +208,6 @@ captureBtn.disabled = true; // deactivated until sticker selection
 var zIndex = 0;
 
 var picList = $('#pictures-list')
-
-
-
-
 
 
 
@@ -253,12 +245,6 @@ uploadBtn.onclick = () => {
                 video.parentElement.appendChild(image);
                 target = image;
                 captureBtn.disabled = false;
-                // hiddenCanvas.style.width = videoDimensions.width + 'px';
-                // hiddenCanvas.style.height = videoDimensions.height + 'px';
-                // hiddenCanvas.width = videoDimensions.width * DEVICE_PIXEL_RATIO;
-                // hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
-                // let context = hiddenCanvas.getContext('2d');
-                // context.drawImage(target, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
             } else {
                 alert('Large file');
             }

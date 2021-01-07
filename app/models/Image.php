@@ -38,7 +38,7 @@ class Image extends BaseModel {
         $this->bind(':name', $this->name);
         $this->bind(':data', $this->data);
         $this->bind(':user_id', $userId);
-        $this->execute();
+        return $this->execute();
     }
 
 }
