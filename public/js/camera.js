@@ -25,7 +25,7 @@ let stream_init = () => {
         })
         .catch((error) => {
             video.style.display = 'none';
-            alert(error);
+            console.log(error);
         });
     }
 }

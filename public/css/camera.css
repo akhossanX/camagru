@@ -2,7 +2,7 @@ div#video-container-id,
 div#preview-container-id {
     position: relative;
     overflow: hidden;
-    padding: 0px 0px;
+    padding: 20px 20px;
 }
 
 video#video-id,
