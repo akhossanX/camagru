@@ -210,9 +210,6 @@ var zIndex = 0;
 var picList = $('#pictures-list')
 
 
-
-
-
 uploadBtn.onclick = () => {
     var inputFile = document.createElement('input');
     inputFile.type = 'file';
@@ -241,7 +238,6 @@ uploadBtn.onclick = () => {
                 image.style.maxHeight = '100%';
                 image.style.position = 'relative';
                 image.className += ' text-center';
-                // console.log(image);
                 video.parentElement.appendChild(image);
                 target = image;
                 captureBtn.disabled = false;

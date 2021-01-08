@@ -4,20 +4,15 @@ div#preview-container-id {
     overflow: hidden;
     padding: 20px 20px;
 }
-
 video#video-id,
 canvas#preview-canvas {
-    /* right: 0; 
-    bottom: 0; */
     min-width: 100%; 
     min-height: 100%;
     width: 100%; 
     height: auto; 
-    /* z-index: -100; */
     overflow: hidden;
     outline: 7px solid rgba(43, 16, 1, 0.73);
 }
-
 .stickers {
     height:  auto;
 }
@@ -26,17 +21,15 @@ canvas#preview-canvas {
     width : 100px;
     height: 100px;
 }
-
 #upload-btn,
 #save-btn,
 #capture-btn {
     height: auto;
 }
-
 .jumbotron {
     font-weight: bolder;
     font-size: 3rem;
     text-align: center;
-    background:  #DCD8CF;
+    background: transparent;
 }
 

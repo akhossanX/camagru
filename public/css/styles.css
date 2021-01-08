@@ -3,26 +3,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
 @import "camera.css";
 
+/************************* Universal Selector ***********************************/
 * {
     font-family: 'Dosis', sans-serif;
     letter-spacing: 1px;
 }
-body {
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
 /***************************** NAVBAR ***************************************/
-
 nav {
-    background: #2c2f33; /* #282827 #DCD8CF */
+    background: rgb(65,	68,	70);/* #2c2f33; /* #282827 #DCD8CF */
     color: #DCD8CF;
     font-size: 1.4rem;
     font-weight: bolder;
     height: 5rem;
     margin-bottom: 20px;
 }
-
 nav.navbar a.navbar-brand,
 nav.navbar li.nav-item a.nav-link,
 button.navbar-toggler .navbar-toggler-icon {
@@ -31,12 +25,10 @@ button.navbar-toggler .navbar-toggler-icon {
     color: #DCD8CF !important;
     content: "" !important;
 }
-
 .navbar-nav > li {
     margin-left: 30px;
     margin-right: 30px;;
 }
-
 nav .icon {
     display: none;
 }
@@ -46,19 +38,15 @@ img#camagru-icon {
     height: 30px ;
     filter: invert(1);
 }
-
 .navbar-brand,
 ul li.nav-item {
     transition: transform .3s ease-in;
 }
-
 .navbar-brand:hover,
 ul li.nav-item:hover {
     transform: scale(1.2, 1.2);
 }
-
 /************ Media Query **********/
-
 @media (max-width: 991px) {
     nav {
         height: auto;
@@ -91,34 +79,24 @@ ul li.nav-item:hover {
     }
 
 }
-
-
 /***************************** END OF NAVBAR ***************************************/
-
 input {
     display: block;
     width: 50%;
     height: 30px;
-    /* margin: 10px auto; */
 }
-
-
 span.form-error {
     font-weight: lighter;
     font-size: 14px;
     color: red;
-    /* text-align: center; */
     display: block;
 }
-
 /*************************** Alerts ***************************/
-
 .alert {
     padding: 20px;
     background-color: #90ee90;
     color: white;
   }
-  
   .closebtn {
     margin-left: 15px;
     color: white;
@@ -129,7 +107,12 @@ span.form-error {
     cursor: pointer;
     transition: 0.3s;
   }
-  
   .closebtn:hover {
     color: black;
+  }
+
+  /**************************** Sign in form ************/
+  .signin-form {
+    position: absolute;
+    align-self: center;
   }

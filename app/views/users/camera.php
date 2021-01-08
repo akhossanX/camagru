@@ -10,7 +10,7 @@
     <header class="jumbotron">
         <h1 class="display-4 text-center">Select stickers and shot your picture !</h1>
     </header>
-    <div class="stickers" id="stickers">
+    <div class="container-fluid stickers" id="stickers">
         <?php foreach ($stickers as $png): ?>
             <img src='<?=URLROOT . "/public/img/${png}"?>'>
         <?php endforeach;?>
