@@ -114,12 +114,18 @@ span.form-error {
 	justify-content: center;
 }
 .signin-form-container .signin-form {
+    width: 70%;
 	padding: 50px 50px;
 	border: 1px solid lightgray;
 	border-radius: 5px;
 }
+.btn.btn-success,
+.btn.btn-primary {
+    width: 40%;
+}
+
 .btn.btn-success {
-	background-color: #06da06;
-	border-color: #06da06;
+	background-color:  #424446;
+    border-color:  #424446;
 }
 

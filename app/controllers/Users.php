@@ -60,6 +60,8 @@
             if (isset($_POST['submit'])) {
                 $_SESSION['username'] = $_POST['username'];
                 $_SESSION['email'] = $_POST['email'];
+            }
+            else {
                 $_SESSION['username_error'] = '';
                 $_SESSION['email_error'] = '';
                 $_SESSION['password_error'] = '';
