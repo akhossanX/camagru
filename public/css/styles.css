@@ -105,15 +105,14 @@ span.form-error {
 .closebtn:hover {
 	color: black;
 }
-
 /**************************** Sign in form ************/
-.signin-form-container {
+.form-container {
 	height: 80vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
-.signin-form-container .signin-form {
+.form-container .auth-form {
     width: 70%;
 	padding: 50px 50px;
 	border: 1px solid lightgray;

@@ -4,8 +4,7 @@
     {
         private $image;
 
-        public function __construct()
-        {
+        public function __construct() {
             $this->image = $this->model('Image');
         }
 

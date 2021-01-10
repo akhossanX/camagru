@@ -11,6 +11,7 @@
     >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?php echo URLROOT;?>/public/css/styles.css">
+    <script defer src="<?=URLROOT.'/public/js/form.js'?>"></script>
     <title><?php echo SITENAME ?></title>
 </head>
 <body>

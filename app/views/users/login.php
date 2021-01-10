@@ -1,19 +1,19 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php require_once APPROOT . '/views/inc/navbar.php'; ?>
 
-<div class="container signin-form-container">
-	<form action="<?=URLROOT.'/users/login';?>" method="post" class="signin-form">
+<div class="container form-container">
+	<form action="<?=URLROOT.'/users/login';?>" method="post" class="auth-form">
 		<h1 class="text-center">LOGIN</h1>
 		<br>
 		<div class="form-group">
 			<label for="username">Username</label>
 			<input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
-			<span class="form-error"><?=$_SESSION['username_error'];?></span>
+			<span id="username" class="form-error"><?=$_SESSION['username_error'];?></span>
 		</div>
 		<div class="form-group">
 			<label for="password">Password</label>
 			<input type="password" class="form-control" id="password" name="password" placeholder="Password">
-			<span class="form-error"><?=$_SESSION['password_error'];?></span>
+			<span id="password" class="form-error"><?=$_SESSION['password_error'];?></span>
 		</div>
 		<div style="display: flex; justify-content: space-between; align-items:center">
 			<button type="submit" name="submit" class="btn btn-success btn-lg">Sign In</button>
