@@ -200,7 +200,7 @@
             $toEmail = $user->email;
 			$subject = "User Registration Activation Mail";
 			$txt = "Click this link to activate your account:\n <a href='" . $link . "'>Activate</a>\n";
-            $mailHeaders = "From: Admin\r\n";
+            $mailHeaders = "From: akhossan\r\n";
 			$mailHeaders .= "MIME-Version: 1.0" . "\r\n";
 			$mailHeaders .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 			if(mail($toEmail, $subject, $txt, $mailHeaders))

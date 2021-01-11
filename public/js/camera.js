@@ -1,9 +1,9 @@
 'use strict';
 
-const STICKER_WIDTH = 70;
+const STICKER_WIDTH = 80;
 const STICKER_HEIGHT = 80;
-const STICKER_INIT_LEFT_OFFSET = '40%'
-const STICKER_INIT_TOP_OFFSET = '40%'
+const STICKER_INIT_LEFT_OFFSET = '40%';
+const STICKER_INIT_TOP_OFFSET = '40%';
 const SAVE_IMAGE_URI = 'http://localhost:8080/images/get'
 const PREVIEW_IMAGES_URI = 'http://localhost:8080/images/preview';
 const DEVICE_PIXEL_RATIO = window.devicePixelRatio;
@@ -31,7 +31,7 @@ let stream_init = () => {
 }
 
 function onStickerClickChooser() {
-    //activate capture button
+    /* activate capture button */
     captureBtn.disabled = false;
     var img = document.createElement('img')
     img.style.position = 'absolute';
@@ -199,16 +199,11 @@ var captureBtn = $('#capture-btn'),
 saveBtn.disabled = true;
 saveBtn.onclick = savePicture;
 saveBtn.style.display = 'none';
-
 canvas.style.display = 'none';
-
 captureBtn.onclick = capture;
 captureBtn.disabled = true; // deactivated until sticker selection
-
 var zIndex = 0;
-
 var picList = $('#pictures-list')
-
 
 uploadBtn.onclick = () => {
     var inputFile = document.createElement('input');
