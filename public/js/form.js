@@ -15,7 +15,6 @@ let checkForArrayNameInput = (inputs) => {
 
 let checkEmail = function () {
     let email = this.value;
-    let oldColor = this.style.borderColor;
     let span = document.querySelector('.form-group span#' + this.id);
     let re = /^\w+\.?\w+@\w+\.[a-z]{2,3}$/;
     if (re.test(email) === false) {
@@ -34,7 +33,6 @@ let checkPassword = function () {
     let password = this.value;
     let oldColor = this.style.borderColor;
     let span = document.querySelector('.form-group span#' + this.id);
-    // console.log(span);
     let re = /\w+|_/;
     if (re.test(password) === false) {
         span.innerHTML = 'password should contain lower uper letters and digits';
@@ -51,30 +49,55 @@ let checkPassword = function () {
         this.classList.toggle("input-error");
 }
 
+let checkUserName = function () {
+    let username = this.value;
+    let span = document.querySelector('.form-group span#' + this.id);
+    let re = /^((\w+)|(\d+)){8}$/;
+    if (re.test(username) === false) {
+        span.innerHTML = 'invalid username';
+        this.className += ' input-error';
+    } else {
+        if (this.classList.contains("input-error"))
+            this.classList.toggle("input-error");
+        span.innerHTML = '';
+    }
+}
+
 let form = document.getElementsByClassName("auth-form");
-console.log(form);
+// console.log(form);  
 
 if (form.length !== 0) {
     form = form[0];
     form.noValidate = true;
     let inputs = document.querySelectorAll(".form-group input");
+
     inputs.forEach(input => {
         input.required = true;
         switch (input.type) {
             case 'email': input.oninput = checkEmail; break;
             case 'password': input.oninput = checkPassword; break;
+            case 'text' : input.oninput = checkUserName; break;
             default : break;
         }
     });
 
-    form.onsubmit = (event) => {
+    form.onsubmit = function (event) {
         console.log('onsubmit')
-        // event.preventDefault();
+        event.preventDefault();
+        inputs.forEach(input => {
+            if (input.value === "") {
+                console.log(input.id);
+                let span = document.querySelector(".form-group span#" + input.id);
+                console.log(span);
+                span.innerHTML = "Please fill in thie field";
+                input.className += ' input-error';
+            }
+        });
         if (checkForArrayNameInput(inputs) === true) {
             console.log('submitted')
-            form.submit();
+            // this.submit();
         } else {
             console.log('not submitted')
         }
-    };
+    }
 }
