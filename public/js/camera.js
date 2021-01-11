@@ -169,10 +169,15 @@ var video = $('#video-id'),
     target = video;
     zIndex = 0;
 
-let styles = window.getComputedStyle(target, null);
+// let styles = window.getComputedStyle(target, null);
+
+// let videoDimensions = {
+//         width: parseFloat(styles.getPropertyValue('width')),
+//         height: parseFloat(styles.getPropertyValue('height'))
+//     };
 let videoDimensions = {
-        width: parseFloat(styles.getPropertyValue('width')),
-        height: parseFloat(styles.getPropertyValue('height'))
+    width: video.offsetWidth,
+    height: video.offsetHeight
     },
     constraints = {
         video: videoDimensions
