@@ -26,7 +26,7 @@
 			<span id="confirm_password" class="form-error"><?=$_SESSION['confirm_password_error'];?></span>
 		</div>
 		<div style="display: flex; justify-content: space-between; align-items:center">
-			<button type="submit" name="submit" class="btn btn-success btn-lg">Sign Up</button>
+			<button type="submit" name="register" class="btn btn-success btn-lg">Sign Up</button>
 		</div>
 		<hr>
 		<div style="display: flex; justify-content: flex-end; align-items:center">

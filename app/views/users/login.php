@@ -16,7 +16,7 @@
 			<span id="password" class="form-error"><?=$_SESSION['password_error'];?></span>
 		</div>
 		<div style="display: flex; justify-content: space-between; align-items:center">
-			<button type="submit" name="submit" class="btn btn-success btn-lg">Sign In</button>
+			<button type="submit" name="login" class="btn btn-success btn-lg">Sign In</button>
 			<span><a href="<?=URLROOT.'/users/forgotpass'?>">Forgot password?</a></span>
 		</div>
 		<hr>

@@ -3,6 +3,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
 @import "camera.css";
 
+:root {
+    --error-color: rgb(255, 167, 167);
+}
+
 /************************* Universal Selector ***********************************/
 * {
     font-family: 'Dosis', sans-serif;
@@ -126,5 +130,12 @@ span.form-error {
 .btn.btn-success {
 	background-color:  #424446;
     border-color:  #424446;
+}
+
+.form-control.input-error {
+    border-color: var(--error-color);
+}
+.form-control.input-error:focus {
+    box-shadow: 0 0 0 .2rem var(--error-color);
 }
 

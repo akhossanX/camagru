@@ -6,7 +6,7 @@ let checkForArrayNameInput = (inputs) => {
         let re = /.*\[.*\]$/g;
         if (re.test(input.name) === true) {
             let errorSpan = document.querySelector(".form-group span#" + input.id);
-            errorSpan.textContent = "Array input detected in field name: " + input.name;
+            errorSpan.innerHTML = "Array input detected in field name: " + input.name;
             success = false;
         }
     });
@@ -19,11 +19,12 @@ let checkEmail = function () {
     let span = document.querySelector('.form-group span#' + this.id);
     let re = /^\w+\.?\w+@\w+\.[a-z]{2,3}$/;
     if (re.test(email) === false) {
-        this.style.borderColor = 'red';
-        span.innerHTML = 'error in mail';
+        this.className += ' input-error';
+        span.innerHTML = 'Please enter a valid email';
     } else {
+        if (this.classList.contains("input-error"))
+            this.classList.toggle("input-error");
         span.innerHTML = '';
-        this.style.borderColor = oldColor;
     }
 }
 
@@ -37,36 +38,43 @@ let checkPassword = function () {
     let re = /\w+|_/;
     if (re.test(password) === false) {
         span.innerHTML = 'password should contain lower uper letters and digits';
-        this.style.borderColor = 'red';
+        this.className += ' input-error';
         return ;
     }
     if (password.length < 8) {
         span.innerHTML = 'password should be minimum 8 characters';
-        this.style.borderColor = 'red';
+        this.className += ' input-error';
         return ;
     }
     span.innerHTML = '';
-    this.style.borderColor = oldColor;
+    if (this.classList.contains("input-error"))
+        this.classList.toggle("input-error");
 }
 
 let form = document.getElementsByClassName("auth-form");
+console.log(form);
 
-if (form !== null) {
-    [].forEach.call(form, (form) => {
-        form.noValidate = true;
-        let inputs = document.querySelectorAll(".form-group input");
-        inputs.forEach(input => {
-            switch (input.type) {
-                case 'email': input.oninput = checkEmail; break;
-                case 'password': input.oninput = checkPassword; break;
-                default : break;
-            }
-        });
-        form.onsubmit = (event) => {
-            event.preventDefault();
-            if (checkForArrayNameInput(inputs) === true) {
-                form.submit();
-            }
-        };
+if (form.length !== 0) {
+    form = form[0];
+    form.noValidate = true;
+    let inputs = document.querySelectorAll(".form-group input");
+    inputs.forEach(input => {
+        input.required = true;
+        switch (input.type) {
+            case 'email': input.oninput = checkEmail; break;
+            case 'password': input.oninput = checkPassword; break;
+            default : break;
+        }
     });
+
+    form.onsubmit = (event) => {
+        console.log('onsubmit')
+        // event.preventDefault();
+        if (checkForArrayNameInput(inputs) === true) {
+            console.log('submitted')
+            form.submit();
+        } else {
+            console.log('not submitted')
+        }
+    };
 }

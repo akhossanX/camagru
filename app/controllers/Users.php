@@ -17,14 +17,14 @@
         }
         
         public function login() {
-            if (isset($_POST['submit'])) {
+            if (isset($_POST['login'])) {
                 $_SESSION['username_error'] = '';
                 $_SESSION['password_error'] = '';
                 $_SESSION['username'] = $_POST['username'];
             } else {
                 $_SESSION = ['username' => '', 'username_error' => '', 'password_error' => ''];
             }
-            if (isset($_POST['submit'])) {
+            if (isset($_POST['login'])) {
                 // check for user credentials conformity
                 $user = $this->user->findUserByName($_POST['username']);
                 if ($user) {
@@ -57,7 +57,7 @@
         }
 
         public function register() {
-            if (isset($_POST['submit'])) {
+            if (isset($_POST['register'])) {
                 $_SESSION['username'] = $_POST['username'];
                 $_SESSION['email'] = $_POST['email'];
             }
@@ -68,7 +68,7 @@
                 $_SESSION['confirm_password_error'] = '';
             }
             // Something has been submitted from the registration form
-            if (isset($_POST['submit'])) {
+            if (isset($_POST['register'])) {
                 if (empty($_POST['username']))
                     $_SESSION['username_error'] = 'username can\'t be empty';
                 $this->user->setUserName($_POST['username']);
