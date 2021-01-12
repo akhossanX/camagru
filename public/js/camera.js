@@ -9,9 +9,50 @@ const PREVIEW_IMAGES_URI = 'http://localhost:8080/images/preview';
 const DEVICE_PIXEL_RATIO = window.devicePixelRatio;
 
 
-let $ = (selector) => document.querySelector(selector);
+let $ = (selector) => document.querySelector(selector),
+    video = $('#video-id'),
+    target = video,
+    zIndex = 0,
+    streaming = false,
+    videoDimensions = {
+        width: 940,//video.offsetWidth,
+        height: 780//video.offsetHeight
+    },
+    constraints = {video: true},
+// Get all available stickers
+    stickers = document.querySelectorAll('#stickers img');
+// Init streaming camera device
+stream_init();
+let videoRect = target.getBoundingClientRect(),
+    pr = console.log(videoRect),
+    sc = console.log(document.documentElement.scrollLeft),
+    videoPosition = {
+        left: videoRect.left + document.documentElement.scrollLeft,
+        top: videoRect.top + document.documentElement.scrollTop
+    },
+    captureBtn = $('#capture-btn'),
+    uploadBtn = $('#upload-btn'),
+    saveBtn = $('#save-btn'),
+    canvas = $('#preview-canvas'),
+    hiddenCanvas = document.createElement('canvas');
+// Deactivate saveBtn by default to prevent storing empty images
+saveBtn.disabled = true;
+saveBtn.onclick = savePicture;
+saveBtn.style.display = 'none';
+canvas.style.display = 'none';
+captureBtn.onclick = capture;
+captureBtn.disabled = true; // deactivated until sticker selection
+let picList = $('#pictures-list');
 
-let stream_init = () => {
+window.onresize = () => {
+    videoRect = target.getBoundingClientRect();
+    videoPosition = {
+        left: videoRect.left + document.documentElement.scrollLeft,
+        top: videoRect.top + document.documentElement.scrollTop
+    };
+};
+
+function stream_init () {
     if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
@@ -28,12 +69,12 @@ let stream_init = () => {
             console.log(error);
         });
     }
-}
+};
 
 function onStickerClickChooser() {
     /* activate capture button */
     captureBtn.disabled = false;
-    var img = document.createElement('img')
+    let img = document.createElement('img');
     img.style.position = 'absolute';
     img.style.left = STICKER_INIT_LEFT_OFFSET;
     img.style.top = STICKER_INIT_TOP_OFFSET;
@@ -65,19 +106,20 @@ function onStickerDragOver(event) {
 
 function onStickerDrop(event) {
     event.preventDefault();
-    var liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'));
+    let liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'));
     if (liveSticker === null)
         return ;
-    var mouseRelativePosition = {
+    let mouseRelativePosition = {
         x: event.clientX + document.documentElement.scrollLeft - videoPosition.left,
         y: event.clientY + document.documentElement.scrollTop - videoPosition.top
+    };
+    console.log(mouseRelativePosition);
+    let translationVector = {
+        x: mouseRelativePosition.x - parseInt(liveSticker.style.left),
+        y: mouseRelativePosition.y - parseInt(liveSticker.style.top)
     }
-    var translationVector = {
-        x: mouseRelativePosition.x - parseFloat(liveSticker.style.left),
-        y: mouseRelativePosition.y - parseFloat(liveSticker.style.top)
-    }
-    var x = translationVector.x + parseFloat(liveSticker.style.left) - STICKER_WIDTH / 2.0,
-        y = translationVector.y + parseFloat(liveSticker.style.top) - STICKER_HEIGHT / 2.0;
+    let x = translationVector.x + parseInt(liveSticker.style.left) - STICKER_WIDTH / 2.0,
+        y = translationVector.y + parseInt(liveSticker.style.top) - STICKER_HEIGHT / 2.0;
     liveSticker.style.left = x + 'px';
     liveSticker.style.top = y + 'px';
     liveSticker.style.zIndex = parseInt(event.target.style.zIndex) + 1;
@@ -123,8 +165,8 @@ function assemblePicturesData(imageURI) {
 
 function drawToPreviewCanvas() {
     var context = canvas.getContext('2d');
-    canvas.style.maxWidth = '100%';
-    canvas.style.maxHeight = '100%';
+    canvas.style.maxWidth = videoRect.width;//'100%';
+    canvas.style.maxHeight = videoRect.height;//'100%';
     canvas.width = target.offsetWidth * DEVICE_PIXEL_RATIO;
     canvas.height = target.offsetHeight * DEVICE_PIXEL_RATIO;
     context.drawImage(target, 0, 0, canvas.width, canvas.height);
@@ -146,10 +188,10 @@ function drawToPreviewCanvas() {
 // can't be triggered until stickers are selected;
 function capture() {
     let styles = window.getComputedStyle(target, null);
-    hiddenCanvas.style.width = videoDimensions.width + 'px'
-    hiddenCanvas.style.height = videoDimensions.height + 'px'
-    hiddenCanvas.width = videoDimensions.width * DEVICE_PIXEL_RATIO;
-    hiddenCanvas.height = videoDimensions.height * DEVICE_PIXEL_RATIO;
+    hiddenCanvas.style.width = videoRect.width + 'px'
+    hiddenCanvas.style.height = videoRect.height + 'px'
+    hiddenCanvas.width = videoRect.width * DEVICE_PIXEL_RATIO;
+    hiddenCanvas.height = videoRect.height * DEVICE_PIXEL_RATIO;
     let context = hiddenCanvas.getContext('2d');
     context.globalCompositionOperation = 'difference';
     if (target.hasOwnProperty('pause'))
@@ -165,50 +207,18 @@ function savePicture() {
     assemblePicturesData(imageURI);
 }
 
-var video = $('#video-id'),
-    target = video;
-    zIndex = 0;
-
-// let styles = window.getComputedStyle(target, null);
-
-// let videoDimensions = {
-//         width: parseFloat(styles.getPropertyValue('width')),
-//         height: parseFloat(styles.getPropertyValue('height'))
-//     };
-let videoDimensions = {
-    width: video.offsetWidth,
-    height: video.offsetHeight
-    },
-    constraints = {
-        video: videoDimensions
-    };
-
-// Get all available stickers
-let stickers = document.querySelectorAll('#stickers img');
-
-// Init streaming camera device
-stream_init();
-
-var videoRect = target.getBoundingClientRect(),
-    videoPosition = {
-        left: videoRect.left + document.documentElement.scrollLeft,
-        top: videoRect.top + document.documentElement.scrollTop
+video.addEventListener('canplay', event => {
+    if (streaming === false) {
+        videoDimensions.height = video.videoHeight / (video.videoWidth / videoDimensions.width);
+        video.setAttribute('width', videoDimensions.width);
+        video.setAttribute('height', videoDimensions.height);
+        canvas.setAttribute('width', videoDimensions.width);
+        canvas.setAttribute('height', videoDimensions.height);
+        hiddenCanvas.setAttribute('width', videoDimensions.width);
+        hiddenCanvas.setAttribute('height', videoDimensions.height);
+        streaming = true;
     }
-var captureBtn = $('#capture-btn'),
-    uploadBtn = $('#upload-btn'),
-    saveBtn = $('#save-btn'),
-    canvas = $('#preview-canvas'),
-    hiddenCanvas = document.createElement('canvas');
-
-// Deactivate saveBtn by default to prevent storing empty images
-saveBtn.disabled = true;
-saveBtn.onclick = savePicture;
-saveBtn.style.display = 'none';
-canvas.style.display = 'none';
-captureBtn.onclick = capture;
-captureBtn.disabled = true; // deactivated until sticker selection
-var zIndex = 0;
-var picList = $('#pictures-list')
+}, false);
 
 uploadBtn.onclick = () => {
     var inputFile = document.createElement('input');

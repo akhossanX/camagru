@@ -6,8 +6,8 @@
         $url2 = URLROOT . '/users/logout';
     }
     else {
-        $userOrSignIn = 'Sign In';
-        $logOutOrSingUp = 'Sign Up';
+        $userOrSignIn = 'Login';
+        $logOutOrSingUp = 'Register';
         $url1 = URLROOT . '/users/login';
         $url2 = URLROOT . '/users/register';
     }
@@ -20,9 +20,6 @@
 			<img id="camagru-icon" src="<?=URLROOT.'/public/icons/video-camera.svg'?>">
 			<span>MAGRU</span>
     </a>
-    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-        </button> -->
     <div class="right-side">
         <div class="icon" onclick="toggleMenu()">
             <i class="fa fa-bars"></i>
@@ -43,6 +40,6 @@
     </div>
   </div>
 </nav>
-<div class="bg-image"></div>
+<!-- <div class="bg-image"></div> -->
 
 

@@ -7,7 +7,8 @@
 		<br>
 		<div class="form-group">
 			<label for="username">Username</label>
-			<input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+			<input type="text" class="form-control" id="username" name="username" placeholder="Enter username"
+			value="<?=$_SESSION['username']?>">
 			<span id="username" class="form-error"><?=$_SESSION['username_error'];?></span>
 		</div>
 		<div class="form-group">

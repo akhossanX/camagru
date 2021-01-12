@@ -25,8 +25,8 @@
 			<input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm password">
 			<span id="confirm-password" class="form-error"><?=$_SESSION['confirm_password_error'];?></span>
 		</div>
-		<div style="display: flex; justify-content: space-between; align-items:center">
-			<button type="submit" name="register" class="btn btn-success btn-lg">Sign Up</button>
+		<div>
+			<button type="submit" style="width:100%;" name="register" class="btn btn-success btn-lg">Sign Up</button>
 		</div>
 		<hr>
 		<div style="display: flex; justify-content: flex-end; align-items:center">

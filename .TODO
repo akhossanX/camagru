@@ -1,5 +1,5 @@
 
-+ video element should change width and height according to change ratio whenever windwo is resized
++ video element should change width and height according to change ratio whenever window is resized
 + Stickers bar should be styled and images should be resized to a fixed size 
 + stickers position on video should be recalculated
 + 
