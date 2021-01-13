@@ -2,4 +2,7 @@
 + video element should change width and height according to change ratio whenever window is resized
 + Stickers bar should be styled and images should be resized to a fixed size 
 + stickers position on video should be recalculated
-+ 
+
+
+
+- add oncheck event listener to notify checkbox

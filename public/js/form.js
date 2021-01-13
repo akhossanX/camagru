@@ -1,5 +1,7 @@
 'use strict';
 
+let valid = true;
+
 let checkForArrayNameInput = (inputs) => {
     let success = true;
     inputs.forEach(input => {
@@ -20,6 +22,7 @@ let checkEmail = function () {
     if (re.test(email) === false) {
         this.className += ' input-error';
         span.innerHTML = 'Invalid email';
+        valid = false;
     } else {
         if (this.classList.contains("input-error"))
             this.classList.toggle("input-error");
@@ -35,6 +38,7 @@ let checkPassword = function () {
         if (this.value !== password) {
             this.className += ' input-error';
             span.innerHTML = `Passwords does not match`;
+            valid = false;
         } else {
             if (this.classList.contains("input-error"))
                 this.classList.toggle("input-error");
@@ -50,11 +54,13 @@ let checkPassword = function () {
         span.innerHTML = `Must contain at least a-zA-Z0-9 and
          at least one of '!@#$%^&*()' and 8 up to 20 characters`;
         this.className += ' input-error';
+        valid = false;
         return ;
     }
     if (password.length < 8) {
         span.innerHTML = 'Must have minimum of 8 characters';
         this.className += ' input-error';
+        valid = false;
         return ;
     }
     span.innerHTML = '';
@@ -69,6 +75,7 @@ let checkUserName = function () {
     if (re.test(username) === false) {
         span.innerHTML = 'Must contain 8 up to 20 english characters or digits or _.';
         this.className += ' input-error';
+        valid = false;
     } else {
         if (this.classList.contains("input-error"))
             this.classList.toggle("input-error");
@@ -102,14 +109,15 @@ if (form.length !== 0) {
                 let span = document.querySelector(".form-group span#" + input.id);
                 span.innerHTML = "Please fill in the field";
                 input.className += ' input-error';
+                valid = false;
             }
         });
-        if (checkForArrayNameInput(inputs) === true) {
-            console.log('submitted');
+        if (checkForArrayNameInput(inputs) === true && valid === true) {
+            console.log(form);
             let submitter = document.createElement("input");
             submitter.type = 'hidden';
-            submitter.name = 'register';
-            submitter.value = 'register';
+            submitter.name = event.submitter.name;
+            submitter.value = event.submitter.name;
             this.appendChild(submitter);
             this.submit();
         } else {
@@ -117,3 +125,4 @@ if (form.length !== 0) {
         }
     }
 }
+

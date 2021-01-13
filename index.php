@@ -1,9 +1,10 @@
 <?php
     require_once 'app/autoloader.php';
 	
-	error_reporting(-1);
-	ini_set('display_errors', 'On');
-	set_error_handler("var_dump");
+	ini_set('display_startup_errors', 1);
+	ini_set('display_errors', 1);
+	error_reporting(E_ALL);
+	//set_error_handler("var_dump");
 
 
 	if (preg_match('/\.(?:png|jpg|jpeg|gif|css|js|svg)$/', $_SERVER["REQUEST_URI"]))

@@ -11,21 +11,29 @@
         CREATE DATABASE camagru;
         USE camagru;
         CREATE TABLE user (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            username VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            hash VARCHAR(255) NOT NULL,
-            active BOOLEAN NOT NULL DEFAULT FALSE
+            `id` INT PRIMARY KEY AUTO_INCREMENT,
+            `username` VARCHAR(255) NOT NULL,
+            `email` VARCHAR(255) NOT NULL,
+            `password` VARCHAR(255) NOT NULL,
+            `hash` VARCHAR(255) NOT NULL,
+            `active` BOOLEAN NOT NULL DEFAULT FALSE
+            `notify` BOOLEAN NOT NULL DEFAULT FALSE
         );
         CREATE INDEX userindex ON user (id, email);
         CREATE TABLE image (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            name VARCHAR(255) NOT NULL,
-            data LONGBLOB NOT NULL,
-            user_id INT NOT NULL,
-            creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `id` INT PRIMARY KEY AUTO_INCREMENT,
+            `name` VARCHAR(255) NOT NULL,
+            `data` LONGBLOB NOT NULL,
+            `user_id` INT NOT NULL,
+            `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `likes` INT NOT NULL DEFAULT 0,
             FOREIGN KEY (user_id) REFERENCES user(id)
+        );
+        CREATE TABLE comment (
+            `id` INT PRIMARY KEY AUTO_INCREMENT,
+            `text` VARCHAR(720) NOT NULL,
+            `image_id` INT NOT NULL,
+            FOREIGN KEY (image_id) REFERENCES image(id)
         );
         ";
 

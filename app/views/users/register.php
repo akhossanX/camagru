@@ -25,7 +25,7 @@
 			<input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm password">
 			<span id="confirm-password" class="form-error"><?=$_SESSION['confirm_password_error'];?></span>
 		</div>
-		<div>
+		<div class="form-group">
 			<button type="submit" style="width:100%;" name="register" class="btn btn-success btn-lg">Sign Up</button>
 		</div>
 		<hr>

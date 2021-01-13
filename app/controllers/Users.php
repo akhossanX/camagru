@@ -147,7 +147,7 @@
                     $this->user->setPassword($_POST['password']);
                     $this->user->setEmail($_POST['email']);
                     $this->verifyUserCredentials($_SESSION);
-                    if ($_SESSION['email_error'] == 'email already registered')
+                    if ($_SESSION['email_error'] === 'email already registered')
                         $_SESSION['email_error'] = '';
                     if (!empty($_SESSION['email_error']) || !empty($_SESSION['password_error']) || 
                     !empty($_SESSION['confirm_password_error']) || !empty($_SESSION['username_error'])
@@ -158,8 +158,6 @@
                     $_SESSION['logged-in-user']->username = $this->user->getUserName();
                     $_SESSION['logged-in-user']->email = $this->user->getEmail();
                     return $this->redirect('users/index');
-                } else if (isset($_POST['cancel'])) {
-                    $this->redirect('users/index');
                 } else 
                     $this->view('users/profile');
             } else
