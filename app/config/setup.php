@@ -4,22 +4,36 @@
     require_once 'app/config/config.php';
     define('DB_INIT', 0);
 
+    function try_execute($db, $query, $success_msg) {
+        try {
+            $db->prepare($query)->execute();
+            echo $success_msg . PHP_EOL;
+        } catch (PDOException $e) {
+            die ($e->getMessage());
+        }
+    }
+
     $db = Database::connect(DB_INIT);
-    $query =
-        "
+    $query = "
         DROP DATABASE IF EXISTS camagru;
         CREATE DATABASE camagru;
         USE camagru;
+    ";
+    try_execute($db, $query, 'Database Scheme has been successfully created !!');
+    $query = "
         CREATE TABLE user (
             `id` INT PRIMARY KEY AUTO_INCREMENT,
             `username` VARCHAR(255) NOT NULL,
             `email` VARCHAR(255) NOT NULL,
             `password` VARCHAR(255) NOT NULL,
             `hash` VARCHAR(255) NOT NULL,
-            `active` BOOLEAN NOT NULL DEFAULT FALSE
-            `notify` BOOLEAN NOT NULL DEFAULT FALSE
+            `active` BOOLEAN NOT NULL DEFAULT FALSE,
+            `notify` BOOLEAN NOT NULL DEFAULT TRUE
         );
         CREATE INDEX userindex ON user (id, email);
+    ";
+    try_execute($db, $query, 'User table created!...');
+    $query = "
         CREATE TABLE image (
             `id` INT PRIMARY KEY AUTO_INCREMENT,
             `name` VARCHAR(255) NOT NULL,
@@ -29,20 +43,23 @@
             `likes` INT NOT NULL DEFAULT 0,
             FOREIGN KEY (user_id) REFERENCES user(id)
         );
+    ";
+    try_execute($db, $query, 'Image table created!...');
+    $query = "
         CREATE TABLE comment (
             `id` INT PRIMARY KEY AUTO_INCREMENT,
             `text` VARCHAR(720) NOT NULL,
             `image_id` INT NOT NULL,
             FOREIGN KEY (image_id) REFERENCES image(id)
         );
-        ";
+    ";
+    try_execute($db, $query, 'Comment table created!...');
 
-    if ($db->prepare($query)->execute())
-         echo 'Database Scheme has been successfully created !!';
-    $query = 'CREATE VIEW public_gallery_images AS 
-        SELECT u.username,i.data FROM image AS i, user AS u WHERE i.user_id=u.id';
-    if ($db->prepare($query)->execute())
-        echo 'Public gallery images view created successfully !!';
+    $query = "
+        CREATE VIEW public_gallery_images AS 
+        SELECT u.username,i.data FROM image AS i, user AS u WHERE i.user_id=u.id;
+    ";
+    try_execute($db, $query, 'Public gallery images view created!...');
 
     $str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ0123456789_";
     if (isset($argv[1]) && $argv[1] == '-p') {

@@ -27,6 +27,7 @@ let checkEmail = function () {
         if (this.classList.contains("input-error"))
             this.classList.toggle("input-error");
         span.innerHTML = '';
+        valid = true;
     }
 }
 
@@ -43,6 +44,7 @@ let checkPassword = function () {
             if (this.classList.contains("input-error"))
                 this.classList.toggle("input-error");
             span.innerHTML = ``;
+            valid = true;
         }
         return ;
     }
@@ -64,6 +66,7 @@ let checkPassword = function () {
         return ;
     }
     span.innerHTML = '';
+    valid = true;
     if (this.classList.contains("input-error"))
         this.classList.toggle("input-error");
 }
@@ -80,6 +83,7 @@ let checkUserName = function () {
         if (this.classList.contains("input-error"))
             this.classList.toggle("input-error");
         span.innerHTML = '';
+        valid = true;
     }
 }
 
@@ -112,6 +116,7 @@ if (form.length !== 0) {
                 valid = false;
             }
         });
+        console.log(valid);
         if (checkForArrayNameInput(inputs) === true && valid === true) {
             console.log(form);
             let submitter = document.createElement("input");

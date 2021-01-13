@@ -7,6 +7,8 @@ const STICKER_INIT_TOP_OFFSET = '40%';
 const SAVE_IMAGE_URI = 'http://localhost:8080/images/get'
 const PREVIEW_IMAGES_URI = 'http://localhost:8080/images/preview';
 const DEVICE_PIXEL_RATIO = window.devicePixelRatio;
+const WIDTH = 640;
+const HEIGHT = 480;
 
 
 let $ = (selector) => document.querySelector(selector),
@@ -15,8 +17,8 @@ let $ = (selector) => document.querySelector(selector),
     zIndex = 0,
     streaming = false,
     videoDimensions = {
-        width: 940,//video.offsetWidth,
-        height: 780//video.offsetHeight
+        width: WIDTH,     //video.offsetWidth,
+        height: HEIGHT    //video.offsetHeight
     },
     constraints = {video: true},
 // Get all available stickers
@@ -209,7 +211,7 @@ function savePicture() {
 
 video.addEventListener('canplay', event => {
     if (streaming === false) {
-        videoDimensions.height = video.videoHeight / (video.videoWidth / videoDimensions.width);
+        // videoDimensions.height = video.videoHeight / (video.videoWidth / videoDimensions.width);
         video.setAttribute('width', videoDimensions.width);
         video.setAttribute('height', videoDimensions.height);
         canvas.setAttribute('width', videoDimensions.width);
@@ -230,8 +232,6 @@ uploadBtn.onclick = () => {
         var fr = new FileReader();
         var file = inputFile.files[0];
         fr.readAsDataURL(inputFile.files[0]);
-        console.log(file);
-        console.log(file.size);
         fr.onload = (event) => {
             if (file.size < 2e6) {
                 let oldImage = document.getElementById('uploaded-image');
@@ -244,10 +244,13 @@ uploadBtn.onclick = () => {
                 image.id = 'uploaded-image';
                 video.style.zIndex = 0;
                 image.src = fr.result;
-                image.style.maxWidth = '100%';
-                image.style.maxHeight = '100%';
+                image.style.maxWidth = WIDTH;
+                image.style.maxHeight = HEIGHT;
+                image.style.width = WIDTH + 'px';
+                image.style.height = HEIGHT + 'px';
                 image.style.position = 'relative';
                 image.className += ' text-center';
+                image.style.objectFit = "cover";
                 video.parentElement.appendChild(image);
                 target = image;
                 captureBtn.disabled = false;

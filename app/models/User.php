@@ -6,6 +6,7 @@
         private $username;
         private $email;
         private $password;
+        private $notify = 1;
         private $hash;
         private $secretkey;
 
@@ -55,10 +56,14 @@
         */
         public function updateRow($id) {
             $pwd = hash('whirlpool', $this->password);
-            $query = 'UPDATE user SET username=:username, email=:email, password=:password where id like :id;';
+            $query = "
+                UPDATE user SET username=:username, email=:email, 
+                password=:password, notify=:notify where id like :id
+            ";
             $this->query($query);
             $this->bind(':username', $this->username);
             $this->bind(':email', $this->email);
+            $this->bind(':notify', $this->notify);
             $this->bind(':password', $pwd);
             $this->bind(':id', $id);
             $this->execute();
@@ -107,5 +112,11 @@
         }
         public function getPassword() {
             return $this->password;
+        }
+        public function getNotify() {
+            return $this->notify;
+        }
+        public function setNotify($notif) {
+           $this->notify = $notif;
         }
     }

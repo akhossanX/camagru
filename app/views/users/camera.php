@@ -7,17 +7,14 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php require_once APPROOT . '/views/inc/navbar.php'; ?>
 
-    <header class="jumbotron">
-        <h1 class="display-4 text-center">Select stickers and shot your picture !</h1>
+    <header class="container jumbotron">
+        <h3 class="text-center">Select stickers and shot your picture !</h3>
     </header>
-    <div class="container stickers" id="stickers">
+    <div class="container scrolling-wrapper" id="stickers">
         <?php foreach ($stickers as $png): ?>
-            <img src='<?=URLROOT . "/public/img/${png}"?>'>
+            <img class="card" width="80" height="80" src='<?=URLROOT."/public/img/${png}"?>'>
         <?php endforeach;?>
     </div>
-
-    <br><br>
-
     <div class="container">
         <div class="row">
             <div class="col-12 col-lg-6 editing-area">

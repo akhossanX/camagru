@@ -3,7 +3,7 @@
 
 <div class="container form-container">
 	<form action="<?=URLROOT.'/users/login';?>" method="post" class="auth-form">
-		<h1 class="text-center">LOGIN</h1>
+		<h3 class="text-center">LOGIN</h3>
 		<br>
 		<div class="form-group">
 			<label for="username">Username</label>

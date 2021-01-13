@@ -5,6 +5,7 @@
 
         public function __construct() {
             $this->user = $this->model('User');
+            $this->sanitizeArray($_POST);
             Controller::session_init();
         }
 
@@ -98,12 +99,10 @@
                 $data['email_error'] = 'invalid email';
             }
             $user = false;
-            if (!empty($data['email']))
-            {
+            if (!empty($data['email'])) {
                 $user = $this->user->findUserByEmail($this->user->getEmail());
             }
-            if (!empty($data['username']) && $user === false)
-            {
+            if (!empty($data['username']) && $user === false) {
                 $user = $this->user->findUserByName($this->user->getUserName());
             }
             empty($data['username']) ? $data['username_error'] = 'Empty username' : 0;
@@ -146,6 +145,10 @@
                     $this->user->setUserName($_POST['username']);
                     $this->user->setPassword($_POST['password']);
                     $this->user->setEmail($_POST['email']);
+                    if (isset($_POST['notify']))
+                        $this->user->setNotify(1);
+                    else
+                        $this->user->setNotify(0);
                     $this->verifyUserCredentials($_SESSION);
                     if ($_SESSION['email_error'] === 'email already registered')
                         $_SESSION['email_error'] = '';

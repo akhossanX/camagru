@@ -42,4 +42,10 @@
 		public static function session_init() {
 			session_start();
 		}
+
+		protected function sanitizeArray(&$array) {
+			foreach ($array as $str) {
+				$str = filter_var($str, FILTER_SANITIZE_STRING);
+			}
+		}
 	}
