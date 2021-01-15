@@ -15,6 +15,9 @@
             <img class="card" width="80" height="80" src='<?=URLROOT."/public/img/${png}"?>'>
         <?php endforeach;?>
     </div>
+    <div class="container size-slider">
+        <input type="range" name="" id="range" min="80" max="150" step="5" value="80" style="width:100%"/>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-12 col-lg-6 editing-area">
@@ -30,7 +33,6 @@
                     </div>
                     <div class="col-6 text-center">
                         <input id="upload-btn" type="button" class="btn btn-warning shadow-lg" value="Upload">
-                        <!-- <input type="file" id="upload-btn" name="upload" accept="image/png, image/jpeg"> -->
                     </div>
                 </div>
                 <!-- Live preview Area -->

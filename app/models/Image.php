@@ -7,8 +7,7 @@ class Image extends BaseModel {
     private $userid;
     private $data;
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
     /*

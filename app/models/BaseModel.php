@@ -5,8 +5,7 @@
         protected $db;
         protected $stmt;
 
-        public function __construct()
-        {
+        public function __construct() {
             $this->db = Database::connect();
         }
         // Prepare statement
