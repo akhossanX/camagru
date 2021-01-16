@@ -28,13 +28,15 @@ div#preview-container-id {
     position: relative;
     overflow: hidden;
     padding: 20px 20px;
+    /* width: 640px;
+    height: 480px; */
 }
 video#video-id,
 canvas#preview-canvas {
     min-width: 100%; 
     min-height: 100%;
     width: 100%; 
-    height: auto; 
+    height: 100%; 
     overflow: hidden;
     outline: 7px solid rgba(43, 16, 1, 0.73);
 }

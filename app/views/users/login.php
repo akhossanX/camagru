@@ -18,7 +18,7 @@
 		</div>
 		<div style="display: flex; justify-content: space-between; align-items:center">
 			<button type="submit" name="login" class="btn btn-success btn-lg">Sign In</button>
-			<span><a href="<?=URLROOT.'/users/forgotpass'?>">Forgot password?</a></span>
+			<span><a href="<?=URLROOT.'/users/forgot-password'?>">Forgot password?</a></span>
 		</div>
 		<hr>
 		<div style="display: flex; justify-content: flex-end; align-items:center">

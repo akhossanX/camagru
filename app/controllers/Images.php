@@ -7,8 +7,7 @@ class Images extends Controller {
         Controller::session_init();
     }
 
-    private function save($imageData)
-    {
+    private function save($imageData) {
         $creationTimeStamp = time();
         $this->image->setName('' . $creationTimeStamp);
         $this->image->setData($imageData);
@@ -16,7 +15,7 @@ class Images extends Controller {
         if ($queryResult) {
             // make a Query to send the later saved picture to client
             // and all its informations including comments likes....
-            echo $imageData;
+            echo json_encode($imageData);
         } else {
             echo 'Error: Image can not be saved';
         }

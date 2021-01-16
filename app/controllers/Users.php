@@ -180,7 +180,7 @@
         **  is clicked
         */
 
-        public function activate($userHashId = "") {
+        public function activateAccount($userHashId = "") {
             $user = $this->user->findUserByHash($userHashId);
             $_SESSION['active'] = false;
             if ($user) {
@@ -201,7 +201,7 @@
             $toEmail = $user->email;
 			$subject = "User Registration Activation Mail";
 			$txt = "Click this link to activate your account:\n <a href='" . $link . "'>Activate</a>\n";
-            $mailHeaders = "From: akhossan\r\n";
+            $mailHeaders = "From: abdelilah.khossan@gmail.com\r\n";
 			$mailHeaders .= "MIME-Version: 1.0" . "\r\n";
 			$mailHeaders .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 			if(mail($toEmail, $subject, $txt, $mailHeaders))
@@ -218,6 +218,14 @@
                 $data['password_error'] = 'Password must include at least one letter !';
         }
 
-
-
+        public function forgotPassword() {
+            var_dump($_GET);
+            if (isset($_GET['submit'])) {
+                $email = $_GET['email'];
+                echo($email);
+                die();
+            } else {
+                $this->view('users/forgot_password');
+            }
+        }
     }

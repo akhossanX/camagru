@@ -6,7 +6,6 @@
 
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php require_once APPROOT . '/views/inc/navbar.php'; ?>
-
     <header class="container jumbotron">
         <h3 class="text-center">Select stickers and shot your picture !</h3>
     </header>
@@ -16,7 +15,7 @@
         <?php endforeach;?>
     </div>
     <div class="container size-slider">
-        <input type="range" name="" id="range" min="80" max="150" step="5" value="80" style="width:100%"/>
+        <input type="range" name="" id="range" min="80" max="200" step="10" value="80" style="width:100%"/>
     </div>
     <div class="container">
         <div class="row">
@@ -54,8 +53,6 @@
             </div>
             <!-- End of User Photos Display Area -->
         </div>
-        
     </div>
-
     <script src="<?=URLROOT?>/public/js/camera.js" type="module"></script>
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>

@@ -64,6 +64,7 @@
 
 		private function getMethod(&$url) {
 			if (isset($url) && isset($url[0])) {
+				$url[0] = $this->urlToMethodName($url[0]);
 				if (method_exists($this->currentController, $url[0])) {
 					$reflection = new ReflectionMethod($this->currentController, $url[0]);
 					if ($reflection->isPublic())
@@ -74,6 +75,16 @@
 				return true;
 			}
 			return false;
+		}
+
+		private function urlToMethodName($url) {
+			$arr = preg_split('/\-/', $url);
+			$len = count($arr);
+			$method = $arr[0];
+			for ($i = 1; $i < $len; $i++) {
+				$method .= ucfirst($arr[$i]);
+			}
+			return $method;
 		}
 
 		private function getParams($url) {

@@ -10,7 +10,6 @@ const DEVICE_PIXEL_RATIO = window.devicePixelRatio;
 const WIDTH = 640;
 const HEIGHT = 480;
 
-
 let $ = (selector) => document.querySelector(selector),
     video = $('#video-id'),
     target = video,
@@ -20,15 +19,13 @@ let $ = (selector) => document.querySelector(selector),
         width: WIDTH,     //video.offsetWidth,
         height: HEIGHT    //video.offsetHeight
     },
-    constraints = {video: true},
+    constraints = {video: true, audio: false},
 // Get all available stickers
     stickers = document.querySelectorAll('#stickers img'),
     selected = null;
 // Init streaming camera device
 stream_init();
 let videoRect = target.getBoundingClientRect(),
-    // pr = console.log(videoRect),
-    // sc = console.log(document.documentElement.scrollLeft),
     videoPosition = {
         left: videoRect.left + document.documentElement.scrollLeft,
         top: videoRect.top + document.documentElement.scrollTop
@@ -36,8 +33,7 @@ let videoRect = target.getBoundingClientRect(),
     captureBtn = $('#capture-btn'),
     uploadBtn = $('#upload-btn'),
     saveBtn = $('#save-btn'),
-    canvas = $('#preview-canvas'),
-    hiddenCanvas = document.createElement('canvas');
+    canvas = $('#preview-canvas');
 // Deactivate saveBtn by default to prevent storing empty images
 saveBtn.disabled = true;
 saveBtn.onclick = savePicture;
@@ -46,6 +42,17 @@ canvas.style.display = 'none';
 captureBtn.onclick = capture;
 captureBtn.disabled = true; // deactivated until sticker selection
 let picList = $('#pictures-list');
+
+video.onloadedmetadata = function () {
+    console.log('****** METADATA LOADED ******')
+    console.log(this.width);
+    console.log(this.height);
+    console.log(this.offsetWidth);
+    console.log(this.offsetHeight);
+    console.log(this.videoWidth);
+    console.log(this.videoHeight);
+    console.log('*****************************')
+}
 
 window.onresize = () => {
     videoRect = target.getBoundingClientRect();
@@ -77,22 +84,20 @@ function checkMediaDevices() {
 
 function stream_init () {
     checkMediaDevices();
-    if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia(constraints)
-        .then((stream) => {
-            video.srcObject = stream;
-            video.play();
-            stickers.forEach(sticker => sticker.onclick = onStickerClickChooser);
-            video.ondrop = onStickerDrop;
-            video.ondragover = onStickerDragOver;
-            video.style.zIndex = 0;
-            uploadBtn.disabled = true;
-        })
-        .catch((error) => {
-            video.style.display = 'none';
-            console.log(error);
-        });
-    }
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then( stream => {
+        video.srcObject = stream;
+        video.play();
+        stickers.forEach(sticker => sticker.onclick = onStickerClickChooser);
+        video.ondrop = onStickerDrop;
+        video.ondragover = onStickerDragOver;
+        video.style.zIndex = 0;
+        uploadBtn.disabled = true;
+    })
+    .catch((error) => {
+        video.style.display = 'none';
+        console.log(error);
+    });
 };
 
 function onStickerClickChooser() {
@@ -111,7 +116,13 @@ function onStickerClickChooser() {
     img.ondragstart = onStickerDragStart;
     img.ondragover = onStickerDragOver;
     img.ondrop = onStickerDrop;
-    img.onclick = () => selected = img;
+    img.onclick = function () {
+        selected = img;
+        if (selected.style.border === 'none')
+            selected.style.border = '1px solid blue';
+        else
+            selected.style.border = 'none';
+    }
     img.style.zIndex = ++zIndex;
     video.parentElement.appendChild(img);
 }
@@ -123,6 +134,7 @@ function onStickerDoubleClick(event) {
 
 function onStickerDragStart(event) {
     event.dataTransfer.setData('text/plain', event.target.id);
+    event.target.style.border = "1px solid blue";
 } 
 
 function onStickerDragOver(event) {
@@ -190,8 +202,10 @@ function assemblePicturesData(imageURI) {
 
 function drawToPreviewCanvas() {
     var context = canvas.getContext('2d');
-    canvas.style.maxWidth = videoRect.width;//'100%';
-    canvas.style.maxHeight = videoRect.height;//'100%';
+    canvas.style.width = video.width;//videoRect.width;//'100%';
+    canvas.style.height = video.height;//videoRect.height;//'100%';
+    canvas.style.maxWidth = videoRect.width;
+    canvas.style.maxHeight = videoRect.height;
     canvas.width = target.offsetWidth * DEVICE_PIXEL_RATIO;
     canvas.height = target.offsetHeight * DEVICE_PIXEL_RATIO;
     if (target.hasOwnProperty('pause'))
@@ -217,18 +231,6 @@ function drawToPreviewCanvas() {
 
 // can't be triggered until stickers are selected;
 function capture() {
-    // let styles = window.getComputedStyle(target, null);
-    // hiddenCanvas.style.width = videoRect.width + 'px'
-    // hiddenCanvas.style.height = videoRect.height + 'px'
-    // hiddenCanvas.width = videoRect.width * DEVICE_PIXEL_RATIO;
-    // hiddenCanvas.height = videoRect.height * DEVICE_PIXEL_RATIO;
-    // let context = hiddenCanvas.getContext('2d');
-    // context.globalCompositionOperation = 'difference';
-    // if (target.hasOwnProperty('pause'))
-    //     target.pause();
-    // context.drawImage(target, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-    // if (target.hasOwnProperty('play'))
-    //     target.play();
     drawToPreviewCanvas();
 }
 
@@ -244,8 +246,8 @@ video.addEventListener('canplay', event => {
         video.setAttribute('height', videoDimensions.height);
         canvas.setAttribute('width', videoDimensions.width);
         canvas.setAttribute('height', videoDimensions.height);
-        hiddenCanvas.setAttribute('width', videoDimensions.width);
-        hiddenCanvas.setAttribute('height', videoDimensions.height);
+        // hiddenCanvas.setAttribute('width', videoDimensions.width);
+        // hiddenCanvas.setAttribute('height', videoDimensions.height);
         streaming = true;
     }
 }, false);
