@@ -33,7 +33,7 @@
 			);
 		}
 	
-		public function	getUrl()
+		private function getUrl()
 		{
 			if (isset($_SERVER['REQUEST_URI']))
 			{
@@ -78,7 +78,7 @@
 		}
 
 		private function urlToMethodName($url) {
-			$arr = preg_split('/\-/', $url);
+			$arr = preg_split('/-/', $url);
 			$len = count($arr);
 			$method = $arr[0];
 			for ($i = 1; $i < $len; $i++) {

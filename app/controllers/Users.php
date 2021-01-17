@@ -219,12 +219,28 @@
         }
 
         public function forgotPassword() {
-            var_dump($_GET);
-            if (isset($_GET['submit'])) {
-                $email = $_GET['email'];
-                echo($email);
-                die();
+            if (isset($_POST['forgot'])) {
+                $email = $_POST['email'];
+                if (empty($email)) {
+                    $_SESSION['email_error'] = "Email can't be empty";
+                    return $this->view('users/forgot_password');
+                }
+                //send password reset link to email
+                $user = $this->user->findUserByEmail($email);
+                if ($user && $user->active) {
+                    $token = base64_encode(random_bytes(15));
+                    $this->user->updateColumn($user->id, 'hash', $token);
+                    $link = URLROOT . '/users/reset-password/' . $token;
+                    $subject = "Password reset mail";
+                    $txt = "Click this link to reset your password:\n <a href='" . $link . "'>Reset Password</a>\n";
+                    $mailHeaders = "From: abdelilah.khossan@gmail.com\r\n";
+                    $mailHeaders .= "MIME-Version: 1.0" . "\r\n";
+                    $mailHeaders .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                    mail($email, $subject, $txt, $mailHeaders);
+                }
+                $this->redirect('users/login');
             } else {
+                $_SESSION['email_error'] = '';
                 $this->view('users/forgot_password');
             }
         }
