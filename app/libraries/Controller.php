@@ -25,14 +25,8 @@
 			}
 		}
 
-		public static function	redirect($view) {
-			// Check for the view file
-			if (file_exists('app/views/' . $view . '.php')) {
-				return header("Location: " . URLROOT . '/' . $view);
-			}
-			else {
-				return header("Location: " . URLROOT . '/users/error_404');
-			}
+		public static function	redirect($url) {
+			return header("Location: " . URLROOT . '/' . $url);
 		}
 
 		public function error_404() {

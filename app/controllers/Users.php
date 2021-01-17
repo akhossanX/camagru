@@ -219,7 +219,7 @@
         }
 
         public function forgotPassword() {
-            if (isset($_POST['forgot'])) {
+            if (isset($_POST) && isset($_POST['forgot'])) {
                 $email = $_POST['email'];
                 if (empty($email)) {
                     $_SESSION['email_error'] = "Email can't be empty";
@@ -230,8 +230,8 @@
                 if ($user && $user->active) {
                     $token = base64_encode(random_bytes(15));
                     $this->user->updateColumn($user->id, 'hash', $token);
-                    $link = URLROOT . '/users/reset-password/' . $token;
-                    $subject = "Password reset mail";
+                    $link = URLROOT . '/users/reset-password/' . $user->id . '/' . $token;
+                    $subject = "Password reset";
                     $txt = "Click this link to reset your password:\n <a href='" . $link . "'>Reset Password</a>\n";
                     $mailHeaders = "From: abdelilah.khossan@gmail.com\r\n";
                     $mailHeaders .= "MIME-Version: 1.0" . "\r\n";
@@ -242,6 +242,35 @@
             } else {
                 $_SESSION['email_error'] = '';
                 $this->view('users/forgot_password');
+            }
+        }
+
+        public function resetPassword($id=null, $token=null) {
+            if (isset($_POST) && isset($_POST['reset'])) {
+                if (empty($_POST['password']))
+                    $_SESSION['password_error'] = "Empty password";
+                else if (empty($_POST['confirm_password']))
+                    $_SESSION['confirm_password_error']  = "passwords do not match";
+                else {
+                    $user = $this->user->findUserById($_POST['id']);
+                    $password = hash('whirlpool', $_POST['password']);
+                    $this->user->updateColumn($_POST['id'], 'password', $password);
+                    return $this->redirect('users/login');
+                }
+                $this->view('users/reset_password');
+            } else if ($id && $token) {
+                $user = $this->user->findUserById($id);
+                // var_dump($user);echo($user->hash . ' ' . $token);
+                if ($user && $user->hash === $token) {
+                    $_SESSION['id'] = $id;
+                    $_SESSION['password_error'] = '';
+                    $_SESSION['confirm_password_error'] = '';
+                    $this->view('users/reset_password'); // Load reset password view
+                } else {
+                    $this->redirect('users/forgot-password'); // redirect to forgot password form
+                }
+            } else  {
+                $this->redirect('users/login'); // redirect to login page
             }
         }
     }

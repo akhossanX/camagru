@@ -12,10 +12,10 @@
 		</div>
 		<div class="form-group">
 			<button type="submit" style="width:100%;" name="forgot" value="ok" class="btn btn-success btn-lg">
-				Submit
+				Send
 			</button>
 		</div>
 	</form>
 </div>
-
+<script src="<?=URLROOT.'/public/js/form.js'?>"></script>
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>

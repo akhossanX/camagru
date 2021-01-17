@@ -88,7 +88,6 @@ let checkUserName = function () {
 }
 
 let form = document.getElementsByClassName("auth-form");
-// console.log(form);  
 
 if (form.length !== 0) {
     form = form[0];
@@ -106,7 +105,6 @@ if (form.length !== 0) {
     });
 
     form.onsubmit = function (event) {
-        console.log('onsubmit');
         event.preventDefault();
         inputs.forEach(input => {
             if (input.value === "") {
@@ -116,9 +114,7 @@ if (form.length !== 0) {
                 valid = false;
             }
         });
-        console.log(valid);
         if (checkForArrayNameInput(inputs) === true && valid === true) {
-            console.log(form);
             let submitter = document.createElement("input");
             submitter.type = 'hidden';
             submitter.name = event.submitter.name;
