@@ -9,15 +9,17 @@ class Images extends Controller {
 
     private function save($imageData) {
         $creationTimeStamp = time();
+        $userid = $_SESSION['logged-in-user']->id;
         $this->image->setName('' . $creationTimeStamp);
         $this->image->setData($imageData);
-        $queryResult = $this->image->saveUserImage($_SESSION['logged-in-user']->id);
+        $queryResult = $this->image->saveUserImage($userid);
         if ($queryResult) {
             // make a Query to send the later saved picture to client
             // and all its informations including comments likes....
-            echo json_encode($imageData);
+            $userImages = $this->image->getLatestImage($userid);
+            echo json_encode($userImages);
         } else {
-            echo 'Error: Image can not be saved';
+            echo "Error: Image can not be saved";
         }
     }
 
@@ -75,12 +77,19 @@ class Images extends Controller {
         return $resized;
     }
 
-    public function preview() {
+    public function camera() {
         if (isAuthentified()) {
-            // $images = $this->
-
+            $images = $this->image->getUserImages($_SESSION['logged-in-user']->id);
+            $_SESSION['usr-images'] = [];
+            foreach ($images as $image) {
+                $_SESSION['usr-images'][] = $image->data;
+            }
+            $this->view('images/camera');
+        } else {
+            $this->redirect('home/index');
         }
     }
+
 }
 
 ?>

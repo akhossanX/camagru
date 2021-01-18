@@ -167,7 +167,14 @@ function sendPictureDataToServer(data) {
     url = new URL(SAVE_IMAGE_URI);
     xhr.onload = () => {
         // Here We have to update the list of captured images belonging to the user;
-        console.log(xhr.responseText);
+        // console.log(xhr.responseText);
+        let imgArea = document.querySelector(".user-images-area");
+        let response = JSON.parse(xhr.response);
+        console.log(response);
+        let img = document.createElement('img');
+        img.src = "data:image/png;base64, " + response.data;
+        img.className = "usr-imgs-preview";
+        imgArea.prepend(img);
     }
     xhr.onerror = (error) => {
         console.log(error);
@@ -232,6 +239,7 @@ function drawToPreviewCanvas() {
 // can't be triggered until stickers are selected;
 function capture() {
     drawToPreviewCanvas();
+    captureBtn.disabled = true;
 }
 
 function savePicture() {
@@ -293,8 +301,7 @@ uploadBtn.onclick = () => {
 
 let slider = document.querySelector('.container.size-slider #range');
 slider.oninput = function resize() {
-    if (selected != null) {
-        console.log(this.value);
+    if (selected != null && selected.style.border !== 'none') {
         console.log(selected.style.width);
         console.log(selected.style.height);
         selected.style.width = this.value + 'px';

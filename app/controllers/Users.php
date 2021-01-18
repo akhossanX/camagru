@@ -11,7 +11,7 @@
 
         public function index() {
             if (isset($_SESSION['logged-in-user'])) {
-                $this->redirect('users/camera');
+                $this->redirect('images/camera');
             }
             else
                 $this->redirect('home/index');
@@ -165,14 +165,6 @@
                     $this->view('users/profile');
             } else
                 $this->redirect('home/index');
-        }
-
-        public function camera() {
-            if (isAuthentified()) {
-                $this->view('users/camera');
-            } else {
-                $this->redirect('home/index');
-            }
         }
 
         /*

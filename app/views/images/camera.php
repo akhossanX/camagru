@@ -50,6 +50,9 @@
             <!-- Captured Photos display Area -->
             <div class="col-12 col-lg-6 user-images-area pl-5 border border-red">
                 <!-- <img src="https://picsum.photos/200/300" alt="" srcset="">     -->
+                <?php foreach ($_SESSION['usr-images'] as $image) :?>
+                    <img src="data:image/png;base64, <?=$image?>" class="usr-imgs-preview">
+                <?php endforeach;?>
             </div>
             <!-- End of User Photos Display Area -->
         </div>

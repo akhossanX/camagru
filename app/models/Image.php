@@ -40,4 +40,18 @@ class Image extends BaseModel {
         return $this->execute();
     }
 
+    public function getUserImages($userid) {
+        $sql = "SELECT data, creation_date FROM image WHERE user_id=:userid ORDER BY creation_date DESC";
+        $this->query($sql);
+        $this->bind(":userid", $userid);
+        return $this->resultset();
+    }
+
+    public function getLatestImage($userid) {
+        $sql = "SELECT data, creation_date FROM image WHERE user_id=:userid ORDER BY creation_date DESC LIMIT 1";
+        $this->query($sql);
+        $this->bind(":userid", $userid);
+        return $this->single();
+    }
+
 }
