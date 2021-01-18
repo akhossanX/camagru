@@ -3,6 +3,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?=SITENAME?></title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 	<link rel="stylesheet" href="<?=URLROOT;?>/public/css/landing.css">
 </head>
 <body>
@@ -14,15 +15,26 @@
 		</div>
 		<div class="header-overlay"></div>
 		<div class="header-content">
-			<h1>Lorem ipsum dolor sit amet.</h1>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, minima architecto! Ducimus eaque ratione sed?</p>
+			<h1>WELCOME TO CAMAGRU</h1>
+			<p>TAKE pictures and ENJOY adding awsome stickers on top of them</p>
 		</div>
 	</header>
   <section class="section section-a">
     <div class="container">
-      <h2>Section A</h2>
-      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde, impedit amet minima iste autem cumque et maiores blanditiis doloribus aut dolorum quaerat non est voluptatum, tempore ut dolorem voluptas quod quae accusantium, ex inventore ducimus. Beatae mollitia exercitationem, quam similique, consectetur ratione reprehenderit delectus neque eligendi facere soluta dolor ducimus!</p>
-    </div>
+      <h2>What's next</h2>
+      <p></p>
+	</div>
+	<div class="buttons">
+		<a href="<?=URLROOT?>/users/register" class="btn btn-danger btn-lg">
+			REGISTER
+		</a>
+		<a href="<?=URLROOT?>/home/gallery" class="btn btn-danger btn-lg">
+			PUBLIC GALLERY
+		</a>
+		<a href="<?=URLROOT?>/users/login" class="btn btn-danger btn-lg">
+			LOGIN
+		</a>
+	</div>
   </section>
 </body>
 </html>

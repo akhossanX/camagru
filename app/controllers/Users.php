@@ -197,7 +197,7 @@
 
         private function mailAccountActivationLink() {
             $user = $this->user->findUserByEmail($_SESSION['email']);
-            $link = URLROOT . '/users/activate/' . $user->hash;
+            $link = URLROOT . '/users/activate-account/' . $user->hash;
             $toEmail = $user->email;
 			$subject = "User Registration Activation Mail";
 			$txt = "Click this link to activate your account:\n <a href='" . $link . "'>Activate</a>\n";

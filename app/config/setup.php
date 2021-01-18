@@ -41,7 +41,7 @@
             `user_id` INT NOT NULL,
             `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             `likes` INT NOT NULL DEFAULT 0,
-            FOREIGN KEY (user_id) REFERENCES user(id)
+            FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         );
     ";
     try_execute($db, $query, 'Image table created!...');
