@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
 
+:root {
+    --nav-color: #33658a;
+    --main-color: #eeeeee;
+}
+
 * {
     box-sizing: border-box ;
 }
@@ -53,7 +58,7 @@ body{
     left:0;
     width:100vw;
     z-index:1;
-    background:#fd3c4c;
+    background: var(--nav-color);
     opacity:0.8;
 }
   

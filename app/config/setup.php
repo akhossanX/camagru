@@ -57,7 +57,7 @@
 
     $query = "
         CREATE VIEW public_gallery_images AS 
-        SELECT u.username,i.data FROM image AS i, user AS u WHERE i.user_id=u.id;
+        SELECT u.username,i.* FROM image AS i, user AS u WHERE i.user_id=u.id;
     ";
     try_execute($db, $query, 'Public gallery images view created!...');
 

@@ -38,7 +38,7 @@ let checkPassword = function () {
         password = password.value;
         if (this.value !== password) {
             this.className += ' input-error';
-            span.innerHTML = `Passwords does not match`;
+            span.innerHTML = `Passwords do not match`;
             valid = false;
         } else {
             if (this.classList.contains("input-error"))

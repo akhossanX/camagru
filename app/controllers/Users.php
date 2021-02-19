@@ -241,7 +241,7 @@
             if (isset($_POST) && isset($_POST['reset'])) {
                 if (empty($_POST['password']))
                     $_SESSION['password_error'] = "Empty password";
-                else if (empty($_POST['confirm_password']))
+                elseif (empty($_POST['confirm_password']))
                     $_SESSION['confirm_password_error']  = "passwords do not match";
                 else {
                     $user = $this->user->findUserById($_POST['id']);
@@ -250,7 +250,7 @@
                     return $this->redirect('users/login');
                 }
                 $this->view('users/reset_password');
-            } else if ($id && $token) {
+            } elseif ($id && $token) {
                 $user = $this->user->findUserById($id);
                 // var_dump($user);echo($user->hash . ' ' . $token);
                 if ($user && $user->hash === $token) {
