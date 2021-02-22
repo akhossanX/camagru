@@ -1,13 +1,12 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php require_once APPROOT . '/views/inc/navbar.php'; ?>
-    <div class="container" style="border:2px solid black;">
-        <?php foreach ($_SESSION['images'] as $image): ?>
-            <div class="row">
-                <img class="column col-6" src="data:image/png;base64,<?=$image->data ?>"/>
-                <div class="column col-6">
-                    <?php var_dump(get_object_vars($_SESSION['images'][0])); ?>
-                </div>
-            </div>
-        <?php endforeach; unset($_SESSION['images']); ?>
-    </div>
+    <section class="img-post">
+        <div class="post">
+            <img src="data:image/png;base64, <?= $_SESSION['images'][0]->data; ?>" alt="">
+        </div>
+        <section class="post-infos">
+            <img src="<?= URLROOT . '/public/icons/like.svg'; ?>" style="width: 1.5em; height:1.5em;" />
+            <img src="<?= URLROOT . '/public/icons/like.svg'; ?>" hidden style="width: 1.5em; height:1.5em;" />
+        </section>
+    </section>
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>
