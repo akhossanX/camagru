@@ -19,7 +19,7 @@ class Images extends Controller {
             $userImages = $this->image->getLatestImage($userid);
             echo json_encode($userImages);
         } else {
-            echo "Error: Image can not be saved";
+            echo json_encode(["error" => "Image can not be saved"]);
         }
     }
 
@@ -45,7 +45,6 @@ class Images extends Controller {
     private function superposeImages($rawData) {
         $data = json_decode($rawData, true);// returns associative array
         $image = base64_decode($data['image']);
-        // die($data['image']);
         $image = imagecreatefromstring($image);
         if ($image === false)
             die("can't create image from string");

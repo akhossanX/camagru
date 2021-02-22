@@ -27,7 +27,7 @@ class Image extends BaseModel {
     }
 
     public function getGalleryImages() {
-        $this->query('SELECT * from public_gallery_images');
+        $this->query('SELECT * from images_view');
         return $this->resultset();
     }
 

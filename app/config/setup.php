@@ -50,13 +50,15 @@
             `id` INT PRIMARY KEY AUTO_INCREMENT,
             `text` VARCHAR(720) NOT NULL,
             `image_id` INT NOT NULL,
-            FOREIGN KEY (image_id) REFERENCES image(id)
+            `user_id` INT NOT NULL,
+            FOREIGN KEY (image_id) REFERENCES image(id),
+            FOREIGN KEY (user_id) REFERENCES user(id)
         );
     ";
     try_execute($db, $query, 'Comment table created!...');
 
     $query = "
-        CREATE VIEW public_gallery_images AS 
+        CREATE VIEW images_view AS 
         SELECT u.username,i.* FROM image AS i, user AS u WHERE i.user_id=u.id;
     ";
     try_execute($db, $query, 'Public gallery images view created!...');
