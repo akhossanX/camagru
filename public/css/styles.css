@@ -1,40 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
 @import "camera.css";
 
 :root {
     --error-color: rgb(255, 167, 167);
-    /* --nav-color: #fd3c4c; */
-    --nav-color: #425EA0;
-    --gallery-color: #eeeeee;
-    --main-color: #f8edeb;
+    --nav-bgcolor: #FFFFFF;
+    --nav-fgcolor: #221F20;
+    --nav-border-color: #c5baba;
+    --gallery-color: #FFFFFF;
+    --main-color: #FAFAFA;
+    --default-border-radius: 10px;
 }
 
 /************************* Universal Selector ***********************************/
 * {
-    font-family: 'Dosis', sans-serif;
     letter-spacing: 1px;
+    box-sizing: border-box;
 }
 body {
+    font-family: 'Dosis', sans-serif;
     background-color: var(--main-color);
+    padding-top: 100px;
 }
 /***************************** NAVBAR ***************************************/
 nav {
-    background: var(--nav-color);
-    color: #fff;
+    background: var(--nav-bgcolor);
+    color: var(--nav-fgcolor);
     font-size: 1.4rem;
     font-weight: bolder;
     height: 5rem;
+    margin-top: 2px;
     margin-bottom: 20px;
+    border: 1px solid var(--nav-border-color);
 }
 nav.navbar a.navbar-brand,
 nav.navbar li.nav-item a.nav-link,
 button.navbar-toggler .navbar-toggler-icon {
     text-decoration:  none;
     list-style: none;
-    color: #fff !important;
-    content: "" !important;
+    color: var(--nav-fgcolor);
+}
+.navbar-brand {
+    font-family: 'Pacifico', cursive !important;
 }
 .navbar-nav > li {
     margin-left: 30px;
@@ -43,11 +53,15 @@ button.navbar-toggler .navbar-toggler-icon {
 nav .icon {
     display: none;
 }
+nav i {
+    border: 1px solid var(--nav-border-color);
+    padding: 1px 2px;
+}
 
 img#camagru-icon {
     width: 30px;
     height: 30px ;
-    filter: invert(1);
+    /* filter: invert(1); */
 }
 .navbar-brand,
 ul li.nav-item {
@@ -57,6 +71,10 @@ ul li.nav-item {
 ul li.nav-item:hover {
     transform: scale(1.2, 1.2);
 }
+i.fa {
+    border: none;
+}
+
 /************ Media Query **********/
 @media (max-width: 991px) {
     nav {
@@ -126,9 +144,8 @@ span.form-error {
 .form-container .auth-form {
     width: 70%;
 	padding: 50px 50px;
-	border: 1px solid lightgray;
-    border-radius: 5px;
-    box-shadow: 0px 3px 19px -1px #000;
+    border: 1px solid var(--nav-border-color);
+    border-radius: var(--default-border-radius);
 }
 .btn.btn-success,
 .btn.btn-primary {
@@ -148,8 +165,8 @@ span.form-error {
 }
 
 section.img-post {
-    border: 2px solid black;
-    border-radius: 25px;
+    border: 1px solid var(--nav-border-color);
+    border-radius: var(--default-border-radius);
     background-color: var(--gallery-color);
     width: 624px;
     height: 837px;
@@ -158,8 +175,17 @@ section.img-post {
 }
 
 section.img-post img {
-    width: 620px;
+    width: 100%;
     height: auto;
+}
+
+section.post-infos {
+    margin-top: 1px;
+}
+
+.ca-border {
+    border: 1px solid var(--nav-border-color);
+    border-radius: var(--default-border-radius);
 }
 
 

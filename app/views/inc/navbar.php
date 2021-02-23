@@ -1,19 +1,31 @@
 <?php
     if (isset($_SESSION['logged-in-user'])) {
-        $userOrSignIn = $_SESSION['logged-in-user']->username;
-        $logOutOrSingUp = 'Logout';
+        $userOrSignIn = [
+                0 => $_SESSION['logged-in-user']->username,
+                1 => 'fa-user'
+            ];
+        $logOutOrSingUp = [
+            0 => 'Logout', 
+            1 => 'fa-sign-out'
+        ];
         $url1 = URLROOT . '/users/profile';
         $url2 = URLROOT . '/users/logout';
     }
     else {
-        $userOrSignIn = 'Login';
-        $logOutOrSingUp = 'Register';
+        $userOrSignIn = [
+            0 => 'Login',
+            1 => 'fa-sign-in'
+        ];
+        $logOutOrSingUp = [
+            0 => 'Register',
+            1 => 'fa-user-plus'
+        ];
         $url1 = URLROOT . '/users/login';
         $url2 = URLROOT . '/users/register';
     }
 ?>
 
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="<?=URLROOT.'/home/index'?>">
 			<span>C</span>
@@ -27,13 +39,22 @@
         <div class="navbar-toggle" id="navbar-content">
                 <ul class="navbar-nav mb-2 mb-lg-0 ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?=URLROOT.'/home/gallery'?>">Gallery</a>
+                        <a class="nav-link" href="<?=URLROOT.'/home/gallery'?>">
+                            <i class="fa fa-picture-o" aria-hidden="true"></i>
+                            Gallery
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?=$url1;?>"><?=$userOrSignIn;?></a>
+                        <a class="nav-link" href="<?=$url1;?>">
+                            <i class="fa <?= $userOrSignIn[1] ?>" aria-hidden="true"></i>
+                            <?=$userOrSignIn[0];?>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?=$url2;?>"><?=$logOutOrSingUp;?></a>
+                        <a class="nav-link" href="<?=$url2;?>">
+                            <i class="fa <?=$logOutOrSingUp[1];?>" aria-hidden="true"></i>
+                            <?=$logOutOrSingUp[0];?>
+                        </a>
                     </li>
                 </ul>
         </div>
