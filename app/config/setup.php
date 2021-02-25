@@ -40,22 +40,29 @@
             `data` LONGBLOB NOT NULL,
             `user_id` INT NOT NULL,
             `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            `likes` INT NOT NULL DEFAULT 0,
             FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         );
     ";
     try_execute($db, $query, 'Image table created!...');
     $query = "
         CREATE TABLE comment (
-            `id` INT PRIMARY KEY AUTO_INCREMENT,
+            `image_id` INT NOT NULL,
+            `user_id` INT NOT NULL,
             `text` VARCHAR(720) NOT NULL,
+            FOREIGN KEY (image_id) REFERENCES image(id),
+            FOREIGN KEY (user_id) REFERENCES user(id)
+        );
+    ";
+    try_execute($db, $query, 'Comment table created!...');
+    $query = "
+        CREATE TABLE `like` (
             `image_id` INT NOT NULL,
             `user_id` INT NOT NULL,
             FOREIGN KEY (image_id) REFERENCES image(id),
             FOREIGN KEY (user_id) REFERENCES user(id)
         );
     ";
-    try_execute($db, $query, 'Comment table created!...');
+    try_execute($db, $query, 'Like table created!...');
 
     $query = "
         CREATE VIEW images_view AS 

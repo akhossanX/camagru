@@ -27,8 +27,21 @@ class Image extends BaseModel {
     }
 
     public function getGalleryImages() {
-        $this->query('SELECT * from images_view');
-        return $this->resultset();
+        // $this->query("SELECT * from `images_view`");
+        $this->query("
+        SELECT image.name AS image_name, image.data, image.creation_date, user.username
+            FROM image
+            INNER JOIN user
+            ON image.user_id = user.id
+            ORDER BY creation_date DESC;
+        ");
+        $images = $this->resultset;
+        $this->query("
+        SELECT COUNT(image_id) AS likes FROM
+        (SELECT image_id FROM like GROUP BY image_id);
+        ");
+        $likes = $this->resultset();
+        return ["images" => $images, "likes" => $likes];
     }
 
     public function saveUserImage($userId) {

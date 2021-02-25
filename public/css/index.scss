@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+$main-color: #eeeeee;
+$border-color: #c5baba;
+$border-radius: 10px;
+$btn-color: #B3254D;
+
+* {
+    box-sizing: border-box ;
+}
+
+body {
+    background-color: $main-color;
+}
+
+.row {
+    border: 1px solid #c5baba;
+    border-radius: $border-radius;
+    align-items: center;
+    justify-items: center;
+    padding: 20px 20px;
+    header {
+        font-size: 4vw;
+        font-family: 'Pacifico', cursive !important;
+        &:after {
+            content: "Take a photo, add awesome filters";
+            display: block;
+            font-family: 'Dosis', sans-serif !important;
+            margin-top: 20px;
+            font-size: 1.5vw;
+        }
+    }
+    img {
+        border: 2px solid $border-color;
+        transition: opacity 1s ease-in-out;
+    }
+    p.text {
+        font-size: 2vw;
+        font-family: inherit;
+        margin-top: 50px;
+        text-align: center;
+    }
+    a.btn {
+        width: 100%;
+        font-size: 2.2vw;
+        font-family: 'Dosis', sans-serif;
+        // line-height: 40px;
+        margin: 20px auto;
+        background-color: $btn-color !important;
+        color: white;
+    }
+}

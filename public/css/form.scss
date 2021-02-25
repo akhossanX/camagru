@@ -1,0 +1,18 @@
+
+$border-color: #c5baba;
+
+.form-group {
+    // padding: 10px 20px;
+    button[type=submit] {
+        float: left;
+    }
+    small {
+        float: right;
+    }
+    .submit-group, .signup-group {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}

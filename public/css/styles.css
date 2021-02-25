@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 @import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
@@ -13,7 +12,10 @@
     --gallery-color: #FFFFFF;
     --main-color: #FAFAFA;
     --default-border-radius: 10px;
+    --btn-primary-color: #B3254D;
 }
+
+
 
 /************************* Universal Selector ***********************************/
 * {
@@ -174,13 +176,18 @@ section.img-post {
     padding: 10px 0;
 }
 
-section.img-post img {
+section.img-post img.main-image {
     width: 100%;
     height: auto;
 }
 
 section.post-infos {
     margin-top: 1px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+    margin-left: 5px;
 }
 
 .ca-border {
@@ -192,4 +199,16 @@ section.post-infos {
 .user-pseudo {
     margin-bottom: 8px;
     margin-left: 3px;
+}
+
+.like-icon, .unlike-icon {
+    /* visibility: hidden; */
+    width:  3vw;
+    height: 3vw;
+    max-width:  40px;
+    max-height: 40px;
+}
+span.likes-count {
+    margin-left: 4px;
+    font-weight: bolder;
 }

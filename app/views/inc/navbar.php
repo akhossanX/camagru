@@ -27,7 +27,7 @@
 
 <nav class="navbar navbar-expand-lg fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="<?=URLROOT.'/home/index'?>">
+    <a class="navbar-brand" href="<?=URLROOT.'/home/gallery'?>">
 			<span>C</span>
 			<img id="camagru-icon" src="<?=URLROOT.'/public/icons/video-camera.svg'?>">
 			<span>MAGRU</span>
@@ -39,9 +39,9 @@
         <div class="navbar-toggle" id="navbar-content">
                 <ul class="navbar-nav mb-2 mb-lg-0 ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?=URLROOT.'/home/gallery'?>">
-                            <i class="fa fa-picture-o" aria-hidden="true"></i>
-                            Gallery
+                        <a class="nav-link" href="<?= URLROOT.'/images/camera'?>">
+                            <i class="fa fa-camera" aria-hidden="true"></i>
+                            Camera
                         </a>
                     </li>
                     <li class="nav-item">

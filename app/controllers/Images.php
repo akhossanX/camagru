@@ -85,7 +85,7 @@ class Images extends Controller {
             }
             $this->view('images/camera');
         } else {
-            $this->redirect('home/index');
+            $this->redirect('users/login');
         }
     }
 
