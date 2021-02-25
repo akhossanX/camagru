@@ -35,11 +35,8 @@ class Image extends BaseModel {
             ON image.user_id = user.id
             ORDER BY creation_date DESC;
         ");
-        $images = $this->resultset;
-        $this->query("
-        SELECT COUNT(image_id) AS likes FROM
-        (SELECT image_id FROM like GROUP BY image_id);
-        ");
+        $images = $this->resultset();
+        $this->query("SELECT COUNT(image_id) AS likes FROM `like` GROUP BY image_id;");
         $likes = $this->resultset();
         return ["images" => $images, "likes" => $likes];
     }
