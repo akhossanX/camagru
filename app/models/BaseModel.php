@@ -28,7 +28,12 @@
         }
 
         public function execute() {
-            return $this->stmt->execute();
+            try {
+                return $this->stmt->execute();
+            } catch (PDOException $e) {
+                echo "ERROR: {$e->getMessage()}";
+                return false;
+            }
         }
 
         public function resultset() {

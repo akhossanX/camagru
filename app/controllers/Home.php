@@ -18,7 +18,7 @@
         }
 
         public function gallery() {
-            $_SESSION['data'] = $this->image->getGalleryImages();
+            $_SESSION['gallery'] = $this->image->getPosts();
             $this->view('home/gallery');
         }
     }

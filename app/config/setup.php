@@ -59,7 +59,8 @@
             `image_id` INT NOT NULL,
             `user_id` INT NOT NULL,
             FOREIGN KEY (image_id) REFERENCES image(id),
-            FOREIGN KEY (user_id) REFERENCES user(id)
+            FOREIGN KEY (user_id) REFERENCES user(id),
+            ADD UNIQUE (image_id, user_id)
         );
     ";
     try_execute($db, $query, 'Like table created!...');

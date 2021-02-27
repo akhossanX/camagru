@@ -4,7 +4,13 @@
     
     // Autoload core libraries
     spl_autoload_register(function($className) {
-        require_once 'libraries/' . $className . '.php';
+        $file = APPROOT . '/libraries/' . $className . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+        } else {
+            $file = APPROOT  . '/models/' . $className . '.php';
+            require_once $file;
+        }
     });
 
 ?>

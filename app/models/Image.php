@@ -3,9 +3,12 @@
 
 class Image extends BaseModel {
 
+    private $id;
     private $name;
-    private $userid;
+    private $ownerId; // the owner of the image
     private $data;
+
+    public $allImages = [];
 
     public function __construct() {
         parent::__construct();
@@ -13,6 +16,12 @@ class Image extends BaseModel {
     /*
     **  Getters and setters
     */
+    public function getId() {
+        return $this->id;
+    }
+    public function setId($id) {
+        $this->id = $id;
+    }
     public function setName($name) {
         $this->name = $name;
     }
@@ -25,43 +34,71 @@ class Image extends BaseModel {
     public function getData() {
         return $this->data;
     }
+    public function getOwnerId() {
+        return $this->ownerId;
+    }
+    public function setOwnerId($ownerId) {
+        $this->ownerId = $ownerId;
+    }
 
-    public function getGalleryImages() {
-        // $this->query("SELECT * from `images_view`");
+    public function getPosts($fromIndex = 0, $elements = 5) {
+        if ($fromIndex === $elements && $fromIndex === 0)
+            $limit = "";
+        else
+            $limit = "LIMIT {$fromIndex}, {$elements}";
         $this->query("
-        SELECT image.name AS image_name, image.data, image.creation_date, user.username
+        SELECT image.data, image.creation_date,
+            image.id AS imageid, user.username AS owner
             FROM image
             INNER JOIN user
             ON image.user_id = user.id
-            ORDER BY creation_date DESC;
+            ORDER BY creation_date DESC {$limit};
         ");
-        $images = $this->resultset();
-        $this->query("SELECT COUNT(image_id) AS likes FROM `like` GROUP BY image_id;");
-        $likes = $this->resultset();
-        return ["images" => $images, "likes" => $likes];
+        $this->allImages = $this->resultset();
+        $posts = [];
+        foreach ($this->allImages as $image) {
+            $comments = $this->getImageComments($image->imageid);
+            $likes = $this->getImageLikesCount($image->imageid);
+            $posts[] = [
+                'image' => $image,
+                'comments' => $comments,
+                'likes' => $likes
+            ];
+        }
+        return $posts;
     }
 
-    public function saveUserImage($userId) {
+    public function saveUserImage() {
         $sql = 'INSERT INTO image (name, data, user_id) values (:name, :data, :user_id)';
         $this->query($sql);
         $this->bind(':name', $this->name);
         $this->bind(':data', $this->data);
-        $this->bind(':user_id', $userId);
+        $this->bind(':user_id', $this->ownerId);
         return $this->execute();
     }
 
-    public function getUserImages($userid) {
+    public function getUserImages() {
         $sql = "SELECT data, creation_date FROM image WHERE user_id=:userid ORDER BY creation_date DESC";
         $this->query($sql);
-        $this->bind(":userid", $userid);
+        $this->bind(":userid", $this->ownerId);
         return $this->resultset();
     }
 
-    public function getLatestImage($userid) {
+    public function getLatestImage() {
         $sql = "SELECT data, creation_date FROM image WHERE user_id=:userid ORDER BY creation_date DESC LIMIT 1";
         $this->query($sql);
-        $this->bind(":userid", $userid);
+        $this->bind(":userid", $this->ownerId);
         return $this->single();
+    }
+
+    public function getImageComments($imageId) {
+        $comment = new Comment($imageId);
+        return $comment->getComments();
+    }
+
+    public function getImageLikesCount($imageId) {
+        $like = new Like($imageId);
+        return $like->countLikes();
     }
 
 }

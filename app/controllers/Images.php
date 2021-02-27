@@ -12,11 +12,10 @@ class Images extends Controller {
         $userid = $_SESSION['logged-in-user']->id;
         $this->image->setName('' . $creationTimeStamp);
         $this->image->setData($imageData);
-        $queryResult = $this->image->saveUserImage($userid);
+        $this->image->setOwnerId($userid);
+        $queryResult = $this->image->saveUserImage();
         if ($queryResult) {
-            // make a Query to send the later saved picture to client
-            // and all its informations including comments likes....
-            $userImages = $this->image->getLatestImage($userid);
+            $userImages = $this->image->getLatestImage();
             echo json_encode($userImages);
         } else {
             echo json_encode(["error" => "Image can not be saved"]);
