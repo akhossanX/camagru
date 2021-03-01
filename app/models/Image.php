@@ -59,13 +59,23 @@ class Image extends BaseModel {
         foreach ($this->allImages as $image) {
             $comments = $this->getImageComments($image->imageid);
             $likes = $this->getImageLikesCount($image->imageid);
+            $likedOrNot = $this->isLiked($image->imageid);
             $posts[] = [
                 'image' => $image,
                 'comments' => $comments,
-                'likes' => $likes
+                'likes' => $likes,
+                'likedOrNot' => $likedOrNot
             ];
         }
         return $posts;
+    }
+
+    public function isLiked($imageid) {
+        $query = "SELECT * FROM `like` WHERE like.image_id=:imageid AND like.user_id=:userid";
+        $this->query($query);
+        $this->bind(":imageid", $imageid);
+        $this->bind(":userid", $_SESSION["logged-in-user"]->id);
+        return $this->single();
     }
 
     public function saveUserImage() {

@@ -2,6 +2,7 @@
 <?php require_once APPROOT . '/views/inc/navbar.php'; ?>
 <?php 
     $galleryData = $_SESSION['gallery'];
+    // var_dump($_SESSION['logged-in-user']);
 ?>
 <?php foreach ($galleryData as $data): ?>
     <section class="img-post">
@@ -12,8 +13,11 @@
             <input type="hidden" name="db-id" value="<?=$data['image']->imageid?>">
         </div>
         <section class="post-infos">
-            <img src="<?= URLROOT . '/public/icons/like.svg'; ?>" class="like-icon" style="display: none;"/>
-            <img src="<?= URLROOT . '/public/icons/heart.svg' ?>" class="unlike-icon"/>
+            <?php if ($data['likedOrNot'] === true): ?>
+                <i class="bi bi-heart-fill"></i>
+            <?php else : ?>
+                <i class="bi bi-heart"></i>
+            <?php endif; ?>
             <span class="likes-count"> <?=$data['likes']->likes;?> likes.</span>
         </section>
         <section class="post-comments">

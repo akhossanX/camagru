@@ -1,6 +1,10 @@
 
 'use strict';
 
+const URLROOT = 'http://localhost:8080'
+const LIKE_ICON = URLROOT + '/public/icons/heart.svg';
+const NO_LIKE_ICON = URLROOT + '/public/icons/heart.svg';
+
 let toggleMenu = () => {
     let navContent = document.getElementById('navbar-content');
     if (navContent.className === 'navbar-toggle') {
@@ -9,21 +13,27 @@ let toggleMenu = () => {
         navContent.className = 'navbar-toggle';
     }
 };
-
-let like = document.querySelector(".like-icon"),
-    unlike = document.querySelector(".unlike-icon");
     
 let likeClick = function () {
-    if (like.style.display === 'block') {
-        like.style.display = 'none'
-        unlike.style.display = 'block'
+    if (this.style.className === 'like-icon') {
+        console.log('like-icon')
+        this.src = NO_LIKE_ICON;
+        this.classList.add("unlike-icon");
+        this.classList.remove("like-icon");
     } else {
-        like.style.display = 'block'
-        unlike.style.display = 'none'
+        console.log('unlike-icon')
+        this.src = LIKE_ICON;
+        this.classList.add("like-icon");
+        this.classList.remove("unlike-icon");
     }
-    
 }
-if (like && unlike) {
-    like.addEventListener('click', likeClick);
-    unlike.addEventListener('click', likeClick);
-}
+
+let like = document.querySelectorAll(".like-icon"),
+    unlike = document.querySelectorAll(".unlike-icon");
+
+like.forEach(icon => {
+    icon.addEventListener('click', likeClick);
+});
+unlike.forEach(icon => {
+    icon.addEventListener('click', likeClick);
+});

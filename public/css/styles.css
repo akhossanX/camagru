@@ -202,7 +202,6 @@ section.post-infos {
 }
 
 .like-icon, .unlike-icon {
-    /* visibility: hidden; */
     width:  3vw;
     height: 3vw;
     max-width:  40px;

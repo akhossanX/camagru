@@ -47,7 +47,6 @@ class Comment extends BaseModel {
         ";
         $this->query($sql);
         $this->bind(":imageid", $this->imageId);
-        // var_dump($this->imageId);echo '<br>';
         return $this->resultset();
     }
 }
