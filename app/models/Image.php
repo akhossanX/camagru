@@ -59,12 +59,14 @@ class Image extends BaseModel {
         foreach ($this->allImages as $image) {
             $comments = $this->getImageComments($image->imageid);
             $likes = $this->getImageLikesCount($image->imageid);
-            $likedOrNot = $this->isLiked($image->imageid);
+            $isLiked = false;
+            if (isAuthentified())
+                $liked = $this->isLiked($image->imageid);
             $posts[] = [
                 'image' => $image,
                 'comments' => $comments,
                 'likes' => $likes,
-                'likedOrNot' => $likedOrNot
+                'liked' => $isLiked
             ];
         }
         return $posts;

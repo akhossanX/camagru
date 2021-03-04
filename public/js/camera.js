@@ -43,17 +43,6 @@ captureBtn.onclick = capture;
 captureBtn.disabled = true; // deactivated until sticker selection
 let picList = $('#pictures-list');
 
-video.onloadedmetadata = function () {
-    console.log('****** METADATA LOADED ******')
-    console.log(this.width);
-    console.log(this.height);
-    console.log(this.offsetWidth);
-    console.log(this.offsetHeight);
-    console.log(this.videoWidth);
-    console.log(this.videoHeight);
-    console.log('*****************************')
-}
-
 window.onresize = () => {
     videoRect = target.getBoundingClientRect();
     videoPosition = {
@@ -170,7 +159,7 @@ function sendPictureDataToServer(data) {
         // console.log(xhr.responseText);
         let imgArea = document.querySelector(".user-images-area");
         let response = JSON.parse(xhr.response);
-        console.log(response);
+        // console.log(response);
         let img = document.createElement('img');
         img.src = "data:image/png;base64, " + response.data;
         img.className = "usr-imgs-preview";

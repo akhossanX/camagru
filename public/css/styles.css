@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 @import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css");
 @import "camera.css";
 
 :root {
@@ -19,6 +20,8 @@
 
 /************************* Universal Selector ***********************************/
 * {
+    margin: 0;
+    padding: 0;
     letter-spacing: 1px;
     box-sizing: border-box;
 }
@@ -27,6 +30,7 @@ body {
     background-color: var(--main-color);
     padding-top: 100px;
 }
+
 /***************************** NAVBAR ***************************************/
 nav {
     background: var(--nav-bgcolor);
@@ -186,6 +190,7 @@ section.post-infos {
     display: flex;
     flex-direction: row;
     align-items: center;
+    align-items: baseline;
     margin-top: 10px;
     margin-left: 5px;
 }
@@ -201,11 +206,12 @@ section.post-infos {
     margin-left: 3px;
 }
 
-.like-icon, .unlike-icon {
+.like-icon {
     width:  3vw;
     height: 3vw;
     max-width:  40px;
     max-height: 40px;
+    color: red;
 }
 span.likes-count {
     margin-left: 4px;

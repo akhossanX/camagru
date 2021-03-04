@@ -88,6 +88,26 @@ class Images extends Controller {
         }
     }
 
+    public function like() {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $imageid = $data['id'];
+        // $liked = $data['liked'];
+        if (isAuthentified()) {
+            if ($imageid != null) {
+                $like = new Like($imageid, $_SESSION['logged-in-user']->id);
+                if ($like->getLike()) {
+                    $like->removeLike();
+                    echo json_encode(['liked' => false, 'id' => $imageid, 'likes' => $like->countLikes()->count]);
+                } else {
+                    $like->addLike();
+                    echo json_encode(['liked' => true, 'id' => $imageid, 'likes' => $like->countLikes()->count]);
+                }
+            }
+        } else {
+            echo json_encode(['redirectURL' => URLROOT . '/users/login']);
+        }
+    }
+
 }
 
 ?>
