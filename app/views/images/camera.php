@@ -6,14 +6,16 @@
 
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php require_once APPROOT . '/views/inc/navbar.php'; ?>
-    <header class="container jumbotron">
-        <h3 class="text-center">Select stickers and shot your picture !</h3>
-    </header>
+    <header class="container camera-header">
+        Select stickers and shot a nice photo !
+    </header> <!-- END OF SCROLLING WRAPPER -->
+
     <div class="container scrolling-wrapper" id="stickers">
         <?php foreach ($stickers as $png): ?>
-            <img class="card" width="80" height="80" src='<?=URLROOT."/public/img/${png}"?>'>
+            <img class="img-thumbnail card" width="80" height="80" src='<?=URLROOT."/public/img/${png}"?>'>
         <?php endforeach;?>
     </div>
+
     <div class="container size-slider">
         <input type="range" name="" id="range" min="80" max="200" step="10" value="80" style="width:100%"/>
     </div>
@@ -48,9 +50,8 @@
                 <!-- End of Video Camera & Preview Area -->
             </div>
             <!-- Captured Photos display Area -->
-            <div class="col-12 col-lg-6 user-images-area pl-5 border border-red">
-                <!-- <img src="https://picsum.photos/200/300" alt="" srcset="">     -->
-                <?php foreach ($_SESSION['usr-images'] as $image) :?>
+            <div class="col-12 col-lg-6 pl-5 user-images-area">
+                <?php foreach ($_SESSION['user-images'] as $image) :?>
                     <img src="data:image/png;base64, <?=$image?>" class="usr-imgs-preview">
                 <?php endforeach;?>
             </div>

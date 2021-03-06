@@ -44,9 +44,19 @@ class Comment extends BaseModel {
             ON image.id=comment.image_id AND image.id=:imageid 
             JOIN user 
             ON user.id=comment.user_id
+            ORDER BY comment.id
         ";
         $this->query($sql);
         $this->bind(":imageid", $this->imageId);
         return $this->resultset();
+    }
+
+    public function addComment() {
+        $sql = "INSERT INTO comment (image_id, user_id, text) values (:imageid, :userid, :text)";
+        $this->query($sql);
+        $this->bind(":imageid", $this->imageId);
+        $this->bind(":userid", $this->userId);
+        $this->bind(":text", $this->text);
+        return $this->execute();
     }
 }

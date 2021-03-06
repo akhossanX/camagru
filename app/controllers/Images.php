@@ -78,9 +78,9 @@ class Images extends Controller {
     public function camera() {
         if (isAuthentified()) {
             $images = $this->image->getUserImages($_SESSION['logged-in-user']->id);
-            $_SESSION['usr-images'] = [];
+            $_SESSION['user-images'] = [];
             foreach ($images as $image) {
-                $_SESSION['usr-images'][] = $image->data;
+                $_SESSION['user-images'][] = $image->data;
             }
             $this->view('images/camera');
         } else {
@@ -91,7 +91,6 @@ class Images extends Controller {
     public function like() {
         $data = json_decode(file_get_contents('php://input'), true);
         $imageid = $data['id'];
-        // $liked = $data['liked'];
         if (isAuthentified()) {
             if ($imageid != null) {
                 $like = new Like($imageid, $_SESSION['logged-in-user']->id);
@@ -102,6 +101,20 @@ class Images extends Controller {
                     $like->addLike();
                     echo json_encode(['liked' => true, 'id' => $imageid, 'likes' => $like->countLikes()->count]);
                 }
+            }
+        } else {
+            echo json_encode(['redirectURL' => URLROOT . '/users/login']);
+        }
+    }
+
+    public function comment() {
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (isAuthentified()) {
+            $comment = new Comment($data['imageid'], $_SESSION['logged-in-user']->id, $data['commentText']);
+            if ($comment->addComment()) {
+                echo json_encode(['state' => true, 'username' => $_SESSION['logged-in-user']->username]);
+            } else {
+                echo json_encode(['state' => false]);
             }
         } else {
             echo json_encode(['redirectURL' => URLROOT . '/users/login']);

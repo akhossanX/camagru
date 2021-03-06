@@ -12,11 +12,9 @@
     --nav-border-color: #c5baba;
     --gallery-color: #FFFFFF;
     --main-color: #FAFAFA;
-    --default-border-radius: 10px;
+    --default-border-radius: 3px;
     --btn-primary-color: #B3254D;
 }
-
-
 
 /************************* Universal Selector ***********************************/
 * {
@@ -25,6 +23,7 @@
     letter-spacing: 1px;
     box-sizing: border-box;
 }
+
 body {
     font-family: 'Dosis', sans-serif;
     background-color: var(--main-color);
@@ -162,29 +161,25 @@ span.form-error {
 	background-color: var(--nav-color);
     border-color: var(--nav-color); 
 }
-
 .form-control.input-error {
     border-color: var(--error-color);
 }
 .form-control.input-error:focus {
     box-shadow: 0 0 0 .2rem var(--error-color);
 }
-
 section.img-post {
     border: 1px solid var(--nav-border-color);
     border-radius: var(--default-border-radius);
     background-color: var(--gallery-color);
     width: 624px;
-    height: 837px;
-    margin: 0 auto;
+    height: auto;
+    margin: 40px auto;
     padding: 10px 0;
 }
-
 section.img-post img.main-image {
     width: 100%;
     height: auto;
 }
-
 section.post-infos {
     margin-top: 1px;
     display: flex;
@@ -194,18 +189,15 @@ section.post-infos {
     margin-top: 10px;
     margin-left: 5px;
 }
-
 .ca-border {
     border: 1px solid var(--nav-border-color);
     border-radius: var(--default-border-radius);
     margin-bottom: 1px;
 }
-
 .user-pseudo {
     margin-bottom: 8px;
     margin-left: 3px;
 }
-
 .like-icon {
     width:  3vw;
     height: 3vw;
@@ -216,4 +208,41 @@ section.post-infos {
 span.likes-count {
     margin-left: 4px;
     font-weight: bolder;
+}
+.add-comment-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 5px;
+}
+.add-comment-area textarea {
+    min-height: 25px;
+    height: 40px;
+    width: 85%;
+    padding: 2px 2px;
+    border: none;
+}
+.add-comment-area textarea::-webkit-resizer {
+    display: none;
+}
+.add-comment-area textarea:focus {
+    border: none;
+    outline: none;
+}
+.comment-display-area {
+    overflow-y: scroll;
+    max-height: 200px;
+}
+.comment-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.comment-area .comment-text, .comment-area .comment-pseudo {
+    margin: 0 2px;
+    padding: 0 2px;
+}
+.comment-area h6 {
+    font-weight: bolder;
+    letter-spacing: normal;
 }

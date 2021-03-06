@@ -18,28 +18,31 @@
             <input type="hidden" name="db-id" value="<?=$imageid?>">
         </div>
         <section class="post-infos"  id="id_<?= $imageid ?>">
-            <?php if ($liked === true): ?>
-                <!-- <i class="fas fa-heart like-icon"></i> -->
+            <?php if ($liked == true): ?>
                 <i class="bi bi-heart-fill like-icon" id="<?= $imageid ?>"></i>
             <?php else : ?>
-                <!-- <i class="far fa-heart unlike-icon"></i> -->
                 <i class="bi bi-heart like-icon" id="<?= $imageid ?>"></i>
             <?php endif; ?>
             <span class="likes-count"> <?= $likes;?> likes.</span>
         </section>
         <section class="post-comments">
-            <?php foreach ($comments as $comment) : ?>
-                <div class="comment-area">
-                    <h5 class="comment-pseudo"><?= $comment->username ?></h5>
-                    <p class="comment-text">
-                        <?= $comment->text ?>
-                    </p>
-                </div>
-            <?php endforeach; ?>
+            <div class="comment-display-area" id="comment-display-area-<?= $imageid ?>">
+                <?php foreach ($comments as $comment) : ?>
+                    <div class="comment-area">
+                        <h6 class="comment-pseudo"><?= $comment->username ?></h6>
+                        <p class="comment-text"><?= $comment->text ?></p>
+                    </div>
+                <?php endforeach; ?>
+            </div>
             <div class="add-comment-area">
-                <textarea name="comment" id="" placeholder="add comment..." aria-label="add comment..." style="height: 18px !important; color:black;">
-                </textarea>
-                <input type="button" name="comment" value="comment">
+                <textarea name="comment" id="id_<?= $imageid ?>" placeholder="add comment..."></textarea>
+                <button 
+                    type="submit" 
+                    id="<?= $imageid ?>" 
+                    class="btn btn-primary btn-sm" 
+                    style="width: 80px !important">
+                    publish
+                </button>
             </div>
         </section>
     </section>

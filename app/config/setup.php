@@ -46,11 +46,12 @@
     try_execute($db, $query, 'Image table created!...');
     $query = "
         CREATE TABLE comment (
+            `id` INT PRIMARY KEY AUTO_INCREMENT,
             `image_id` INT NOT NULL,
             `user_id` INT NOT NULL,
             `text` VARCHAR(720) NOT NULL,
-            FOREIGN KEY (image_id) REFERENCES image(id),
-            FOREIGN KEY (user_id) REFERENCES user(id)
+            FOREIGN KEY (image_id) REFERENCES image(id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         );
     ";
     try_execute($db, $query, 'Comment table created!...');
@@ -58,18 +59,16 @@
         CREATE TABLE `like` (
             `image_id` INT NOT NULL,
             `user_id` INT NOT NULL,
-            FOREIGN KEY (image_id) REFERENCES image(id),
-            FOREIGN KEY (user_id) REFERENCES user(id),
-            ADD UNIQUE (image_id, user_id)
+            FOREIGN KEY (image_id) REFERENCES image(id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+            UNIQUE (image_id, user_id)
         );
     ";
     try_execute($db, $query, 'Like table created!...');
 
-    $query = "
-        CREATE VIEW images_view AS 
-        SELECT u.username,i.* FROM image AS i, user AS u WHERE i.user_id=u.id;
-    ";
-    try_execute($db, $query, 'Public gallery images view created!...');
+    /*
+    **  Random Population 
+    */
 
     $str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ0123456789_";
     if (isset($argv[1]) && $argv[1] == '-p') {

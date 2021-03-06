@@ -1,3 +1,13 @@
+:root {
+    --error-color: rgb(255, 167, 167);
+    --nav-bgcolor: #FFFFFF;
+    --nav-fgcolor: rgb(34, 31, 32);
+    --nav-border-color: #c5baba;
+    --gallery-color: #FFFFFF;
+    --main-color: #FAFAFA;
+    --default-border-radius: 3px;
+    --btn-primary-color: rgb(179, 37, 77);
+}
 
 .scrolling-wrapper {
     overflow-x: scroll;
@@ -5,7 +15,28 @@
     white-space: nowrap;
     padding: 5px 5px;
     margin-bottom: 20px;
-    box-shadow: 1px 3px 19px 1px rgba(0,0,0,0.69);
+    border-radius: var(--default-border-radius);
+    border: var(--default-border-radius) solid var(--nav-border-color);
+}
+
+.scrolling-wrapper::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+.scrolling-wrapper::-webkit-scrollbar
+{
+	width: 5px;
+	background-color: #F5F5F5;
+}
+.scrolling-wrapper::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: var(--nav-border-color);
 }
 .scrolling-wrapper::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -13,11 +44,7 @@
     border-radius: 10px;
     background-color: rgb(255, 255, 255);
 }
-.scrolling-wrapper::-webkit-scrollbar {
-	width: 12px;
-	background-color: rgb(255, 255, 255);
-    color: red;
-}
+
 .scrolling-wrapper img.card {
     display: inline-block;
     width: 80px;
@@ -41,6 +68,12 @@ canvas#preview-canvas {
     overflow: hidden;
     outline: 7px solid rgba(43, 16, 1, 0.73);
 }
+.camera-header {
+    margin: 20px auto 40px;
+    font-size: 3rem;
+    text-align: center;
+    font-weight: bolder;
+}
 
 .stickers {
     height:  auto;
@@ -62,9 +95,11 @@ canvas#preview-canvas {
 
 }
 .user-images-area {
-    height: 100%;
-    overflow: scroll;
+    height: 700px;
+    overflow-y: scroll;
     overflow-x: hidden;
 }
+
+
 
 

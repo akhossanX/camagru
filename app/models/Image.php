@@ -60,8 +60,9 @@ class Image extends BaseModel {
             $comments = $this->getImageComments($image->imageid);
             $likes = $this->getImageLikesCount($image->imageid);
             $isLiked = false;
-            if (isAuthentified())
-                $liked = $this->isLiked($image->imageid);
+            if (isAuthentified()) {
+                $isLiked = $this->isLiked($image->imageid);
+            }
             $posts[] = [
                 'image' => $image,
                 'comments' => $comments,
@@ -77,7 +78,7 @@ class Image extends BaseModel {
         $this->query($query);
         $this->bind(":imageid", $imageid);
         $this->bind(":userid", $_SESSION["logged-in-user"]->id);
-        return $this->single();
+        return $this->rowCount();
     }
 
     public function saveUserImage() {
@@ -89,10 +90,10 @@ class Image extends BaseModel {
         return $this->execute();
     }
 
-    public function getUserImages() {
+    public function getUserImages($ownerid) {
         $sql = "SELECT data, creation_date FROM image WHERE user_id=:userid ORDER BY creation_date DESC";
         $this->query($sql);
-        $this->bind(":userid", $this->ownerId);
+        $this->bind(":userid", $ownerid);
         return $this->resultset();
     }
 
