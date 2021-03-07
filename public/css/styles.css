@@ -7,12 +7,12 @@
 
 :root {
     --error-color: rgb(255, 167, 167);
-    --nav-bgcolor: #FFFFFF;
-    --nav-fgcolor: #221F20;
-    --nav-border-color: #c5baba;
+    --nav-bgcolor: #B3254D; /* #fff; */
+    --nav-fgcolor: #fff;/* #221F20;*/
+    --nav-border-color: #ede0d4; /* #c5baba;*/
     --gallery-color: #FFFFFF;
     --main-color: #FAFAFA;
-    --default-border-radius: 3px;
+    --default-border-radius: 2px;
     --btn-primary-color: #B3254D;
 }
 
@@ -246,3 +246,37 @@ span.likes-count {
     font-weight: bolder;
     letter-spacing: normal;
 }
+
+
+/*********** SLIDER TRACK STYLE **************/
+input[type=range]{
+    -webkit-appearance: none;
+    margin-bottom: 40px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 300px;
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: var(--btn-primary-color);
+    margin-top: -4px;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ccc;
+}
+/***********************************************************/

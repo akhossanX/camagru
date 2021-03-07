@@ -69,7 +69,7 @@ class Images extends Controller {
         $resized = imagecreatetruecolor($width, $height);
         imagealphablending($resized, false);
         imagesavealpha($resized,true);
-        $transparency = imagecolorallocatealpha($resized, 255, 255, 255, 127);
+        $transparency = imagecolorallocatealpha($resized, 0, 0, 0, 0);
         imagefilledrectangle($resized, 0, 0, $width, $height, $transparency);
         imagecopyresampled($resized, $img, 0, 0, 0, 0, $width, $height, $oldWidth, $oldHeight);
         return $resized;
@@ -107,11 +107,23 @@ class Images extends Controller {
         }
     }
 
+    public function delete() {
+        
+    }
+
     public function comment() {
         $data = json_decode(file_get_contents('php://input'), true);
         if (isAuthentified()) {
             $comment = new Comment($data['imageid'], $_SESSION['logged-in-user']->id, $data['commentText']);
             if ($comment->addComment()) {
+                // send comment notification to image owner if the notifications are enabled
+                $owner = $this->image->getImageOwnerNotify($data['imageid']);
+                // var_dump($owner->owner_id);
+                // var_dump($owner->notify);
+                // var_dump($_SESSION['logged-in-user']->id);
+                if ($owner->notify && $owner->owner_id !== $_SESSION['logged-in-user']->id) {
+                    $this->sendCommentNotification($owner->email);
+                }
                 echo json_encode(['state' => true, 'username' => $_SESSION['logged-in-user']->username]);
             } else {
                 echo json_encode(['state' => false]);
@@ -119,6 +131,15 @@ class Images extends Controller {
         } else {
             echo json_encode(['redirectURL' => URLROOT . '/users/login']);
         }
+    }
+
+    public function sendCommentNotification($email) {
+        $subject = "Comment notification";
+        $body = "{$_SESSION['logged-in-user']->username} commented on your photo";
+        $mailHeaders = "From: abdelilah.khossan@gmail.com\r\n";
+        $mailHeaders .= "MIME-Version: 1.0" . "\r\n";
+        $mailHeaders .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+        mail($email, $subject, $body, $mailHeaders);
     }
 
 }

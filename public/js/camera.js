@@ -81,10 +81,11 @@ function stream_init () {
         video.ondrop = onStickerDrop;
         video.ondragover = onStickerDragOver;
         video.style.zIndex = 0;
-        uploadBtn.disabled = true;
+        // uploadBtn.disabled = true;
     })
     .catch((error) => {
-        video.style.display = 'none';
+        // video.style.display = 'none';
+        
         console.log(error);
     });
 };
@@ -105,10 +106,11 @@ function onStickerClickChooser() {
     img.ondragstart = onStickerDragStart;
     img.ondragover = onStickerDragOver;
     img.ondrop = onStickerDrop;
+    img.classList.add("live-sticker");
     img.onclick = function () {
         selected = img;
         if (selected.style.border === 'none')
-            selected.style.border = '1px solid blue';
+            selected.style.border = '1px solid orange';
         else
             selected.style.border = 'none';
     }
@@ -123,7 +125,7 @@ function onStickerDoubleClick(event) {
 
 function onStickerDragStart(event) {
     event.dataTransfer.setData('text/plain', event.target.id);
-    event.target.style.border = "1px solid blue";
+    // event.target.style.border = "1px solid blue";
 } 
 
 function onStickerDragOver(event) {
@@ -155,11 +157,9 @@ function sendPictureDataToServer(data) {
     var xhr = new XMLHttpRequest(),
     url = new URL(SAVE_IMAGE_URI);
     xhr.onload = () => {
-        // Here We have to update the list of captured images belonging to the user;
-        // console.log(xhr.responseText);
+        // We update the list of captured images belonging to the user
         let imgArea = document.querySelector(".user-images-area");
         let response = JSON.parse(xhr.response);
-        // console.log(response);
         let img = document.createElement('img');
         img.src = "data:image/png;base64, " + response.data;
         img.className = "usr-imgs-preview";
@@ -174,10 +174,10 @@ function sendPictureDataToServer(data) {
 }
 
 function assemblePicturesData(imageURI) {
+    var previewContainer = document.querySelector("#preview-container-id")
     var pictures = document.querySelectorAll('#preview-container-id img');
     var arr = [].slice.call(pictures);
     var stickers = [];
-    arr = arr.filter(st => st.id !== 'uploaded-image');
     arr.forEach(img => {
         let obj = {};
         let str = new String(img.src).substring(img.src.lastIndexOf('/') + 1);
@@ -188,6 +188,7 @@ function assemblePicturesData(imageURI) {
         obj.height = img.height * DEVICE_PIXEL_RATIO;
         obj.zIndex = parseInt(img.style.zIndex);
         stickers.push(obj);
+        previewContainer.removeChild(img);
     });
     // sort stickers according to their zindex;
     stickers.sort((a, b) => a.zIndex - b.zIndex);
@@ -198,8 +199,8 @@ function assemblePicturesData(imageURI) {
 
 function drawToPreviewCanvas() {
     var context = canvas.getContext('2d');
-    canvas.style.width = video.width;//videoRect.width;//'100%';
-    canvas.style.height = video.height;//videoRect.height;//'100%';
+    canvas.width = videoRect.width;//video.width;//'100%';
+    canvas.height = videoRect.height;//video.height;//'100%';
     canvas.style.maxWidth = videoRect.width;
     canvas.style.maxHeight = videoRect.height;
     canvas.width = target.offsetWidth * DEVICE_PIXEL_RATIO;
@@ -209,8 +210,12 @@ function drawToPreviewCanvas() {
     context.drawImage(target, 0, 0, canvas.width, canvas.height);
     if (target.hasOwnProperty('play'))
         target.play();
-    var st = document.querySelectorAll('#video-container-id img');
-    st = [].slice.call(st).sort((a, b) => parseInt(a.style.zIndex) - parseInt(b.style.zIndex));
+    var st = document.querySelectorAll('#video-container-id img.live-sticker');
+    if (st.length !== 0) {
+        st = [].slice.call(st).sort((a, b) => parseInt(a.style.zIndex) - parseInt(b.style.zIndex));
+    } else {
+        return false;
+    }
     for(var i = 0; i < st.length; i++) {
         var styles = window.getComputedStyle(st[i]);
         let left = parseFloat(styles['left']) * DEVICE_PIXEL_RATIO,
@@ -220,6 +225,8 @@ function drawToPreviewCanvas() {
         // context.drawImage(st[i], left, top, width, height);
         canvas.parentElement.appendChild(st[i]);
     }
+    target.style.display = 'none';
+    video.style.display = 'block';
     canvas.style.display = 'block';
     saveBtn.style.display = 'block';
     saveBtn.disabled = false;
@@ -238,13 +245,6 @@ function savePicture() {
 
 video.addEventListener('canplay', event => {
     if (streaming === false) {
-        // videoDimensions.height = video.videoHeight / (video.videoWidth / videoDimensions.width);
-        video.setAttribute('width', videoDimensions.width);
-        video.setAttribute('height', videoDimensions.height);
-        canvas.setAttribute('width', videoDimensions.width);
-        canvas.setAttribute('height', videoDimensions.height);
-        // hiddenCanvas.setAttribute('width', videoDimensions.width);
-        // hiddenCanvas.setAttribute('height', videoDimensions.height);
         streaming = true;
     }
 }, false);
@@ -271,13 +271,12 @@ uploadBtn.onclick = () => {
                 image.id = 'uploaded-image';
                 video.style.zIndex = 0;
                 image.src = fr.result;
-                image.style.maxWidth = WIDTH;
-                image.style.maxHeight = HEIGHT;
-                image.style.width = WIDTH + 'px';
-                image.style.height = HEIGHT + 'px';
+                image.style.width = "100%";
+                image.style.height = "480px";
                 image.style.position = 'relative';
                 image.className += ' text-center';
-                image.style.objectFit = "cover";
+                // image.style.objectFit = "cover";
+                video.style.display = 'none';
                 video.parentElement.appendChild(image);
                 target = image;
                 captureBtn.disabled = false;
@@ -299,3 +298,4 @@ slider.oninput = function resize() {
         console.log(selected.style.height);
     }
 }
+

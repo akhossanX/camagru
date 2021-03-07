@@ -81,13 +81,20 @@ class Image extends BaseModel {
         return $this->rowCount();
     }
 
-    public function saveUserImage() {
+    public function saveImage() {
         $sql = 'INSERT INTO image (name, data, user_id) values (:name, :data, :user_id)';
         $this->query($sql);
         $this->bind(':name', $this->name);
         $this->bind(':data', $this->data);
         $this->bind(':user_id', $this->ownerId);
         return $this->execute();
+    }
+
+    public function deleteImage() {
+        $sql = "DELETE FROM image WHERE image.id LIKE :imageid";
+        $this->query($sql);
+        $this->bind(":imageid", $this->id);
+        $this->execute();
     }
 
     public function getUserImages($ownerid) {
@@ -112,6 +119,16 @@ class Image extends BaseModel {
     public function getImageLikesCount($imageId) {
         $like = new Like($imageId);
         return $like->countLikes();
+    }
+
+    public function getImageOwnerNotify($imageid) {
+        $sql = "SELECT user.notify, user.email, user.id as owner_id, image.user_id, image.id
+            FROM image
+            JOIN user ON user.id=image.user_id AND image.id=:imageid;
+        ";
+        $this->query($sql);
+        $this->bind(":imageid", $imageid);
+        return $this->single();
     }
 
 }
