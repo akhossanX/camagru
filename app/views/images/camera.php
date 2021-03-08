@@ -49,10 +49,14 @@
             <div class="col-12 col-lg-6 user-images-area">
                 <?php foreach ($_SESSION['user-images'] as $image) :?>
                     <div class="usr-image-container">
-                        <img src="data:image/png;base64, <?=$image?>" class="usr-img-preview">
-                        <button class="btn delete-btn">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+                        <img
+                            id="<?= $image->id ?>"
+                            class="usr-img-preview img-thumbnail" 
+                            src="data:image/png;base64, <?=$image->data?>"
+                        >
+                        <div class="delete-btn-container">
+                            <i class="btn fas fa-trash" id="delete-btn"></i>
+                        </div>
                     </div>
                 <?php endforeach;?>
             </div>

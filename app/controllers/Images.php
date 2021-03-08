@@ -13,10 +13,10 @@ class Images extends Controller {
         $this->image->setName('' . $creationTimeStamp);
         $this->image->setData($imageData);
         $this->image->setOwnerId($userid);
-        $queryResult = $this->image->saveUserImage();
+        $queryResult = $this->image->saveImage();
         if ($queryResult) {
-            $userImages = $this->image->getLatestImage();
-            echo json_encode($userImages);
+            $lastImage = $this->image->getLatestImage();
+            echo json_encode($lastImage);
         } else {
             echo json_encode(["error" => "Image can not be saved"]);
         }
@@ -42,7 +42,7 @@ class Images extends Controller {
     }
     
     private function superposeImages($rawData) {
-        $data = json_decode($rawData, true);// returns associative array
+        $data = json_decode($rawData, true);
         $image = base64_decode($data['image']);
         $image = imagecreatefromstring($image);
         if ($image === false)
@@ -77,11 +77,7 @@ class Images extends Controller {
 
     public function camera() {
         if (isAuthentified()) {
-            $images = $this->image->getUserImages($_SESSION['logged-in-user']->id);
-            $_SESSION['user-images'] = [];
-            foreach ($images as $image) {
-                $_SESSION['user-images'][] = $image->data;
-            }
+            $_SESSION['user-images'] = $this->image->getUserImages($_SESSION['logged-in-user']->id);
             $this->view('images/camera');
         } else {
             $this->redirect('users/login');
@@ -108,7 +104,14 @@ class Images extends Controller {
     }
 
     public function delete() {
-        
+        $data = json_decode(file_get_contents("php://input"), true);
+        $id = $data['imageid'];
+        $this->image->setId($id);
+        if ($this->image->deleteImage()) {
+            echo json_encode(["state" => true]);
+        } else {
+            echo json_encode(["state" => false]);
+        }
     }
 
     public function comment() {
@@ -118,9 +121,6 @@ class Images extends Controller {
             if ($comment->addComment()) {
                 // send comment notification to image owner if the notifications are enabled
                 $owner = $this->image->getImageOwnerNotify($data['imageid']);
-                // var_dump($owner->owner_id);
-                // var_dump($owner->notify);
-                // var_dump($_SESSION['logged-in-user']->id);
                 if ($owner->notify && $owner->owner_id !== $_SESSION['logged-in-user']->id) {
                     $this->sendCommentNotification($owner->email);
                 }

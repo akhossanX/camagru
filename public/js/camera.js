@@ -153,6 +153,7 @@ function onStickerDrop(event) {
     liveSticker.style.zIndex = parseInt(event.target.style.zIndex) + 1;
 }
 
+
 function sendPictureDataToServer(data) {
     var xhr = new XMLHttpRequest(),
     url = new URL(SAVE_IMAGE_URI);
@@ -160,10 +161,8 @@ function sendPictureDataToServer(data) {
         // We update the list of captured images belonging to the user
         let imgArea = document.querySelector(".user-images-area");
         let response = JSON.parse(xhr.response);
-        let img = document.createElement('img');
-        img.src = "data:image/png;base64, " + response.data;
-        img.className = "usr-imgs-preview";
-        imgArea.prepend(img);
+        let component = creatImageComponent(response);
+        imgArea.prepend(component);
     }
     xhr.onerror = (error) => {
         console.log(error);
@@ -201,12 +200,14 @@ function drawToPreviewCanvas() {
     var context = canvas.getContext('2d');
     canvas.width = videoRect.width;//video.width;//'100%';
     canvas.height = videoRect.height;//video.height;//'100%';
-    canvas.style.maxWidth = videoRect.width;
-    canvas.style.maxHeight = videoRect.height;
+    // canvas.style.width = videoRect.width + 'px';
+    // canvas.style.height = videoRect.height + 'px';
     canvas.width = target.offsetWidth * DEVICE_PIXEL_RATIO;
     canvas.height = target.offsetHeight * DEVICE_PIXEL_RATIO;
     if (target.hasOwnProperty('pause'))
         target.pause();
+    console.log(videoRect);
+    console.log(target);
     context.drawImage(target, 0, 0, canvas.width, canvas.height);
     if (target.hasOwnProperty('play'))
         target.play();
@@ -222,7 +223,11 @@ function drawToPreviewCanvas() {
             top = parseFloat(styles['top']) * DEVICE_PIXEL_RATIO,
             width = parseFloat(st[i].style.width) * DEVICE_PIXEL_RATIO,
             height = parseFloat(st[i].style.height) * DEVICE_PIXEL_RATIO;
-        // context.drawImage(st[i], left, top, width, height);
+        st[i].ondblclick = null;
+        st[i].onclick = null;
+        st[i].ondragover = null;
+        st[i].ondrop = null;
+        st[i].style.border = 'none';
         canvas.parentElement.appendChild(st[i]);
     }
     target.style.display = 'none';
@@ -234,6 +239,9 @@ function drawToPreviewCanvas() {
 
 // can't be triggered until stickers are selected;
 function capture() {
+    while (canvas.nextElementSibling) {
+        canvas.nextElementSibling.remove();
+    }
     drawToPreviewCanvas();
     captureBtn.disabled = true;
 }
@@ -272,7 +280,7 @@ uploadBtn.onclick = () => {
                 video.style.zIndex = 0;
                 image.src = fr.result;
                 image.style.width = "100%";
-                image.style.height = "480px";
+                image.style.maxHeight = "480px";
                 image.style.position = 'relative';
                 image.className += ' text-center';
                 // image.style.objectFit = "cover";
@@ -299,3 +307,45 @@ slider.oninput = function resize() {
     }
 }
 
+let deleteBtns = document.querySelectorAll("#delete-btn");
+deleteBtns.forEach( btn => btn.addEventListener('click', deleteImage));
+
+function deleteImage(event) {
+    const parent = event.target.parentElement.parentElement;
+    const target = parent.querySelector("img");
+    const xhr = new XMLHttpRequest();
+    const url = new URL(DELETE_IMAGE_URL);
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader("content-type", "application/json");
+    const id = target.id;
+    // const data = JSON.parse(`{"imageid": ${id}}`);
+    // xhr.send(JSON.stringify(data));
+    xhr.send(`{"imageid": ${id}}`);
+    xhr.onload = () => {
+        // console.log(JSON.parse(xhr.response));
+        const response = JSON.parse(xhr.response);
+        if ('state' in response && response.state === true) {
+            const usrImagesArea = document.querySelector(".user-images-area");
+            usrImagesArea.removeChild(parent);
+        }
+    }
+}
+
+function creatImageComponent(response) {
+    const container = document.createElement("div");
+    container.classList.add("usr-image-container");
+    const img = document.createElement('img');
+    img.src = "data:image/png;base64, " + response.data;
+    img.classList.add("usr-img-preview", "img-thumbnail");
+    img.id = response.id;
+    const btnContainer = document.createElement("div");
+    btnContainer.classList.add("delete-btn-container");
+    const icon = document.createElement("i");
+    icon.classList.add("btn", "fas", "fa-trash");
+    icon.id = "delete-btn";
+    icon.onclick = deleteImage;
+    btnContainer.appendChild(icon);
+    container.appendChild(img);
+    container.appendChild(btnContainer);
+    return container;
+}

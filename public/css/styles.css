@@ -7,8 +7,8 @@
 
 :root {
     --error-color: rgb(255, 167, 167);
-    --nav-bgcolor: #B3254D; /* #fff; */
-    --nav-fgcolor: #fff;/* #221F20;*/
+    --nav-fgcolor: #B3254D; /* #fff; */
+    --nav-bgcolor: #fff;/* #221F20;*/
     --nav-border-color: #ede0d4; /* #c5baba;*/
     --gallery-color: #FFFFFF;
     --main-color: #FAFAFA;
@@ -89,7 +89,12 @@ i.fa {
         align-content: flex-start;
         justify-content: space-between;
         align-items: flex-start;
+        font-size: 1rem;
     }
+    .navbar-brand > * {
+        font-size: 1rem !important;
+    }
+    
     nav.navbar .right-side {
         display: flex;
         flex-direction: column;
@@ -139,7 +144,7 @@ span.form-error {
 .closebtn:hover {
 	color: black;
 }
-/**************************** forms ************/
+/**************************** FORMS ************/
 .form-container {
 	height: 80vh;
 	display: flex;
@@ -167,6 +172,9 @@ span.form-error {
 .form-control.input-error:focus {
     box-shadow: 0 0 0 .2rem var(--error-color);
 }
+
+/************************* GALLERY ******************************/
+
 section.img-post {
     border: 1px solid var(--nav-border-color);
     border-radius: var(--default-border-radius);
@@ -176,6 +184,7 @@ section.img-post {
     margin: 40px auto;
     padding: 10px 0;
 }
+
 section.img-post img.main-image {
     width: 100%;
     height: auto;
@@ -184,7 +193,7 @@ section.post-infos {
     margin-top: 1px;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    /* align-items: center; */
     align-items: baseline;
     margin-top: 10px;
     margin-left: 5px;
@@ -199,12 +208,12 @@ section.post-infos {
     margin-left: 3px;
 }
 .like-icon {
-    width:  3vw;
-    height: 3vw;
-    max-width:  40px;
-    max-height: 40px;
-    color: red;
+    font-style: normal;
+    font-family: "FontAwesome" !important;
+    font-size: 2rem !important;
+    color: rgb(216, 3, 3);
 }
+
 span.likes-count {
     margin-left: 4px;
     font-weight: bolder;

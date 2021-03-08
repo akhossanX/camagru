@@ -6,6 +6,7 @@ const LIKE_ICON = URLROOT + '/public/icons/heart.svg';
 const NO_LIKE_ICON = URLROOT + '/public/icons/heart.svg';
 const LIKE_ACTION_SAVE_URI = URLROOT + '/images/like';
 const PUBLISH_COMMENT_URL = URLROOT + '/images/comment';
+const DELETE_IMAGE_URL = URLROOT + '/images/delete'
 
 let toggleMenu = () => {
     let navContent = document.getElementById('navbar-content');
@@ -31,12 +32,10 @@ let likeClick = function () {
             let icon = document.querySelector('.img-post #id_' + res.id + ' i');
             let likesCount = icon.nextElementSibling;
             if (res.liked === true) {
-                icon.classList.add('bi-heart-fill');
-                icon.classList.remove('bi-heart');
+                icon.className = "bi bi-heart-fill like-icon";
                 likesCount.innerHTML = `${res.likes} likes.`;
             } else {
-                icon.classList.add('bi-heart');
-                icon.classList.remove('bi-heart-fill');
+                icon.className = "bi bi-heart like-icon";
                 likesCount.innerHTML = `${res.likes} likes.`;
             }
         }

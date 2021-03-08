@@ -94,18 +94,18 @@ class Image extends BaseModel {
         $sql = "DELETE FROM image WHERE image.id LIKE :imageid";
         $this->query($sql);
         $this->bind(":imageid", $this->id);
-        $this->execute();
+        return $this->execute();
     }
 
     public function getUserImages($ownerid) {
-        $sql = "SELECT data, creation_date FROM image WHERE user_id=:userid ORDER BY creation_date DESC";
+        $sql = "SELECT data, creation_date, id FROM image WHERE user_id=:userid ORDER BY creation_date DESC";
         $this->query($sql);
         $this->bind(":userid", $ownerid);
         return $this->resultset();
     }
 
     public function getLatestImage() {
-        $sql = "SELECT data, creation_date FROM image WHERE user_id=:userid ORDER BY creation_date DESC LIMIT 1";
+        $sql = "SELECT data, creation_date, id FROM image WHERE user_id=:userid ORDER BY creation_date DESC LIMIT 1";
         $this->query($sql);
         $this->bind(":userid", $this->ownerId);
         return $this->single();
