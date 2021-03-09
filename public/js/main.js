@@ -51,7 +51,11 @@ let publishComment = function(e) {
     const url = new URL(PUBLISH_COMMENT_URL);
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    const obj = JSON.parse(`{"imageid": ${id}, "commentText": "${commentTextElement.value}"}`);
+    // const obj = JSON.parse(`{"imageid": ${id}, "commentText": "${encodeURIComponent(commentTextElement.value)}"}`);
+    const obj = {
+        imageid: id,
+        commentText: commentTextElement.value
+    }
     xhr.send(JSON.stringify(obj));
     xhr.onload = () => {
         const res = JSON.parse(xhr.response);
@@ -68,11 +72,11 @@ let publishComment = function(e) {
             pseudo.innerText = res.username;
             const text = document.createElement('p');
             text.classList.add("comment-text");
-            text.innerText = commentTextElement.value;
+            text.innerText = res.commentText;
             container.appendChild(pseudo);
             container.appendChild(text);
             displayArea.appendChild(container);
-            commentTextElement.value = '';
+            commentTextElement.value = "";
         }
     }
 }

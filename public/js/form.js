@@ -51,7 +51,7 @@ let checkPassword = function () {
     let password = this.value;
     let oldColor = this.style.borderColor;
     let span = document.querySelector('.form-group span#' + this.id);
-    let re = /^(?=\S{8,20}$)(?=.*\d+.*)(?=.*[a-zA-Z_]+.*)(?=.*[!@#$%^&*()].*)/;
+    let re = /^(?=\S{8,20}$)(?=.*\d+.*)(?=.*[a-z_]+.*)+(?=.*[A-Z].*)+(?=.*[!@#$%^&*()]+.*)/;
     if (re.test(password) === false) {
         span.innerHTML = `Must contain at least a-zA-Z0-9 and
          at least one of '!@#$%^&*()' and 8 up to 20 characters`;

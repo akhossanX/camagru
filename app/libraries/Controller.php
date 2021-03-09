@@ -7,6 +7,7 @@
 
 	class Controller
 	{
+		
 		// Load model
 		public function	model($model) {
 			// Require model file
@@ -38,8 +39,8 @@
 		}
 
 		protected function sanitizeArray(&$array) {
-			foreach ($array as $str) {
-				$str = filter_var($str, FILTER_SANITIZE_STRING);
+			foreach ($array as $key => $str) {
+				$array[$key] = filter_var($str, FILTER_SANITIZE_STRING);
 			}
 		}
 	}

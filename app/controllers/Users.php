@@ -48,14 +48,7 @@
             $this->view('users/login');
         }
         
-        private function verifyPassword($user, &$data) {
-            if (hash('whirlpool', $_POST['password']) === $user->password) {
-                $data['password_error'] = '';
-                return true;
-            }
-            $data['password_error'] = 'Wrong password';
-            return false;
-        }
+        
 
         public function register() {
             if (isset($_POST['register'])) {
@@ -134,14 +127,15 @@
         public function profile() {
             $_SESSION['username_error'] = '';
             $_SESSION['email_error'] = '';
-            $_SESSION['password_error'] = '';
-            $_SESSION['confirm_password_error'] = '';
+            $_SESSION['current_password_error'] = '';
+            $_SESSION['new_password_error'] = '';
+            $_SESSION['confirm_new_password_error'] = '';
             if (isAuthentified()) {
                 if (isset($_POST['save'])) {
                     $_SESSION['username'] = $_POST['username'];
                     $_SESSION['email'] = $_POST['email'];
                     if (empty($_POST['username']))
-                        $_SESSION['username_error'] = 'username can\'t be empty';
+                        $_SESSION['username_error'] = "username can't be empty";
                     $this->user->setUserName($_POST['username']);
                     $this->user->setPassword($_POST['password']);
                     $this->user->setEmail($_POST['email']);
@@ -150,8 +144,8 @@
                     else
                         $this->user->setNotify(0);
                     $this->verifyUserCredentials($_SESSION);
-                    if ($_SESSION['email_error'] === 'email already registered')
-                        $_SESSION['email_error'] = '';
+                    if ($_SESSION["email_error"] === "email already registered")
+                        $_SESSION["email_error"] = "";
                     if (!empty($_SESSION['email_error']) || !empty($_SESSION['password_error']) || 
                     !empty($_SESSION['confirm_password_error']) || !empty($_SESSION['username_error'])
                     ) {
@@ -165,6 +159,22 @@
                     $this->view('users/profile');
             } else
                 $this->redirect('home/index');
+        }
+
+        private function verifyPassword($user, &$data) {
+            if (hash('whirlpool', $_POST['password']) === $user->password) {
+                $data['password_error'] = '';
+                return true;
+            }
+            $data['password_error'] = 'Wrong password';
+            return false;
+        }
+
+        private function checkPasswordStrength(&$data) {
+            $regex = "/^(?=\S{8,20}$)(?=.*\d+.*)(?=.*[a-z_]+.*)+(?=.*[A-Z].*)+(?=.*[!@#$%^&*()]+.*)/";
+            if (preg_match($regex, $this->user->getPassword()) === 0) {
+                $data['password_error'] = "Must contain at least a-zA-Z0-9 and at least one of '!@#$%^&*()' and 8 up to 20 characters";
+            }
         }
 
         /*
@@ -201,14 +211,7 @@
             return false;
         }
         
-        private function checkPasswordStrength(&$data) {
-            if (strlen($this->user->getPassword()) < 8)
-                $data['password_error'] = 'Password too short';
-            if (!preg_match("#[0-9]+#", $this->user->getPassword()))
-                $data['password_error'] = 'Password must include at least one number !';
-            if (!preg_match("#[a-zA-Z]+#", $this->user->getPassword()))
-                $data['password_error'] = 'Password must include at least one letter !';
-        }
+        
 
         public function forgotPassword() {
             if (isset($_POST) && isset($_POST['forgot'])) {

@@ -4,6 +4,7 @@ class Images extends Controller {
     
     public function __construct () {
         $this->image = $this->model('Image');
+        $this->sanitizeArray($_POST);
         Controller::session_init();
     }
 
@@ -115,8 +116,11 @@ class Images extends Controller {
     }
 
     public function comment() {
-        $data = json_decode(file_get_contents('php://input'), true);
         if (isAuthentified()) {
+            $data = json_decode(file_get_contents('php://input'), true);
+            // $this->sanitizeArray($data);
+            $data['commentText'] = htmlspecialchars($data['commentText'], ENT_QUOTES, 'UTF-8');
+            // var_dump($data);die();
             $comment = new Comment($data['imageid'], $_SESSION['logged-in-user']->id, $data['commentText']);
             if ($comment->addComment()) {
                 // send comment notification to image owner if the notifications are enabled
@@ -124,7 +128,11 @@ class Images extends Controller {
                 if ($owner->notify && $owner->owner_id !== $_SESSION['logged-in-user']->id) {
                     $this->sendCommentNotification($owner->email);
                 }
-                echo json_encode(['state' => true, 'username' => $_SESSION['logged-in-user']->username]);
+                echo json_encode([
+                    'state' => true, 
+                    'username' => $_SESSION['logged-in-user']->username,
+                    'commentText' => $data['commentText']
+                    ]);
             } else {
                 echo json_encode(['state' => false]);
             }

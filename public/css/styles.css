@@ -163,7 +163,7 @@ span.form-error {
 }
 
 .btn.btn-success {
-	background-color: var(--nav-color);
+	background-color: var(--btn-primary-color);
     border-color: var(--nav-color); 
 }
 .form-control.input-error {
@@ -172,6 +172,16 @@ span.form-error {
 .form-control.input-error:focus {
     box-shadow: 0 0 0 .2rem var(--error-color);
 }
+.header {
+    margin: 10px auto;
+    text-align: center;
+}
+
+.form-group label, .header {
+    font-variant: small-caps;
+    color: rgb(236, 189, 81)
+}
+
 
 /************************* GALLERY ******************************/
 

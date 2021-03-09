@@ -6,6 +6,7 @@
 
         public function __construct() {
             $this->image = $this->model('Image');
+            $this->sanitizeArray($_POST);
             Controller::session_init();
         }
 
