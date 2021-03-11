@@ -66,7 +66,6 @@ nav i {
 img#camagru-icon {
     width: 30px;
     height: 30px ;
-    /* filter: invert(1); */
 }
 .navbar-brand,
 ul li.nav-item {
@@ -80,44 +79,6 @@ i.fa {
     border: none;
 }
 
-/************ Media Query **********/
-@media (max-width: 991px) {
-    nav {
-        height: auto;
-    }
-    .navbar .container-fluid {
-        align-content: flex-start;
-        justify-content: space-between;
-        align-items: flex-start;
-        font-size: 1rem;
-    }
-    .navbar-brand > * {
-        font-size: 1rem !important;
-    }
-    
-    nav.navbar .right-side {
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        justify-content: right;
-        align-items: flex-end;
-    }
-    nav .icon {
-        display: inline-block;
-        justify-content: flex-end;
-    }
-    .navbar-toggle ul {
-        display: none;
-    }
-    .navbar-toggle.toggle ul {
-        display: flex;
-        align-items: center;
-    }
-    .navbar-toggle.toggle ul li {
-        margin-right: 0;
-    }
-
-}
 /***************************** END OF NAVBAR ***************************************/
 span.form-error {
     font-weight: lighter;
@@ -156,6 +117,7 @@ span.form-error {
 	padding: 50px 50px;
     border: 1px solid var(--nav-border-color);
     border-radius: var(--default-border-radius);
+    background-color: white;
 }
 .btn.btn-success,
 .btn.btn-primary {
@@ -164,7 +126,7 @@ span.form-error {
 
 .btn.btn-success {
 	background-color: var(--btn-primary-color);
-    border-color: var(--nav-color); 
+    border-color: var(--btn-primary-color);
 }
 .form-control.input-error {
     border-color: var(--error-color);
@@ -176,12 +138,40 @@ span.form-error {
     margin: 10px auto;
     text-align: center;
 }
-
 .form-group label, .header {
     font-variant: small-caps;
-    color: rgb(236, 189, 81)
+    color: #ecbd51
 }
-
+.submit-group  {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.submit-group small {
+    margin-right: 0;
+}
+.submit-group small a,
+.signup-group a,
+.signin-group a {
+    text-decoration: none;
+    color: var(--btn-primary-color);
+}
+.signup-group > *,
+.signin-group > * {
+    float: right;
+    margin-left: 5px;
+}
+.signup-group > a {
+    font-size: 1em;
+    font-weight: normal;
+}
+.signup-group span, .signin-group span {
+    color: #ecbd51;
+    font-variant: small-caps;
+}
+button[name=register] {
+    width: 100% !important;
+}
 
 /************************* GALLERY ******************************/
 
@@ -199,6 +189,7 @@ section.img-post img.main-image {
     width: 100%;
     height: auto;
 }
+
 section.post-infos {
     margin-top: 1px;
     display: flex;
@@ -221,7 +212,7 @@ section.post-infos {
     font-style: normal;
     font-family: "FontAwesome" !important;
     font-size: 2rem !important;
-    color: rgb(216, 3, 3);
+    color: #d80303;
 }
 
 span.likes-count {
@@ -241,10 +232,10 @@ span.likes-count {
     padding: 2px 2px;
     border: none;
 }
-.add-comment-area textarea::-webkit-resizer {
-    display: none;
+textarea {
+    resize: none;
 }
-.add-comment-area textarea:focus {
+.textarea:focus {
     border: none;
     outline: none;
 }
@@ -264,6 +255,16 @@ span.likes-count {
 .comment-area h6 {
     font-weight: bolder;
     letter-spacing: normal;
+}
+.btn-publish {
+    background-color: var(--btn-primary-color);
+    border-color: var(--btn-primary-color);
+    color: white !important;
+}
+.btn-publish:hover {
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(179,37,77,1);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(179,37,77,1);
+    box-shadow: 0px 0px 10px 1px rgba(179,37,77,1);
 }
 
 
@@ -299,3 +300,58 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     background: #ccc;
 }
 /***********************************************************/
+
+/************ Media Queries **********/
+
+@media only screen and (max-width: 993px) {
+    nav {
+        height: auto;
+    }
+    .navbar .container-fluid {
+        align-content: flex-start;
+        justify-content: space-between;
+        align-items: flex-start;
+        font-size: 1rem;
+    }
+    .navbar-brand > * {
+        font-size: 1rem !important;
+    }
+    
+    nav.navbar .right-side {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        justify-content: right;
+        align-items: flex-end;
+    }
+    nav .icon {
+        display: inline-block;
+        justify-content: flex-end;
+    }
+    .navbar-toggle ul {
+        display: none;
+    }
+    .navbar-toggle.toggle ul {
+        display: flex;
+        align-items: center;
+    }
+    .navbar-toggle.toggle ul li {
+        margin-right: 0;
+    }
+
+}
+
+@media only screen and (max-width: 512px) {
+    .form-container form.auth-form {
+        padding: 5px 5px;
+        width: 100% ;
+        max-width: 100%;
+        margin: 0;
+        line-height: 1em;
+        font-size: 1em;
+    }
+    button[type=submit], input[type=submit], .auth-form a {
+        font-size: 1em;
+        line-height: 1em;
+    }
+}

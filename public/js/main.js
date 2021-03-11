@@ -51,7 +51,6 @@ let publishComment = function(e) {
     const url = new URL(PUBLISH_COMMENT_URL);
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    // const obj = JSON.parse(`{"imageid": ${id}, "commentText": "${encodeURIComponent(commentTextElement.value)}"}`);
     const obj = {
         imageid: id,
         commentText: commentTextElement.value
@@ -72,7 +71,7 @@ let publishComment = function(e) {
             pseudo.innerText = res.username;
             const text = document.createElement('p');
             text.classList.add("comment-text");
-            text.innerText = res.commentText;
+            text.innerText = commentTextElement.value.trim();
             container.appendChild(pseudo);
             container.appendChild(text);
             displayArea.appendChild(container);

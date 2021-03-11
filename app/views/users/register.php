@@ -3,7 +3,7 @@
 
 <div class="container form-container">
 	<form action="<?=URLROOT.'/users/register';?>" method="post" class="auth-form">
-		<h3 class="text-center">REGISTER</h3>
+		<h3 class="text-center">Register</h3>
 		<br>
 		<div class="form-group">
 			<label for="username">Username</label>
@@ -25,13 +25,13 @@
 			<input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm password">
 			<span id="confirm-password" class="form-error"><?=$_SESSION['confirm_password_error'];?></span>
 		</div>
-		<div class="form-group">
-			<button type="submit" style="width:100%;" name="register" class="btn btn-success btn-lg">Sign Up</button>
+		<div class="form-group submit-group">
+			<button type="submit" name="register" class="btn btn-success btn-lg">Sign Up</button>
 		</div>
 		<hr>
-		<div style="display: flex; justify-content: flex-end; align-items:center">
-			<span style="margin-right: 5px;">Already have an account? </span>
+		<div class="signup-group">
 			<a href="<?=URLROOT.'/users/login';?>">Sign In</a>
+			<span>Already have an account? </span>
 		</div>
 	</form>
 </div>

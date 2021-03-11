@@ -1,6 +1,7 @@
 <?php
 
 	require_once(APPROOT . '/helpers/isAuthentified.php');
+	require_once(APPROOT . '/helpers/validator.php');
 
 	/*
 	 *	App core Class

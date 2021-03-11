@@ -1,6 +1,6 @@
 <?php
-    // Load configuration file
-    require_once 'config/config.php';
+    // Load database configuration file
+    require_once 'config/database.php';
     
     // Autoload core libraries
     spl_autoload_register(function($className) {

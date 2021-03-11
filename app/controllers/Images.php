@@ -131,7 +131,6 @@ class Images extends Controller {
                 echo json_encode([
                     'state' => true, 
                     'username' => $_SESSION['logged-in-user']->username,
-                    'commentText' => $data['commentText']
                     ]);
             } else {
                 echo json_encode(['state' => false]);

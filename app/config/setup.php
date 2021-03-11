@@ -1,7 +1,8 @@
 <?php
 
     require_once 'app/libraries/Database.php';
-    require_once 'app/config/config.php';
+    require_once 'app/config/database.php';
+    
     define('DB_INIT', 0);
 
     function try_execute($db, $query, $success_msg) {

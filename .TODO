@@ -1,8 +1,14 @@
 
-+ video element should change width and height according to change ratio whenever window is resized
-+ Stickers bar should be styled and images should be resized to a fixed size 
-+ stickers position on video should be recalculated
 
+BUGS TO FIX
 
+    + when selecting sticker on top of streaming video and trying to override a previous shot taken by uplodate it does not draw the camera to panel
+    ===> done
 
-- add oncheck event listener to notify checkbox
+    + handle xss inputs in forms    ===> done
+
+    + infinite pagination 
+
+    + site landing page
+
+    + site footer  // not necessary

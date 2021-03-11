@@ -39,8 +39,8 @@
                 <button 
                     type="submit" 
                     id="<?= $imageid ?>" 
-                    class="btn btn-primary btn-sm" 
-                    style="width: 80px !important">
+                    class="btn btn-publish" 
+                >
                     publish
                 </button>
             </div>

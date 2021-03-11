@@ -16,20 +16,25 @@
 			<div class="form-group">
 				<label for="current-password">Current Password</label>
 				<input class="form-control" id="current-password" type="password" name="current_password" value="">
-				<span id="current-password" class="form-error">password error</span>
+				<span id="current-password" class="form-error"><?= $_SESSION['current_password_error'];?></span>
 			</div>
 			<div class="form-group">
 				<label for="new-password">New Password</label>
 				<input class="form-control" id="new-password" type="password" name="new_password" value="">
-				<span id="new-password" class="form-error">new password error</span>
+				<span id="new-password" class="form-error"><?= $_SESSION['new_password_error'];?></span>
 			</div>
 			<div class="form-group">
 				<label for="confirm-new-password">Repeat New Password</label>
 				<input class="form-control" id="confirm-new-password" type="password" name="confirm_new_password" value="">
-				<span id="confirm-new-password" class="form-error">confirm_new_password error</span>
+				<span id="confirm-new-password" class="form-error"><?= $_SESSION['confirm_new_password_error'];?></span>
 			</div>
 			<div class="form-check" style="margin-bottom: 8px;">
-				<input type="checkbox" class="form-check-input" name="notify" id="notify">
+				<input 
+					type="checkbox" 
+					class="form-check-input" 
+					name="notify" id="notify" 
+					<?=$_SESSION['logged-in-user']->notify ? "checked" : ""?>
+				>
 				<label class="form-check-label" for="notify">Enable notifications</label>
 			</div>
 			<div class="form-group">
@@ -37,5 +42,4 @@
 			</div>
 		</form>
 	</div>
-<script src="<?=URLROOT.'/public/js/form.js'?>"></script>
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>

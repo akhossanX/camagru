@@ -26,7 +26,6 @@
                 $_SESSION = ['username' => '', 'username_error' => '', 'password_error' => ''];
             }
             if (isset($_POST['login'])) {
-                // check for user credentials conformity
                 $user = $this->user->findUserByName($_POST['username']);
                 if ($user) {
                     $this->verifyPassword($user, $_SESSION);
@@ -51,24 +50,21 @@
         
 
         public function register() {
+            $_SESSION['username'] = "";
+            $_SESSION['email'] = "";
+            $_SESSION['username_error'] = '';
+            $_SESSION['email_error'] = '';
+            $_SESSION['password_error'] = '';
+            $_SESSION['confirm_password_error'] = '';
             if (isset($_POST['register'])) {
                 $_SESSION['username'] = $_POST['username'];
                 $_SESSION['email'] = $_POST['email'];
-            }
-            else {
-                $_SESSION['username_error'] = '';
-                $_SESSION['email_error'] = '';
-                $_SESSION['password_error'] = '';
-                $_SESSION['confirm_password_error'] = '';
-            }
-            // Something has been submitted from the registration form
-            if (isset($_POST['register'])) {
                 if (empty($_POST['username']))
                     $_SESSION['username_error'] = 'username can\'t be empty';
                 $this->user->setUserName($_POST['username']);
                 $this->user->setPassword($_POST['password']);
                 $this->user->setEmail($_POST['email']);
-                $this->verifyUserCredentials($_SESSION);
+                $this->verifyRegisterCredentials($_SESSION);
                 if (!empty($_SESSION['email_error']) || !empty($_SESSION['password_error']) || 
                 !empty($_SESSION['confirm_password_error']) || !empty($_SESSION['username_error'])
                 ) {
@@ -87,28 +83,18 @@
         **  in success it returns null, otherwise it return a data array
         **  describing the errors
         */
-        private function verifyUserCredentials(&$data) {
-            if (filter_var($this->user->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
-                $data['email_error'] = 'invalid email';
-            }
+        private function verifyRegisterCredentials(&$data) {
             $user = false;
-            if (!empty($data['email'])) {
-                $user = $this->user->findUserByEmail($this->user->getEmail());
-            }
-            if (!empty($data['username']) && $user === false) {
-                $user = $this->user->findUserByName($this->user->getUserName());
-            }
-            empty($data['username']) ? $data['username_error'] = 'Empty username' : 0;
+            $user = $this->user->findUserByEmail($this->user->getEmail());
+            $data['email_error'] = validateEmail($this->user->getEmail());
+            $data['username_error'] = validateUserName($this->user->getUserName());
             if ($user) {
                 if ($user->email === $data['email'])
                     $data['email_error'] = 'email already registered';
                 if ($user->username === $data['username'])
                     $data['username_error'] = 'username is already taken, please choose another one!';
             }
-            if (preg_match('/^[a-zA-Z0-9_]{8,20}$/', $this->user->getUserName()) == 0) {
-                $data['username_error'] = 'username must contain alphabets and numbers and must be 8 up to 20 characters.';
-            }
-            $this->checkPasswordStrength($data);
+            $data['password_error'] = validatePassword($this->user->getPassword());
             if ($this->user->getPassword() != $_POST['confirm_password'])
                 $data['confirm_password_error'] = 'Passwords do not match !';
         }
@@ -125,6 +111,7 @@
         */
 
         public function profile() {
+            // var_dump($_SESSION['logged-in-user']->password);
             $_SESSION['username_error'] = '';
             $_SESSION['email_error'] = '';
             $_SESSION['current_password_error'] = '';
@@ -132,33 +119,47 @@
             $_SESSION['confirm_new_password_error'] = '';
             if (isAuthentified()) {
                 if (isset($_POST['save'])) {
-                    $_SESSION['username'] = $_POST['username'];
-                    $_SESSION['email'] = $_POST['email'];
-                    if (empty($_POST['username']))
-                        $_SESSION['username_error'] = "username can't be empty";
-                    $this->user->setUserName($_POST['username']);
-                    $this->user->setPassword($_POST['password']);
-                    $this->user->setEmail($_POST['email']);
-                    if (isset($_POST['notify']))
-                        $this->user->setNotify(1);
-                    else
-                        $this->user->setNotify(0);
-                    $this->verifyUserCredentials($_SESSION);
-                    if ($_SESSION["email_error"] === "email already registered")
-                        $_SESSION["email_error"] = "";
-                    if (!empty($_SESSION['email_error']) || !empty($_SESSION['password_error']) || 
-                    !empty($_SESSION['confirm_password_error']) || !empty($_SESSION['username_error'])
-                    ) {
-                        return $this->view('users/profile');
+                    $_SESSION['username_error'] = validateUserName($_POST['username']);
+                    $_SESSION['email_error'] = validateEmail($_POST['email']);
+                    if (hash('whirlpool', $_POST['current_password']) !== $_SESSION['logged-in-user']->password) {
+                        $_SESSION['current_password_error'] = "wrong password";
                     }
-                    $this->user->updateRow($_SESSION['logged-in-user']->id);
-                    $_SESSION['logged-in-user']->username = $this->user->getUserName();
-                    $_SESSION['logged-in-user']->email = $this->user->getEmail();
-                    return $this->redirect('users/index');
-                } else 
-                    $this->view('users/profile');
-            } else
-                $this->redirect('home/index');
+                    if (isset($_POST["new_password"])) {
+                        if ($_POST['new_password'] !== "") {
+                            $_SESSION['new_password_error'] = validatePassword($_POST["new_password"]);
+                            if ($_POST["confirm_new_password"] !== $_POST["new_password"]) {
+                                $_SESSION['confirm_new_password_error'] = "Passwords do not match";
+                            }
+                        } else if ($_POST["confirm_new_password"] !== "") {
+                            $_SESSION["confirm_new_password_error"] = "new password must be set first";
+                        }
+                    }
+                    if (hasErrors($_SESSION) === false) {
+                        $this->user->setUserName($_POST['username']);
+                        $this->user->setPassword($_POST["new_password"]);
+                        $this->user->setEmail($_POST["email"]);
+                        $this->user->setNotify(isset($_POST["notify"]) ? 1 : 0);
+                        $this->user->updateColumn($_SESSION['logged-in-user']->id, "username", $this->user->getUserName());
+                        $this->user->updateColumn($_SESSION['logged-in-user']->id, "email", $this->user->getEmail());
+                        if ($this->user->getPassword() !== "") {
+                            $newPassword = hash('whirlpool', $this->user->getPassword());
+                            $this->user->updateColumn($_SESSION['logged-in-user']->id, "password", $newPassword);
+                            $_SESSION['logged-in-user']->password = $newPassword;
+                        }
+                        $this->user->updateColumn($_SESSION['logged-in-user']->id, "notify", $this->user->getNotify());
+                        $_SESSION['logged-in-user']->username = $this->user->getUserName();
+                        $_SESSION['logged-in-user']->email = $this->user->getEmail();
+                        $_SESSION['logged-in-user']->notify = $this->user->getNotify();
+                        $this->redirect("users/index");
+                    } else {
+                        $this->view("users/profile");
+                    }
+                } else {
+                    $this->view("users/profile");
+                }
+            } else {
+                $this->redirect("home/index");
+            }
         }
 
         private function verifyPassword($user, &$data) {
@@ -170,12 +171,7 @@
             return false;
         }
 
-        private function checkPasswordStrength(&$data) {
-            $regex = "/^(?=\S{8,20}$)(?=.*\d+.*)(?=.*[a-z_]+.*)+(?=.*[A-Z].*)+(?=.*[!@#$%^&*()]+.*)/";
-            if (preg_match($regex, $this->user->getPassword()) === 0) {
-                $data['password_error'] = "Must contain at least a-zA-Z0-9 and at least one of '!@#$%^&*()' and 8 up to 20 characters";
-            }
-        }
+
 
         /*
         **  Confirms the user's account once the activation link
@@ -223,7 +219,7 @@
                 //send password reset link to email
                 $user = $this->user->findUserByEmail($email);
                 if ($user && $user->active) {
-                    $token = base64_encode(random_bytes(15));
+                    $token = md5(uniqid($user->username));
                     $this->user->updateColumn($user->id, 'hash', $token);
                     $link = URLROOT . '/users/reset-password/' . $user->id . '/' . $token;
                     $subject = "Password reset";
@@ -250,12 +246,13 @@
                     $user = $this->user->findUserById($_POST['id']);
                     $password = hash('whirlpool', $_POST['password']);
                     $this->user->updateColumn($_POST['id'], 'password', $password);
+                    // prevent another reset to the password using the same token
+                    $this->user->updateColumn($_POST['id'], 'hash', ""); 
                     return $this->redirect('users/login');
                 }
                 $this->view('users/reset_password');
             } elseif ($id && $token) {
                 $user = $this->user->findUserById($id);
-                // var_dump($user);echo($user->hash . ' ' . $token);
                 if ($user && $user->hash === $token) {
                     $_SESSION['id'] = $id;
                     $_SESSION['password_error'] = '';
