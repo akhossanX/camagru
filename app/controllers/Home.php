@@ -11,7 +11,6 @@
         }
 
         public function index() {
-            require_once(APPROOT . '/helpers/isAuthentified.php');
             if (isAuthentified()) {
                 return $this->redirect('users/gallery');
             }
@@ -21,5 +20,12 @@
         public function gallery() {
             $_SESSION['gallery'] = $this->image->getPosts();
             $this->view('home/gallery');
+        }
+
+        public function lazyLoad() {
+            $xhrData = json_decode(file_get_contents("php://input"), true);
+            $data = $this->image->getPosts($from = $xhrData['postsOffset']);
+            // var_dump(count($data));
+            echo json_encode($data);
         }
     }

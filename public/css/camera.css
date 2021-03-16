@@ -16,15 +16,6 @@
     font-weight: bolder;
 }
 
-.stickers {
-    height:  auto;
-}
-
-.stickers img {
-    width : 100px;
-    height: 100px;
-}
-
 .scrolling-wrapper {
     overflow-x: scroll;
     overflow-y: hidden;
@@ -57,8 +48,8 @@
 
 .scrolling-wrapper img.card {
     display: inline-block;
-    width: 80px;
-    height: 80px;
+    width: 5vw;
+    height: 5vw;
     margin: auto 10px;
 }
 

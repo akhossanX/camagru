@@ -26,7 +26,7 @@
                 <div class="row mb-3"> <!-- Camera row -->
                     <div class="col-12 video-container" id="video-container-id">
                         <video id="video-id">
-                            Your fuckig browser does not support video
+                            Your browser does not support video
                         </video>
                     </div>
                 </div>

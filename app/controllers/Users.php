@@ -111,7 +111,6 @@
         */
 
         public function profile() {
-            // var_dump($_SESSION['logged-in-user']->password);
             $_SESSION['username_error'] = '';
             $_SESSION['email_error'] = '';
             $_SESSION['current_password_error'] = '';

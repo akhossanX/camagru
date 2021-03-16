@@ -4,7 +4,7 @@
 const URLROOT = 'http://localhost:8080'
 const LIKE_ICON = URLROOT + '/public/icons/heart.svg';
 const NO_LIKE_ICON = URLROOT + '/public/icons/heart.svg';
-const LIKE_ACTION_SAVE_URI = URLROOT + '/images/like';
+const LIKE_SAVE_URL = URLROOT + '/images/like';
 const PUBLISH_COMMENT_URL = URLROOT + '/images/comment';
 const DELETE_IMAGE_URL = URLROOT + '/images/delete'
 
@@ -17,12 +17,12 @@ let toggleMenu = () => {
     }
 };
     
-let likeClick = function () {
+let like = function (e) {
     let xhr = new XMLHttpRequest();
-    let url = new URL(LIKE_ACTION_SAVE_URI);
+    let url = new URL(LIKE_SAVE_URL);
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    let obj = {id: this.id};
+    let obj = {id: e.target.id};
     xhr.send(JSON.stringify(obj));
     xhr.onload = () => {
         let res = JSON.parse(xhr.response);
@@ -43,7 +43,7 @@ let likeClick = function () {
 }
 
 let publishComment = function(e) {
-    const id = this.id;
+    const id = e.target.id;
     const commentTextElement = document.querySelector(".post-comments textarea#id_" + id);
     if (commentTextElement.value.trim() === '')
         return null;
@@ -80,13 +80,12 @@ let publishComment = function(e) {
     }
 }
 
-let like = document.querySelectorAll(".like-icon")
-like.forEach(icon => {
-    icon.addEventListener('click', likeClick);
+let likeIcons = document.querySelectorAll(".like-icon")
+likeIcons.forEach(icon => {
+    icon.addEventListener('click', like);
 });
 
 let commentButtons = document.querySelectorAll('.add-comment-area button');
 commentButtons.forEach(btn => {
     btn.addEventListener('click', publishComment);
 });
-

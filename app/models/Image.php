@@ -41,11 +41,11 @@ class Image extends BaseModel {
         $this->ownerId = $ownerId;
     }
 
-    public function getPosts($fromIndex = 0, $elements = 5) {
-        if ($fromIndex === $elements && $fromIndex === 0)
+    public function getPosts($from = 0, $elements = 5) {
+        if ($from === $elements && $from === 0)
             $limit = "";
         else
-            $limit = "LIMIT {$fromIndex}, {$elements}";
+            $limit = "LIMIT {$from}, {$elements}";
         $this->query("
         SELECT image.data, image.creation_date,
             image.id AS imageid, user.username AS owner

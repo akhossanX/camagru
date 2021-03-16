@@ -140,6 +140,7 @@ class Images extends Controller {
         }
     }
 
+
     public function sendCommentNotification($email) {
         $subject = "Comment notification";
         $body = "{$_SESSION['logged-in-user']->username} commented on your photo";
