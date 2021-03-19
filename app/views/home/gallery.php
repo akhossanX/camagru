@@ -55,7 +55,7 @@
         else : 
     ?>
         <div class="empty-gallery">
-            <h1>No available posts.</h1>
+            <h1 class="big">No available posts.</h1>
         </div>
     <?php
         endif ;
@@ -64,12 +64,13 @@
    
 
 </div> <!-- END OF CONTAINER -->
-
+<?php if (count($galleryData) !== 0) : ?>
 <div class="loading">
     <div class="ball"></div>
     <div class="ball"></div>
     <div class="ball"></div>
 </div>
+<?php endif ?>
 
 <script src="<?= URLROOT . "/public/js/scroll.js" ?>"></script>
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>

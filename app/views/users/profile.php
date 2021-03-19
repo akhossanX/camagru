@@ -1,7 +1,8 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php require_once APPROOT . '/views/inc/navbar.php'; ?>
+
 	<div class="container form-container">
-		<form action="<?=URLROOT.'/users/profile';?>" method="post" class="auth-form">
+		<form action="<?= URLROOT . '/users/profile';?>" method="post" class="auth-form">
 			<h3 class="header">Account Settings</h3>
 			<div class="form-group">
 				<label for="username">Username</label>
@@ -42,4 +43,5 @@
 			</div>
 		</form>
 	</div>
+	
 <?php require_once APPROOT . '/views/inc/footer.php'; ?>

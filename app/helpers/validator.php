@@ -1,7 +1,7 @@
 <?php 
 
     function validateEmail($email) {
-        $re = "/^(?!\d.*)(?![._])(?!.*\s)[\w.]+(?<![_.])@(?![._]+)[\w.]+(?<![._])\.([a-zA-Z]{2,3})$/";
+        $re = "/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/";
         if (preg_match($re, $email) === 0) {
             return  'invalid email';
         }

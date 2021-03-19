@@ -2,6 +2,8 @@
 
 	require_once(APPROOT . '/helpers/isAuthentified.php');
 	require_once(APPROOT . '/helpers/validator.php');
+	require_once(APPROOT . '/helpers/csrf_init.php');
+	require_once(APPROOT . '/helpers/formHelper.php');
 
 	/*
 	 *	App core Class

@@ -2,11 +2,11 @@
 
 const LAZY_LOAD_POSTS_URL = "http://localhost:8080/home/lazy-load";
 
-let galleryContainer = document.querySelector("#gallery-container");
+var galleryContainer = document.querySelector("#gallery-container");
 
-let postsOffset = 5; // there is 5 posts max first time the gallery view is rendered
-let loadingAnimation = document.querySelector(".loading");
-let enableListener = true;
+var postsOffset = 5; // there is 5 posts max first time the gallery view is rendered
+var loadingAnimation = document.querySelector(".loading");
+var enableListener = true;
 
 window.addEventListener("scroll", event => {
     if (!enableListener)
@@ -34,7 +34,7 @@ const loadMorePosts = function () {
         if (len !== 0) {
             // Add the data to the DOM
             res.forEach((post) => {
-                let postSection = document.createElement("section");
+                var postSection = document.createElement("section");
                 postSection.classList.add("img-post");
                 postSection.innerHTML = getPostContent(post);
                 loadingAnimation.classList.remove("show");
@@ -51,7 +51,7 @@ const loadMorePosts = function () {
 
 
 const getPostContent = function (post) {
-    let content = `
+    var content = `
     <div class="user-pseudo">${post.image.owner}</div>
     <div class="ca-border" style="width:100%"></div>
     <div class="post">

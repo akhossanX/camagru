@@ -10,22 +10,23 @@
         }
 
         public function index() {
-            if (isset($_SESSION['logged-in-user'])) {
-                $this->redirect('images/camera');
+            if (isAuthentified()) {
+                $this->redirect('/images/camera');
+            } else {
+                $this->redirect('/home/index');
             }
-            else
-                $this->redirect('home/index');
         }
         
         public function login() {
-            if (isset($_POST['login'])) {
-                $_SESSION['username_error'] = '';
-                $_SESSION['password_error'] = '';
-                $_SESSION['username'] = $_POST['username'];
-            } else {
-                $_SESSION = ['username' => '', 'username_error' => '', 'password_error' => ''];
+            if (isAuthentified()) {
+                return $this->redirect('users/index');
             }
-            if (isset($_POST['login'])) {
+            $_SESSION['username_error'] = '';
+            $_SESSION['password_error'] = '';
+            $_SESSION['username'] = '';
+            $formFields = ['login', 'csrf_token', 'username', 'password'];
+            if (checkFormFields($formFields) === true && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+                $_SESSION['username'] = $_POST['username'];
                 $user = $this->user->findUserByName($_POST['username']);
                 if ($user) {
                     $this->verifyPassword($user, $_SESSION);
@@ -39,24 +40,28 @@
                     if ($user->active == true) {
                         $_SESSION['logged-in-user'] = $user;
                         return $this->redirect('users/index');
-                    }
-                    else
+                    } else {
                         $_SESSION['username_error'] = 'Please Activate your account before logging in.';
+                    }
                 }
             }
+            csrf_init();
             $this->view('users/login');
         }
         
-        
 
         public function register() {
+            if (isAuthentified()) {
+                return $this->redirect('/users');
+            }
             $_SESSION['username'] = "";
             $_SESSION['email'] = "";
             $_SESSION['username_error'] = '';
             $_SESSION['email_error'] = '';
             $_SESSION['password_error'] = '';
             $_SESSION['confirm_password_error'] = '';
-            if (isset($_POST['register'])) {
+            $formFields = ['register', 'csrf_token', 'username', 'email', 'password', 'confirm_password'];
+            if (checkFormFields($formFields) === true && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
                 $_SESSION['username'] = $_POST['username'];
                 $_SESSION['email'] = $_POST['email'];
                 if (empty($_POST['username']))
@@ -75,6 +80,7 @@
                     return Controller::redirect('users/login');
             }
             else {
+                csrf_init();
                 $this->view('users/register');
             }
         }
@@ -100,14 +106,14 @@
         }
 
         public function logout() {
-            if (isset($_SESSION['logged-in-user'])) {
+            if (isAuthentified()) {
                 session_destroy();
             }
             $this->redirect('home/index');
         }
 
         /*
-        **  Manage user profile editing
+        **  Manages user profile settings
         */
 
         public function profile() {
@@ -116,8 +122,9 @@
             $_SESSION['current_password_error'] = '';
             $_SESSION['new_password_error'] = '';
             $_SESSION['confirm_new_password_error'] = '';
+            $formFields = ['save', 'username', 'email', 'current_password', 'new_password', 'confirm_new_password'];
             if (isAuthentified()) {
-                if (isset($_POST['save'])) {
+                if (checkFormFields($formFields)) {
                     $_SESSION['username_error'] = validateUserName($_POST['username']);
                     $_SESSION['email_error'] = validateEmail($_POST['email']);
                     if (hash('whirlpool', $_POST['current_password']) !== $_SESSION['logged-in-user']->password) {
@@ -178,13 +185,20 @@
         */
 
         public function activateAccount($userHashId = "") {
+            if (isAuthentified()) {
+                return $this->redirect("/users/index");
+            }
             $user = $this->user->findUserByHash($userHashId);
             $_SESSION['active'] = false;
             if ($user) {
                 if ($user->active == false) {
                     $this->user->updateColumn($user->id, 'active', true);
                     $_SESSION['active'] = true;
+                } else {
+                    // var_dump($_SESSION['active']);die();
+                    $this->redirect('/users/login');
                 }
+                
             }
             else {
                 $_SESSION['active'] = 'Invalid activation token';
@@ -209,7 +223,14 @@
         
 
         public function forgotPassword() {
-            if (isset($_POST) && isset($_POST['forgot'])) {
+            if (isAuthentified()) {
+                return $this->redirect("/home/gallery");
+            }
+            $formFields = ['forgot', 'csrf_token', 'email'];
+            if (checkFormFields($formFields) && 
+                isset($_POST['forgot']) && 
+                hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) 
+            {
                 $email = $_POST['email'];
                 if (empty($email)) {
                     $_SESSION['email_error'] = "Email can't be empty";
@@ -217,26 +238,36 @@
                 }
                 //send password reset link to email
                 $user = $this->user->findUserByEmail($email);
-                if ($user && $user->active) {
-                    $token = md5(uniqid($user->username));
-                    $this->user->updateColumn($user->id, 'hash', $token);
-                    $link = URLROOT . '/users/reset-password/' . $user->id . '/' . $token;
-                    $subject = "Password reset";
-                    $txt = "Click this link to reset your password:\n <a href='" . $link . "'>Reset Password</a>\n";
-                    $mailHeaders = "From: abdelilah.khossan@gmail.com\r\n";
-                    $mailHeaders .= "MIME-Version: 1.0" . "\r\n";
-                    $mailHeaders .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                    mail($email, $subject, $txt, $mailHeaders);
+                if ($user) {
+                    if ($user->active) {
+                        $token = md5(uniqid($user->username));
+                        $this->user->updateColumn($user->id, 'hash', $token);
+                        $link = URLROOT . '/users/reset-password/' . $user->id . '/' . $token;
+                        $subject = "Password reset";
+                        $txt = "Click this link to reset your password:\n <a href='" . $link . "'>Reset Password</a>\n";
+                        $mailHeaders = "From: abdelilah.khossan@gmail.com\r\n";
+                        $mailHeaders .= "MIME-Version: 1.0" . "\r\n";
+                        $mailHeaders .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                        mail($email, $subject, $txt, $mailHeaders);
+                    } else {
+                        $_SESSION['email_error'] = "Please activate your account first";
+                        return $this->view('users/forgot_password');
+                    }
+                } else {
+                    $_SESSION['email_error'] = "No such account";
+                    return $this->view("users/forgot_password");
                 }
                 $this->redirect('users/login');
             } else {
                 $_SESSION['email_error'] = '';
+                csrf_init();
                 $this->view('users/forgot_password');
             }
         }
 
         public function resetPassword($id=null, $token=null) {
-            if (isset($_POST) && isset($_POST['reset'])) {
+            $formFields = ['reset', 'password', 'confirm_password'];
+            if (checkFormFields($formFields)) {
                 if (empty($_POST['password']))
                     $_SESSION['password_error'] = "Empty password";
                 elseif (empty($_POST['confirm_password']))

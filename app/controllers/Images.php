@@ -7,6 +7,10 @@ class Images extends Controller {
         $this->sanitizeArray($_POST);
         Controller::session_init();
     }
+    
+    public function index() {
+        $this->redirect("/home/index");
+    }
 
     private function save($imageData) {
         $creationTimeStamp = time();
@@ -89,15 +93,19 @@ class Images extends Controller {
         $data = json_decode(file_get_contents('php://input'), true);
         $imageid = $data['id'];
         if (isAuthentified()) {
-            if ($imageid != null) {
-                $like = new Like($imageid, $_SESSION['logged-in-user']->id);
-                if ($like->getLike()) {
-                    $like->removeLike();
-                    echo json_encode(['liked' => false, 'id' => $imageid, 'likes' => $like->countLikes()->count]);
-                } else {
-                    $like->addLike();
-                    echo json_encode(['liked' => true, 'id' => $imageid, 'likes' => $like->countLikes()->count]);
+            if ($data) {
+                if ($imageid != null) {
+                    $like = new Like($imageid, $_SESSION['logged-in-user']->id);
+                    if ($like->getLike()) {
+                        $like->removeLike();
+                        echo json_encode(['liked' => false, 'id' => $imageid, 'likes' => $like->countLikes()->count]);
+                    } else {
+                        $like->addLike();
+                        echo json_encode(['liked' => true, 'id' => $imageid, 'likes' => $like->countLikes()->count]);
+                    }
                 }
+            } else {
+                return $this->redirect("/home/gallery");
             }
         } else {
             echo json_encode(['redirectURL' => URLROOT . '/users/login']);
@@ -106,12 +114,16 @@ class Images extends Controller {
 
     public function delete() {
         $data = json_decode(file_get_contents("php://input"), true);
-        $id = $data['imageid'];
-        $this->image->setId($id);
-        if ($this->image->deleteImage()) {
-            echo json_encode(["state" => true]);
+        if ($data) {
+            $id = $data['imageid'];
+            $this->image->setId($id);
+            if ($this->image->deleteImage()) {
+                echo json_encode(["state" => true]);
+            } else {
+                echo json_encode(["state" => false]);
+            }
         } else {
-            echo json_encode(["state" => false]);
+            return $this->redirect("/home/gallery");
         }
     }
 
@@ -119,29 +131,33 @@ class Images extends Controller {
         if (isAuthentified()) {
             $data = json_decode(file_get_contents('php://input'), true);
             // $this->sanitizeArray($data);
-            $data['commentText'] = htmlspecialchars($data['commentText'], ENT_QUOTES, 'UTF-8');
-            // var_dump($data);die();
-            $comment = new Comment($data['imageid'], $_SESSION['logged-in-user']->id, $data['commentText']);
-            if ($comment->addComment()) {
-                // send comment notification to image owner if the notifications are enabled
-                $owner = $this->image->getImageOwnerNotify($data['imageid']);
-                if ($owner->notify && $owner->owner_id !== $_SESSION['logged-in-user']->id) {
-                    $this->sendCommentNotification($owner->email);
+           if ($data) {
+                $data['commentText'] = htmlspecialchars($data['commentText'], ENT_QUOTES, 'UTF-8');
+                // var_dump($data);die();
+                $comment = new Comment($data['imageid'], $_SESSION['logged-in-user']->id, $data['commentText']);
+                if ($comment->addComment()) {
+                    // send comment notification to image owner if the notifications are enabled
+                    $owner = $this->image->getImageOwnerNotify($data['imageid']);
+                    if ($owner->notify && $owner->owner_id !== $_SESSION['logged-in-user']->id) {
+                        $this->sendCommentNotification($owner->email);
+                    }
+                    echo json_encode([
+                        'state' => true, 
+                        'username' => $_SESSION['logged-in-user']->username,
+                        ]);
+                } else {
+                    echo json_encode(['state' => false]);
                 }
-                echo json_encode([
-                    'state' => true, 
-                    'username' => $_SESSION['logged-in-user']->username,
-                    ]);
-            } else {
-                echo json_encode(['state' => false]);
-            }
+           } else {
+               return $this->redirect("/home/gallery");
+           }
         } else {
             echo json_encode(['redirectURL' => URLROOT . '/users/login']);
         }
     }
 
 
-    public function sendCommentNotification($email) {
+    private function sendCommentNotification($email) {
         $subject = "Comment notification";
         $body = "{$_SESSION['logged-in-user']->username} commented on your photo";
         $mailHeaders = "From: abdelilah.khossan@gmail.com\r\n";

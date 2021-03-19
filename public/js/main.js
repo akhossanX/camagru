@@ -8,8 +8,8 @@ const LIKE_SAVE_URL = URLROOT + '/images/like';
 const PUBLISH_COMMENT_URL = URLROOT + '/images/comment';
 const DELETE_IMAGE_URL = URLROOT + '/images/delete'
 
-let toggleMenu = () => {
-    let navContent = document.getElementById('navbar-content');
+var toggleMenu = () => {
+    var navContent = document.getElementById('navbar-content');
     if (navContent.className === 'navbar-toggle') {
         navContent.className += ' toggle';
     } else {
@@ -17,20 +17,20 @@ let toggleMenu = () => {
     }
 };
     
-let like = function (e) {
-    let xhr = new XMLHttpRequest();
-    let url = new URL(LIKE_SAVE_URL);
+var like = function (e) {
+    var xhr = new XMLHttpRequest();
+    var url = new URL(LIKE_SAVE_URL);
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    let obj = {id: e.target.id};
+    var obj = {id: e.target.id};
     xhr.send(JSON.stringify(obj));
     xhr.onload = () => {
-        let res = JSON.parse(xhr.response);
+        var res = JSON.parse(xhr.response);
         if ('redirectURL' in res) {
             window.location = res.redirectURL;
         } else {
-            let icon = document.querySelector('.img-post #id_' + res.id + ' i');
-            let likesCount = icon.nextElementSibling;
+            var icon = document.querySelector('.img-post #id_' + res.id + ' i');
+            var likesCount = icon.nextElementSibling;
             if (res.liked === true) {
                 icon.className = "bi bi-heart-fill like-icon";
                 likesCount.innerHTML = `${res.likes} likes.`;
@@ -42,7 +42,7 @@ let like = function (e) {
     }
 }
 
-let publishComment = function(e) {
+var publishComment = function(e) {
     const id = e.target.id;
     const commentTextElement = document.querySelector(".post-comments textarea#id_" + id);
     if (commentTextElement.value.trim() === '')
@@ -80,12 +80,12 @@ let publishComment = function(e) {
     }
 }
 
-let likeIcons = document.querySelectorAll(".like-icon")
+var likeIcons = document.querySelectorAll(".like-icon")
 likeIcons.forEach(icon => {
     icon.addEventListener('click', like);
 });
 
-let commentButtons = document.querySelectorAll('.add-comment-area button');
+var commentButtons = document.querySelectorAll('.add-comment-area button');
 commentButtons.forEach(btn => {
     btn.addEventListener('click', publishComment);
 });

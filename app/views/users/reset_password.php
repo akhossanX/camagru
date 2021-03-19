@@ -3,7 +3,7 @@
 
 <div class="container form-container">
 	<form action="<?=URLROOT.'/users/reset-password';?>" method="post" class="auth-form">
-		<h3 class="text-center">Enter New Password</h3>
+		<h3 class="text-center">Reset your password</h3>
 		<br>
 		<div class="form-group">
 			<label for="password">Password</label>

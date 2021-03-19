@@ -19,6 +19,7 @@
 		</div>
 		<div class="form-group submit-group">
 			<button type="submit" name="login" class="btn btn-success btn-lg">Sign In</button>
+			<input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']?>">
 			<small><a href="<?=URLROOT.'/users/forgot-password'?>">Forgot password?</a></small>
 		</div>
 		<hr>

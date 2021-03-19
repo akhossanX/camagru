@@ -27,6 +27,7 @@
 		</div>
 		<div class="form-group submit-group">
 			<button type="submit" name="register" class="btn btn-success btn-lg">Sign Up</button>
+			<input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']?>">
 		</div>
 		<hr>
 		<div class="signup-group">

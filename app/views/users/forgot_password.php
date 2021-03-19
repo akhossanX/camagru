@@ -3,7 +3,7 @@
 
 <div class="container form-container">
 	<form action="<?=URLROOT.'/users/forgot-password';?>" method="post" class="auth-form">
-		<h3 class="text-center">RESET PASSWORD</h3>
+		<h3 class="text-center">Forgot password</h3>
 		<br>
         <div class="form-group">
 			<label for="email">Email</label>
@@ -14,6 +14,7 @@
 			<button type="submit" style="width:100%;" name="forgot" value="ok" class="btn btn-success btn-lg">
 				Send
 			</button>
+			<input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']?>">
 		</div>
 	</form>
 </div>

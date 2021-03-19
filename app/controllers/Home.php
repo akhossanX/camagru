@@ -11,10 +11,7 @@
         }
 
         public function index() {
-            if (isAuthentified()) {
-                return $this->redirect('users/gallery');
-            }
-            $this->view('home/index');
+            return $this->redirect('home/gallery');
         }
 
         public function gallery() {
@@ -25,7 +22,6 @@
         public function lazyLoad() {
             $xhrData = json_decode(file_get_contents("php://input"), true);
             $data = $this->image->getPosts($from = $xhrData['postsOffset']);
-            // var_dump(count($data));
             echo json_encode($data);
         }
     }

@@ -35,7 +35,8 @@
 		}
 
 		public static function session_init() {
-			session_start();
+			if (session_status() == PHP_SESSION_NONE)
+				session_start();
 		}
 
 		protected function sanitizeArray(&$array) {

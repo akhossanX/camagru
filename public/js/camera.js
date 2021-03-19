@@ -10,7 +10,7 @@ const DEVICE_PIXEL_RATIO = window.devicePixelRatio;
 const WIDTH = 640;
 const HEIGHT = 480;
 
-let $ = (selector) => document.querySelector(selector),
+var $ = (selector) => document.querySelector(selector),
     video = $('#video-id'),
     target = video,
     zIndex = 0,
@@ -25,7 +25,7 @@ let $ = (selector) => document.querySelector(selector),
     selected = null;
 // Init streaming camera device
 stream_init();
-let videoRect = target.getBoundingClientRect(),
+var videoRect = target.getBoundingClientRect(),
     videoPosition = {
         left: videoRect.left + document.documentElement.scrollLeft,
         top: videoRect.top + document.documentElement.scrollTop
@@ -41,7 +41,7 @@ saveBtn.style.display = 'none';
 canvas.style.display = 'none';
 captureBtn.onclick = capture;
 captureBtn.disabled = true; // deactivated until sticker selection
-let picList = $('#pictures-list');
+var picList = $('#pictures-list');
 
 window.onresize = () => {
     videoRect = target.getBoundingClientRect();
@@ -61,7 +61,7 @@ function checkMediaDevices() {
           // Some browsers just don't implement it - return a rejected promise with an error
           // to keep a consistent interface
           if (!getUserMedia) {
-            return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+            return Promise.reject(new Error('getUserMedia is not available in this browser'));
           }
           // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
           return new Promise(function(resolve, reject) {
@@ -77,11 +77,10 @@ function stream_init () {
     .then( stream => {
         video.srcObject = stream;
         video.play();
-        stickers.forEach(sticker => sticker.onclick = onStickerClickChooser);
+        stickers.map(sticker => sticker.onclick = onStickerClickChooser);
         video.ondrop = onStickerDrop;
         video.ondragover = onStickerDragOver;
         video.style.zIndex = 0;
-        // uploadBtn.disabled = true;
     })
     .catch((error) => {
         console.log(error.message);
@@ -96,8 +95,8 @@ function onStickerClickChooser() {
         img.style.position = 'absolute';
         img.style.left = STICKER_INIT_LEFT_OFFSET;
         img.style.top = STICKER_INIT_TOP_OFFSET;
-        img.style.width = STICKER_WIDTH + 'px';
-        img.style.height = STICKER_HEIGHT + 'px';
+        img.style.width = '20%';//STICKER_WIDTH + 'px';
+        img.style.height = '20%';//STICKER_HEIGHT + 'px';
         img.src = this.src;
         img.ondblclick = onStickerDoubleClick;
         img.draggable = true;
@@ -142,22 +141,29 @@ function onStickerDragOver(event) {
 
 function onStickerDrop(event) {
     event.preventDefault();
-    let liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'));
+    var liveSticker = document.getElementById(event.dataTransfer.getData('text/plain'));
     if (liveSticker === null)
         return ;
-    let mouseRelativePosition = {
+    var mouseRelativePosition = {
         x: event.clientX + document.documentElement.scrollLeft - videoPosition.left,
         y: event.clientY + document.documentElement.scrollTop - videoPosition.top
     };
-    let translationVector = {
+    var translationVector = {
         x: mouseRelativePosition.x - parseInt(liveSticker.style.left),
         y: mouseRelativePosition.y - parseInt(liveSticker.style.top)
     }
-    let x = translationVector.x + parseInt(liveSticker.style.left) - STICKER_WIDTH / 2,
+    var x = translationVector.x + parseInt(liveSticker.style.left) - STICKER_WIDTH / 2,
         y = translationVector.y + parseInt(liveSticker.style.top) - STICKER_HEIGHT / 2;
-    liveSticker.style.left = x + 'px';
-    liveSticker.style.top = y + 'px';
-    liveSticker.style.zIndex = parseInt(event.target.style.zIndex) + 1;
+    var bottomRightCorner = {x: x + liveSticker.offsetWidth, y: y + liveSticker.offsetHeight};
+    var topLeftCorner = {x, y};
+    if (
+        topLeftCorner.x >= 0 && topLeftCorner.y >= 0
+        && bottomRightCorner.x <= target.offsetWidth && bottomRightCorner.y <= target.offsetHeight
+    ) {
+        liveSticker.style.left = x + 'px';
+        liveSticker.style.top = y + 'px';
+        liveSticker.style.zIndex = parseInt(event.target.style.zIndex) + 1;
+    }
 }
 
 
@@ -166,13 +172,10 @@ function sendPictureDataToServer(data) {
     url = new URL(SAVE_IMAGE_URI);
     xhr.onload = () => {
         // We update the list of captured images belonging to the user
-        let imgArea = document.querySelector(".user-images-area");
-        let response = JSON.parse(xhr.response);
-        let component = creatImageComponent(response);
+        var imgArea = document.querySelector(".user-images-area");
+        var response = JSON.parse(xhr.response);
+        var component = creatImageComponent(response);
         imgArea.prepend(component);
-    }
-    xhr.onerror = (error) => {
-        console.log(error);
     }
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
@@ -184,18 +187,18 @@ function assemblePicturesData(imageURI) {
     var pictures = document.querySelectorAll('#preview-container-id img');
     var arr = [].slice.call(pictures);
     var stickers = [];
-    arr.forEach(img => {
-        let obj = {};
-        let str = new String(img.src).substring(img.src.lastIndexOf('/') + 1);
+    for (var i = 0; i < arr.length; i++) {
+        var obj = {};
+        var str = new String(arr[i].src).substring(arr[i].src.lastIndexOf('/') + 1);
         obj.src = str;
-        obj.x = img.offsetLeft * DEVICE_PIXEL_RATIO;
-        obj.y = img.offsetTop * DEVICE_PIXEL_RATIO;
-        obj.width = img.width * DEVICE_PIXEL_RATIO;
-        obj.height = img.height * DEVICE_PIXEL_RATIO;
-        obj.zIndex = parseInt(img.style.zIndex);
+        obj.x = arr[i].offsetLeft * DEVICE_PIXEL_RATIO;
+        obj.y = arr[i].offsetTop * DEVICE_PIXEL_RATIO;
+        obj.width = arr[i].width * DEVICE_PIXEL_RATIO;
+        obj.height = arr[i].height * DEVICE_PIXEL_RATIO;
+        obj.zIndex = parseInt(arr[i].style.zIndex);
         stickers.push(obj);
-        previewContainer.removeChild(img);
-    });
+        previewContainer.removeChild(arr[i]);
+    }
     // sort stickers according to their zindex;
     stickers.sort((a, b) => a.zIndex - b.zIndex);
     sendPictureDataToServer({stickers: stickers, image: imageURI});
@@ -224,7 +227,7 @@ function drawToPreviewCanvas() {
     }
     for(var i = 0; i < st.length; i++) {
         var styles = window.getComputedStyle(st[i]);
-        let left = parseFloat(styles['left']) * DEVICE_PIXEL_RATIO,
+        var left = parseFloat(styles['left']) * DEVICE_PIXEL_RATIO,
             top = parseFloat(styles['top']) * DEVICE_PIXEL_RATIO,
             width = parseFloat(st[i].style.width) * DEVICE_PIXEL_RATIO,
             height = parseFloat(st[i].style.height) * DEVICE_PIXEL_RATIO;
@@ -274,33 +277,40 @@ uploadBtn.onclick = () => {
         var file = inputFile.files[0];
         fr.readAsDataURL(inputFile.files[0]);
         fr.onload = (event) => {
-            if (file.size < 2e6) {
-                let oldImage = document.getElementById('uploaded-image');
+            if (file.size < 2e6 && file.size > 0) {
+                var oldImage = document.getElementById('uploaded-image');
                 if (oldImage !== null)
                     video.parentElement.removeChild(oldImage);
                 stickers.forEach(sticker => sticker.onclick = onStickerClickChooser);
-                const image = document.createElement('img');
-                image.ondrop = onStickerDrop;
-                image.ondragover = onStickerDragOver;
-                image.id = 'uploaded-image';
-                video.style.zIndex = 0;
+                const image = document.createElement("img");
                 image.src = fr.result;
-                image.style.width = "100%";
-                image.style.maxHeight = "480px";
-                image.style.position = 'relative';
-                image.className += ' text-center';
-                video.style.display = 'none';
-                video.parentElement.appendChild(image);
-                target = image;
-                captureBtn.disabled = true;
+                image.onload = function () {
+                    if (this.width) {
+                        image.ondrop = onStickerDrop;
+                        image.ondragover = onStickerDragOver;
+                        image.id = 'uploaded-image';
+                        video.style.zIndex = 0;
+                        image.style.width = "100%";
+                        image.style.maxHeight = "480px";
+                        image.style.position = 'relative';
+                        image.className += ' text-center';
+                        video.style.display = 'none';
+                        video.parentElement.appendChild(image);
+                        target = image;
+                        captureBtn.disabled = true;
+                    } else {
+                        alert('invalid image file');
+                    }
+                }
+                
             } else {
-                alert('Large file');
+                alert('Invalid file');
             }
         }
     }
 }
 
-let slider = document.querySelector('.container.size-slider #range');
+var slider = document.querySelector('.container.size-slider #range');
 slider.oninput = function resize() {
     if (selected != null && selected.style.border !== 'none') {
         selected.style.width = this.value + 'px';
@@ -308,7 +318,7 @@ slider.oninput = function resize() {
     }
 }
 
-let deleteBtns = document.querySelectorAll("#delete-btn");
+var deleteBtns = document.querySelectorAll("#delete-btn");
 deleteBtns.forEach( btn => btn.addEventListener('click', deleteImage));
 
 function deleteImage(event) {
@@ -319,8 +329,6 @@ function deleteImage(event) {
     xhr.open('POST', url, true);
     xhr.setRequestHeader("content-type", "application/json");
     const id = target.id;
-    // const data = JSON.parse(`{"imageid": ${id}}`);
-    // xhr.send(JSON.stringify(data));
     xhr.send(`{"imageid": ${id}}`);
     xhr.onload = () => {
         const response = JSON.parse(xhr.response);
