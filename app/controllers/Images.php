@@ -1,6 +1,7 @@
 <?php
 
 class Images extends Controller {
+    private $image;
     
     public function __construct () {
         $this->image = $this->model('Image');
