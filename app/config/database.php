@@ -1,11 +1,17 @@
 <?php
+    $DB_HOST = getenv('DB_HOST') || 'localhost';
+    $DB_NAME = getenv('DB_NAME') || 'camagru';
+    $DB_USER = getenv('DB_USER') || 'root';
+    $DB_PASSWORD = getenv('DB_PASSWORD') || "don't tell anyone our Secr3t!";
+    $PORT = getenv('PORT') || '8080';
+
     // Database parameters
-    define ('DB_HOST', '127.0.0.1');
-    define ('DB_NAME', 'camagru');
-    define ('DB_USER', 'root');
-    define ('DB_PASSWD', '');
-    define ('PORT', '8080');
-    define ('ADDRESS', 'http://localhost');
+    define ('DB_HOST', $DB_HOST);
+    define ('DB_NAME', $DB_NAME);
+    define ('DB_USER', $DB_USER);
+    define ('DB_PASSWD', $DB_PASSWORD);
+    define ('PORT', $PORT);
+    define ('ADDRESS', 'http://' . $DB_HOST);
 
     // Project Root Directory
     define('ROOT', dirname(dirname(dirname(__FILE__))));
